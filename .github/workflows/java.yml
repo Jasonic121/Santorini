@@ -6,7 +6,8 @@ name: CI
 on:
   # Triggers the workflow on push or pull request events but only for the java branch
   push:
-
+      branches:
+      - main
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
@@ -31,7 +32,7 @@ jobs:
           java-version: 21
 
       # Runs type checker for Java files
-      - name: Run on Java files
+      - name: Run Maven command in 'santorini-boardgame' directory
         run: |
-          cd java
-          timeout 2m mvn -f pom.xml site
+          cd santorini-boardgame
+          mvn -f pom.xml site
