@@ -3,6 +3,7 @@ package com.santorini.java;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertThrows;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -47,8 +48,9 @@ public class CellTest {
         assertTrue(cell.hasDome());
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void testBuildBlockMaxHeight() {
+        final int maxHeight = 4;
         // Add three blocks to the cell
         cell.buildBlock();
         cell.buildBlock();
@@ -56,10 +58,13 @@ public class CellTest {
         cell.buildBlock();
 
         // Verify that the height of the cell is 4 (has a dome)
-        assertEquals(4, cell.getHeight());
+        assertEquals(maxHeight, cell.getHeight());
 
-        // Add another block to the cell (Should throw an exception)
-        cell.buildBlock();
+        IllegalStateException thrown = assertThrows(IllegalStateException.class, () -> {
+            // Add another block to the cell (Should throw an exception)
+            cell.buildBlock();
+        });
+        assertEquals("Cell already has a dome", thrown.getMessage());
     }
 
     @Test
@@ -89,15 +94,17 @@ public class CellTest {
 
         // Verify that the height of the cell is 3
         assertEquals(3, cell.getHeight());
+        // Verify that the cell does not have a dome
+        assertFalse(cell.hasDome());
 
         // Add another block to the cell
         cell.buildBlock();
 
-        // Verify that the height of the cell remains at 3
-        assertEquals(3, cell.getHeight());
+        // Verify that the height of the cell remains at 4
+        assertEquals(4, cell.getHeight());
 
-        // Verify that the cell does not have a dome
-        assertFalse(cell.hasDome());
+        // Verify that the cell has a dome
+        assertTrue(cell.hasDome());
     }
 
     @Test(expected = IllegalStateException.class)
