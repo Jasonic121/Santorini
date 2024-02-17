@@ -45,7 +45,10 @@ public class Cell {
     public void setOccupied(boolean occupied) {
         this.occupied = occupied;
     }
-
+    // Setter for Height
+    public void setHeight(int height) {
+        this.height = height;
+    }
 
     /* 
     Getters for Cell
