@@ -1,6 +1,4 @@
 package com.santorini.java;
-import java.util.ArrayList;
-import java.util.Arrays;
 
 public class Cell {
     private int xPosition;
