@@ -10,25 +10,31 @@ public class Player {
         this.playerId = playerId;
         this.workers = new ArrayList<Worker>();
         // Each player starts with two workers.
+        this.workers.add(new Worker(this, 0));
         this.workers.add(new Worker(this, 1));
-        this.workers.add(new Worker(this, 2));
     }
 
     // Initial placement of workers
-    public void placeInitialWorker(int workerIndex, Cell initialCell) {
-        workers.get(workerIndex).moveWorkerToCell(initialCell);
-    }
-
-    public boolean checkMoveAvailable() {
-        return board.isOccupied(x, y);
+    public void placeWorkerOnBoard(int workerIndex, Cell initialCell) {
+        workers.get(workerIndex).placeInitialWorker(initialCell);
     }
 
     public void moveWorker(int workerIndex, Cell destinationCell) {
         workers.get(workerIndex).moveWorkerToCell(destinationCell);
     }
 
-    public void build(int workerIndex, int x, int y) {
-        workers.get(workerIndex).buildAt(x, y);
+    public void build(int workerIndex, Cell targetCell) {
+        workers.get(workerIndex).buildAt(targetCell);
+    }
+    
+    /*
+    Getters for Player
+    */
+    public Cell getWorkerCurrentCell(int workerIndex) {
+        return workers.get(workerIndex).getCurrentCell();
+    }
+    public int getWorkerAmount() {
+        return workers.size();
     }
 }
 
