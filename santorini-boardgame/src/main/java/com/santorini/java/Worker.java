@@ -11,6 +11,7 @@ public class Worker {
         this.workerId = workerId;
     }
 
+    // Initial placement of workers
     public void placeInitialWorker(Cell initialCell) {
         // List of conditions that must be met for a worker to be place
         final int boardIndexSize = 4;
@@ -25,6 +26,7 @@ public class Worker {
         this.currentCell = initialCell;
     }
 
+    // Move functionality
     public void moveWorkerToCell(Cell destination) {
 
         // List of conditions that must be met for a move to be valid
@@ -44,6 +46,7 @@ public class Worker {
         this.currentCell = destination;
     }
 
+    // Build functionality
     public void buildAt(Cell targetCell) {
         if (!isAdjacent(targetCell)) {
             throw new IllegalStateException("Cannot build on a non-adjacent cell");
@@ -65,6 +68,27 @@ public class Worker {
                 && !(currentX == targetX && currentY == targetY);
     }
 
+    // Check if a worker has no more possible moves
+    public boolean checkMovePossibilities() {
+        final int boardLengthIndex = 4; 
+        Cell targetCell;
+        for (int i = -1; i <= 1; i++) {
+            for (int j = -1; j <= 1; j++) {
+                // Offset the current cell by i and j
+                int targetX = this.currentCell.getX() + i;
+                int targetY = this.currentCell.getY() + j;
+                // Inside the board
+                if (targetX >= 0 && targetX <= boardLengthIndex && targetY >= 0 && targetY <= boardLengthIndex) {
+                    targetCell = new Cell(targetX, targetY);
+                    if (!targetCell.isOccupied() && Math.abs(targetCell.getHeight() - this.currentCell.getHeight()) <= 1) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+    
     /* 
     Getters for Worker properties
     */

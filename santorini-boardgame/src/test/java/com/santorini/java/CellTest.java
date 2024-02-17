@@ -87,13 +87,16 @@ public class CellTest {
 
     @Test
     public void testBuildBlockWithMaxHeight() {
+        final int expectedHeight1 = 3;
+        final int expectedHeight2 = 4;
         // Add three blocks to the cell
         cell.buildBlock();
         cell.buildBlock();
         cell.buildBlock();
 
         // Verify that the height of the cell is 3
-        assertEquals(3, cell.getHeight());
+        assertEquals(expectedHeight1, cell.getHeight());
+
         // Verify that the cell does not have a dome
         assertFalse(cell.hasDome());
 
@@ -101,7 +104,7 @@ public class CellTest {
         cell.buildBlock();
 
         // Verify that the height of the cell remains at 4
-        assertEquals(4, cell.getHeight());
+        assertEquals(expectedHeight2, cell.getHeight());
 
         // Verify that the cell has a dome
         assertTrue(cell.hasDome());
