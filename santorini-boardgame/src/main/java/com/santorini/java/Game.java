@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 public class Game {
     private int currentPlayerIndex;
+    @SuppressWarnings("unused")
     private Board board;
     private ArrayList<Player> players;
 
