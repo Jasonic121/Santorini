@@ -32,14 +32,31 @@ public class Player {
         buildPoints--;
     }
 
-    // Check if a player has lost
-    public boolean checkLose() {
+    // Check if a player has won
+    public boolean checkWin() {
+        final int winHeight = 3;
         for (Worker worker : workers) {
-            if (worker.checkMovePossibilities()) {
+            if (worker.getCurrentCell().getHeight() == winHeight) {
                 return true;
             }
         }
         return false;
+    }
+    
+    // Check if a player has lost
+    /**
+     * Checks if the player has lost the game.
+     * A player loses the game if all their workers have no possible moves.
+     *
+     * @return true if the player has lost, false otherwise.
+     */
+    public boolean checkLose() {
+        for (Worker worker : workers) {
+            if (worker.checkMovePossibilities()) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /*

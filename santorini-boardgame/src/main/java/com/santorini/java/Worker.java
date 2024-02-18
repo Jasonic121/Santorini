@@ -68,7 +68,11 @@ public class Worker {
                 && !(currentX == targetX && currentY == targetY);
     }
 
-    // Check if a worker has no more possible moves
+    /**
+     * Checks the possible move possibilities for the worker.
+     * 
+     * @return true if there is at least one valid move possibility, false otherwise.
+     */
     public boolean checkMovePossibilities() {
         final int boardLengthIndex = 4; 
         Cell targetCell;
