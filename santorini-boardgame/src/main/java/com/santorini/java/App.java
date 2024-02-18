@@ -4,10 +4,11 @@ public class App
 {
     public static void main(String[] args)
     {
+        // Create a new game (add players and board to the game, sets the first player to start the game, and initializes the scanner for user input)
         Game game = new Game();
 
-        // Setup the game (create the board and players, and place the workers on the board)
-        game.setup();
+        // // Setup the game (place the initial workers on the board)
+        // game.setupInitialWorker();
 
         // Start the game
         game.startGame();
