@@ -31,7 +31,8 @@ public class WorkerTest {
 
     @Test (expected = IllegalStateException.class) 
     public void testPlaceInitialWorkerOutsideGrid() {
-        initialCell = new Cell(5, 0);
+        final int invalidCoordinate = 5;
+        initialCell = new Cell(invalidCoordinate, 0);
         worker.placeInitialWorker(initialCell);
     }
 
