@@ -7,12 +7,14 @@ public class Game {
     private ArrayList<Player> players;
     private int currentPlayerIndex;
     private Player currentPlayer;
+    private boolean endGameFlag;
 
     /* Input parameters for test */
     private int workerId = 0;
 
     // Constructor (initializes the board and players array list, and sets the first player to start the game)
     public Game() {
+        endGameFlag = false;
         board = new Board();
         players = new ArrayList<>();
 
@@ -41,11 +43,9 @@ public class Game {
     * Game start logic
     */ 
     public void startGame() {
-        
         currentPlayer = players.get(currentPlayerIndex);
-
-        // Determine how many turns the game will have
-        while (true) {
+        
+        while (!endGameFlag) {
             
             loseCondition();
 
@@ -76,7 +76,6 @@ public class Game {
             currentPlayer.build(workerId, board.getCell(buildX, buildY));
         }
 
-
         // Change player
         nextPlayer();
     }
@@ -94,14 +93,16 @@ public class Game {
      */
     // Lose if the current player has lost by not being able to move
     private void loseCondition() {
-        if (currentPlayer.checkLose()) {
+        if (currentPlayer.checkLose(board)) {
             System.out.println("Player " + currentPlayer.getPlayerId() + " has lost!");
+            endGame();
         }
     }
     // Win if the current player has won by reaching the third level
     private void winCondition() {
         if (currentPlayer.checkWin()) {
         System.out.println("Player " + currentPlayer.getPlayerId() + " has won!");
+        endGame();
         }
     }
 
@@ -110,8 +111,9 @@ public class Game {
     Game end logic 
     
     */
-    public void endGame() {
+    private void endGame() {
         System.out.println("Game over.");
+        endGameFlag = true;
     }
 
     /*
@@ -134,5 +136,8 @@ public class Game {
 
     public Board getBoard() {
         return board;
+    }
+    public boolean getEndGameFlag() {
+        return endGameFlag;
     }
 }
