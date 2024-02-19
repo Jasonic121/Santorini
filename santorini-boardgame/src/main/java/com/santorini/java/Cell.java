@@ -24,9 +24,10 @@ public class Cell {
         this.occupied = false; // initially unoccupied
     }
 
-    /*
-    Building logic for the cell
-    */
+    /**
+     * Builder Methods
+     * --------------
+     */
 
     /**
      * Builds a block on the cell. If the height is less than the maximum height, the height is increased by 1.
