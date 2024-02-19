@@ -68,30 +68,7 @@ public class Worker {
                 && !(currentX == targetX && currentY == targetY);
     }
 
-    /**
-     * Checks the possible move possibilities for the worker.
-     * 
-     * @return true if there is at least one valid move possibility, false otherwise.
-     */
-    public boolean checkMovePossibilities() {
-        final int boardLengthIndex = 4; 
-        Cell targetCell;
-        for (int i = -1; i <= 1; i++) {
-            for (int j = -1; j <= 1; j++) {
-                // Offset the current cell by i and j
-                int targetX = this.currentCell.getX() + i;
-                int targetY = this.currentCell.getY() + j;
-                // Inside the board
-                if (targetX >= 0 && targetX <= boardLengthIndex && targetY >= 0 && targetY <= boardLengthIndex) {
-                    targetCell = new Cell(targetX, targetY);
-                    if (!targetCell.isOccupied() && Math.abs(targetCell.getHeight() - this.currentCell.getHeight()) <= 1) {
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
-    }
+
     
     /* 
     Getters for Worker properties
