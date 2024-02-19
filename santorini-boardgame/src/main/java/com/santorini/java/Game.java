@@ -136,6 +136,12 @@ public class Game {
      * Setter Methods
      * --------------
      */
+    
+    /**
+     * Adds a player to the game.
+     * 
+     * @param player the player to be added
+     */
     public void addPlayer(Player player) {
         players.add(player);
     }
@@ -143,6 +149,12 @@ public class Game {
     /**
      * Getter Methods
      * --------------
+     */
+
+    /**
+     * Returns the list of players in the game.
+     *
+     * @return the list of players
      */
     public ArrayList<Player> getPlayers() {
         return players;

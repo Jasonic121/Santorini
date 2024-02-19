@@ -160,6 +160,13 @@ public class Player {
      * Getter Methods
      * --------------
      */
+
+    /**
+     * Returns the current cell of the specified worker.
+     *
+     * @param workerIndex the index of the worker
+     * @return the current cell of the worker
+     */
     public Cell getWorkerCurrentCell(int workerIndex) {
         return workers.get(workerIndex).getCurrentCell();
     }
@@ -168,6 +175,12 @@ public class Player {
         return workers.size();
     }
 
+    /**
+     * Retrieves the worker at the specified index.
+     *
+     * @param workerIndex the index of the worker to retrieve
+     * @return the worker at the specified index
+     */
     public Worker getWorker(int workerIndex) {
         return workers.get(workerIndex);
     }
