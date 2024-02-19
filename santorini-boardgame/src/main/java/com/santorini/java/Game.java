@@ -2,14 +2,16 @@ package com.santorini.java;
 
 import java.util.ArrayList;
 
+/**
+ * The Game class represents a game of Santorini.
+ * It manages the board, players, and game flow.
+ */
 public class Game {
     private Board board;
     private ArrayList<Player> players;
     private int currentPlayerIndex;
     private Player currentPlayer;
     private boolean endGameFlag;
-
-    /* Input parameters for test */
     private int workerId = 0;
 
     // Constructor (initializes the board and players array list, and sets the first player to start the game)
@@ -28,9 +30,14 @@ public class Game {
         currentPlayerIndex = 0; // Player 1 starts.
     }
 
-    /* 
-    * Worker Initial setup logic 
-    */
+    /**
+     * Sets up the initial worker placement on the board.
+     * 
+     * @param initialCell  the initial cell for the first player's first worker
+     * @param initialCell2 the initial cell for the first player's second worker
+     * @param initialCell3 the initial cell for the second player's first worker
+     * @param initialCell4 the initial cell for the second player's second worker
+     */
     public void setupInitialWorker(Cell initialCell, Cell initialCell2, Cell initialCell3, Cell initialCell4) {
         // Place the workers on the board.
         players.get(0).placeWorkerOnBoard(0, initialCell);
@@ -39,9 +46,9 @@ public class Game {
         players.get(1).placeWorkerOnBoard(1, initialCell4);
     }
 
-    /*
-    * Game start logic
-    */ 
+    /**
+     * Starts the game and executes turns until the game ends.
+     */
     public void startGame() {
         currentPlayer = players.get(currentPlayerIndex);
         
@@ -54,8 +61,14 @@ public class Game {
         }
     }
 
-    /* 
-     * Execute turn logic
+    /**
+     * Executes a turn for the current player in the game.
+     * 
+     * @param workerId the ID of the worker to be moved and built with
+     * @param moveX the X-coordinate of the cell to move the worker to
+     * @param moveY the Y-coordinate of the cell to move the worker to
+     * @param buildX the X-coordinate of the cell to build on
+     * @param buildY the Y-coordinate of the cell to build on
      */
     public void executeTurn(int workerId, int moveX, int moveY, int buildX, int buildY) {
         System.out.println("Player " + currentPlayerIndex + "'s turn.");
@@ -80,25 +93,30 @@ public class Game {
         nextPlayer();
     }
 
-    /*
-     * Change player
+    /**
+     * Advances the game to the next player.
+     * Updates the currentPlayerIndex and currentPlayer variables accordingly.
      */
     private void nextPlayer() {
         currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
         currentPlayer = players.get(currentPlayerIndex);
     }
 
-    /*
-     * Detect Winning and Losing conditions
+    /**
+     * Checks if the current player has lost the game.
+     * If the current player has lost, it prints a message and ends the game.
      */
-    // Lose if the current player has lost by not being able to move
     private void loseCondition() {
         if (currentPlayer.checkLose(board)) {
             System.out.println("Player " + currentPlayer.getPlayerId() + " has lost!");
             endGame();
         }
     }
-    // Win if the current player has won by reaching the third level
+
+    /**
+     * Checks if the current player has won the game.
+     * If the current player has won, it prints a message and ends the game.
+     */
     private void winCondition() {
         if (currentPlayer.checkWin()) {
         System.out.println("Player " + currentPlayer.getPlayerId() + " has won!");
@@ -106,25 +124,25 @@ public class Game {
         }
     }
 
-    /* 
-    
-    Game end logic 
-    
-    */
+    /**
+     * Ends the game and sets the endGameFlag to true.
+     */
     private void endGame() {
         System.out.println("Game over.");
         endGameFlag = true;
     }
 
-    /*
-     * Setters 
+    /**
+     * Setter Methods
+     * --------------
      */
     public void addPlayer(Player player) {
         players.add(player);
     }
-
-    /*
-     * Getters 
+    
+    /**
+     * Getter Methods
+     * --------------
      */
     public ArrayList<Player> getPlayers() {
         return players;

@@ -1,5 +1,8 @@
 package com.santorini.java;
 
+/**
+ * Represents a cell on the Santorini game board.
+ */
 public class Cell {
     private int xPosition;
     private int yPosition;
@@ -7,20 +10,31 @@ public class Cell {
     private boolean hasDome;
     private boolean occupied;
 
+    /**
+     * Constructs a new Cell object with the specified x and y positions.
+     *
+     * @param x The x position of the cell.
+     * @param y The y position of the cell.
+     */
     public Cell(int x, int y) {
         this.xPosition = x;
         this.yPosition = y;
         this.height = 0; // initial height is 0
-        this.hasDome = false; //initially no dome
-        this.occupied = false; //initially unoccupied
+        this.hasDome = false; // initially no dome
+        this.occupied = false; // initially unoccupied
     }
 
     /*
     Building logic for the cell
     */
+
+    /**
+     * Builds a block on the cell. If the height is less than the maximum height, the height is increased by 1.
+     * Otherwise, a dome is built on top of the block.
+     */
     public void buildBlock() {
         final int maxHeight = 4;
-        if (height < maxHeight - 1 ) {
+        if (height < maxHeight - 1) {
             height++;
         } else {
             height++;
@@ -28,7 +42,10 @@ public class Cell {
         }
     }
 
-    // Cannot be called from outside the class
+    /**
+     * Builds a dome on the cell.
+     * If the cell already has a dome, an IllegalStateException is thrown.
+     */
     private void buildDome() {
         if (hasDome) {
             throw new IllegalStateException("Cell already has a dome");
@@ -36,42 +53,76 @@ public class Cell {
         hasDome = true;
     }
 
-    /* 
-    Setters for Cell
-    */
-    // Setter for Occupied
+    /**
+     * Setter Methods
+     * --------------
+     */
+
+    /**
+     * Sets the occupied status of the cell.
+     *
+     * @param occupied The occupied status to set.
+     */
     public void setOccupied(boolean occupied) {
         this.occupied = occupied;
     }
-    // Setter for Height
+
+    /**
+     * Sets the height of the cell.
+     *
+     * @param height The height to set.
+     */
     public void setHeight(int height) {
         this.height = height;
     }
 
-    /* 
-    Getters for Cell
-    */
-    // Getter for xPosition
+    /**
+     * Getter Methods
+     * --------------
+     */
+
+    /**
+     * Returns the x position of the cell.
+     *
+     * @return The x position of the cell.
+     */
     public int getX() {
         return xPosition;
     }
-    // Getter for yPositioN
+
+    /**
+     * Returns the y position of the cell.
+     *
+     * @return The y position of the cell.
+     */
     public int getY() {
         return yPosition;
     }
-    // Getter for height
+
+    /**
+     * Returns the height of the cell.
+     *
+     * @return The height of the cell.
+     */
     public int getHeight() {
         return height;
     }
 
-    // Getter for Dome
+    /**
+     * Returns whether the cell has a dome.
+     *
+     * @return True if the cell has a dome, false otherwise.
+     */
     public boolean hasDome() {
         return hasDome;
     }
 
-    // Getter for Occupied 
+    /**
+     * Returns whether the cell is occupied.
+     *
+     * @return True if the cell is occupied, false otherwise.
+     */
     public boolean isOccupied() {
         return occupied;
     }
-
 }

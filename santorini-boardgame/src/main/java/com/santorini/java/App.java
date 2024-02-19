@@ -1,5 +1,8 @@
 package com.santorini.java;
 
+/**
+ * The main class that represents the entry point of the Santorini board game application.
+ */
 public class App 
 {
     public static void main(String[] args)

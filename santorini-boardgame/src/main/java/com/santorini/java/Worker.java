@@ -1,19 +1,32 @@
 package com.santorini.java;
 
+/**
+ * Represents a worker in the Santorini board game.
+ */
 public class Worker {
     private Cell currentCell;
     private Player owner;
     private int workerId;
 
-    // Constructor
+    /**
+     * Constructs a new Worker object with the specified owner and worker ID.
+     *
+     * @param owner The player who owns the worker.
+     * @param workerId The ID of the worker.
+     */
     public Worker(Player owner, int workerId) {
         this.owner = owner;
         this.workerId = workerId;
     }
 
-    // Initial placement of workers
+    /**
+     * Places the worker on the initial cell.
+     *
+     * @param initialCell The initial cell where the worker is placed.
+     * @throws IllegalStateException if the initial cell is outside the board or already occupied.
+     */
     public void placeInitialWorker(Cell initialCell) {
-        // List of conditions that must be met for a worker to be place
+        // List of conditions that must be met for a worker to be placed
         final int boardIndexSize = 4;
         if (initialCell.getX() > boardIndexSize || initialCell.getY() > boardIndexSize) {
             throw new IllegalStateException("Cannot place a worker outside the board");
@@ -26,9 +39,13 @@ public class Worker {
         this.currentCell = initialCell;
     }
 
-    // Move functionality
+    /**
+     * Moves the worker to the specified destination cell.
+     *
+     * @param destination The destination cell where the worker is moved to.
+     * @throws IllegalStateException if the destination cell is not adjacent, already occupied, or more than one level higher.
+     */
     public void moveWorkerToCell(Cell destination) {
-
         // List of conditions that must be met for a move to be valid
         if (!isAdjacent(destination)) {
             throw new IllegalStateException("Cannot move to a non-adjacent cell");
@@ -46,7 +63,12 @@ public class Worker {
         this.currentCell = destination;
     }
 
-    // Build functionality
+    /**
+     * Builds a block at the specified target cell.
+     *
+     * @param targetCell The target cell where the block is built.
+     * @throws IllegalStateException if the target cell is not adjacent or already occupied.
+     */
     public void buildAt(Cell targetCell) {
         if (!isAdjacent(targetCell)) {
             throw new IllegalStateException("Cannot build on a non-adjacent cell");
@@ -57,7 +79,12 @@ public class Worker {
         targetCell.buildBlock();
     }
 
-    // Utility method for checking if a cell is adjacent to the current cell
+    /**
+     * Checks if a cell is adjacent to the current cell.
+     *
+     * @param targetCell The cell to check for adjacency.
+     * @return true if the cell is adjacent to the current cell, false otherwise.
+     */
     private boolean isAdjacent(Cell targetCell) {
         int currentX = this.currentCell.getX(); 
         int currentY = this.currentCell.getY(); 
@@ -68,19 +95,29 @@ public class Worker {
                 && !(currentX == targetX && currentY == targetY);
     }
 
-
-    
-    /* 
-    Getters for Worker properties
-    */
+    /**
+     * Gets the current cell of the worker.
+     *
+     * @return The current cell of the worker.
+     */
     public Cell getCurrentCell() {
         return currentCell;
     }
 
+    /**
+     * Gets the owner of the worker.
+     *
+     * @return The owner of the worker.
+     */
     public Player getOwner() {
         return owner;
     }
 
+    /**
+     * Returns the ID of the worker.
+     *
+     * @return the ID of the worker
+     */
     public int getWorkerId() {
         return workerId;
     }
