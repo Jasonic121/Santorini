@@ -12,8 +12,5 @@ public class App
 
         // Start the game
         game.startGame();
-
-        // End the game
-        game.endGame();
     }
 }
