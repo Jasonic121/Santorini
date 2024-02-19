@@ -9,11 +9,15 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class CellTest {
+    private Game game;
+    private Board board;
     private Cell cell;
-
+    
     @Before
     public void setUp() {
-        cell = new Cell(0, 0);
+        game = new Game();
+        board = game.getBoard();
+        cell = board.getCell(0, 0);
     }
 
     @Test

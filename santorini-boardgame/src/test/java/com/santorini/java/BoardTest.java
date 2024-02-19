@@ -10,12 +10,14 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class BoardTest {
+    private Game game;
     private Board board;
     private final int gridLength = 5;
 
     @Before
     public void setUp() {
-        board = new Board();
+        game = new Game();
+        board = game.getBoard();
     }
 
     // Test the size initialization of the board   
@@ -51,7 +53,6 @@ public class BoardTest {
 
     @Test
     public void testAddBlock() {
-        Board board = new Board();
         final int x = 0;
         final int y = 0;
         Cell cell = board.getCell(x, y);
