@@ -3,24 +3,31 @@ package com.santorini.java;
 import java.util.ArrayList;
 
 public class Game {
-    private int currentPlayerIndex;
-@SuppressWarnings("unused")
     private Board board;
     private ArrayList<Player> players;
-    private boolean isRunning;
+    private int currentPlayerIndex;
     private Player currentPlayer;
+
+    /* Input parameters for test */
+    private int workerId = 0;
 
     // Constructor (initializes the board and players array list, and sets the first player to start the game)
     public Game() {
         board = new Board();
         players = new ArrayList<>();
 
+        Player player1 = new Player(0);
+        Player player2 = new Player(1);
+
+        this.addPlayer(player1);
+        this.addPlayer(player2);
+        
         // Set which player starts the game
         currentPlayerIndex = 0; // Player 1 starts.
     }
 
     /* 
-    * Game setup logic 
+    * Worker Initial setup logic 
     */
     public void setupInitialWorker(Cell initialCell, Cell initialCell2, Cell initialCell3, Cell initialCell4) {
         // Place the workers on the board.
@@ -34,52 +41,67 @@ public class Game {
     * Game start logic
     */ 
     public void startGame() {
-        isRunning = true;
+        
         currentPlayer = players.get(currentPlayerIndex);
 
-        // isRunning determine how many turns the game will have
-        while (isRunning) {
+        // Determine how many turns the game will have
+        while (true) {
             
-            // Tests if the current player has lost
-            if (currentPlayer.checkLose()) {
-                System.out.println("Player " + currentPlayer.getPlayerId() + " has lost!");
-                break;
-            }
+            loseCondition();
 
-            // Player takes their turn 
-            takeTurn(currentPlayer);
+            executeTurn(workerId); 
 
-            // Tests if the current player has won
-            if (currentPlayer.checkWin()) {
-                System.out.println("Player " + currentPlayer.getPlayerId() + " has won!");
-                break;
-            }
-
-            // Toggles to the next player
-            currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
-            currentPlayer = players.get(currentPlayerIndex);
-
-            isRunning = false;
         }
     }
 
     /* 
-    
-    Take turn 
-    
-    */
-    public void takeTurn(Player currentPlayer) {
-        System.out.println("Player " + currentPlayer.getPlayerId() + "'s turn.");
+     * Execute turn logic
+     */
+    public void executeTurn(int workerId, int moveX, int moveY, int buildX, int buildY) {
+        System.out.println("Player " + currentPlayerIndex + "'s turn.");
+        currentPlayer = players.get(currentPlayerIndex);
 
         // Reset action points at the start of the turn
         currentPlayer.resetActionPoints();
 
         // Assuming player has to finish move to build
         while (currentPlayer.checkMovePointsAvailable()) {
-            currentPlayer.moveWorker(0, new Cell(1, 0));
-        } 
+            currentPlayer.moveWorker(workerId, board.getCell(moveX, moveY));
+        }
+
+        // Check if the game has ended
+        winCondition();
+
         while (currentPlayer.checkBuildPointsAvailable()) {
-            currentPlayer.build(0, new Cell(1, 1));
+            currentPlayer.build(workerId, board.getCell(buildX, buildY));
+        }
+
+
+        // Change player
+        nextPlayer();
+    }
+
+    /*
+     * Change player
+     */
+    private void nextPlayer() {
+        currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
+        currentPlayer = players.get(currentPlayerIndex);
+    }
+
+    /*
+     * Detect Winning and Losing conditions
+     */
+    // Lose if the current player has lost by not being able to move
+    private void loseCondition() {
+        if (currentPlayer.checkLose()) {
+            System.out.println("Player " + currentPlayer.getPlayerId() + " has lost!");
+        }
+    }
+    // Win if the current player has won by reaching the third level
+    private void winCondition() {
+        if (currentPlayer.checkWin()) {
+        System.out.println("Player " + currentPlayer.getPlayerId() + " has won!");
         }
     }
 
@@ -105,9 +127,11 @@ public class Game {
     public ArrayList<Player> getPlayers() {
         return players;
     }
+
     public Player getCurrentPlayer() {
         return players.get(currentPlayerIndex);
     }
+
     public Board getBoard() {
         return board;
     }
