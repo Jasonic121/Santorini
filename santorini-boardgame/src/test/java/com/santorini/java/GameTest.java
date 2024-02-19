@@ -13,19 +13,23 @@ public class GameTest {
     private Board board;
     private Player player1;
     private Player player2;
+    private Cell initialCell;
+    private Cell initialCell2;
+    private Cell initialCell3;
+    private Cell initialCell4;
 
     @Before
     public void setUp() {
-        final int intialCell4index = 3;
+        final int initialCell4index = 3;
         game = new Game();
         board = game.getBoard();
         player1 = game.getPlayers().get(0);
         player2 = game.getPlayers().get(1);
 
-        Cell initialCell = board.getCell(0,0);
-        Cell initialCell2 = board.getCell(1, 1);
-        Cell initialCell3 = board.getCell(2, 2);
-        Cell initialCell4 = board.getCell(intialCell4index, intialCell4index);
+        initialCell = board.getCell(0,0);
+        initialCell2 = board.getCell(1, 1);
+        initialCell3 = board.getCell(2, 2);
+        initialCell4 = board.getCell(initialCell4index, initialCell4index);
 
         game.setupInitialWorker(initialCell, initialCell2, initialCell3, initialCell4); // This should place workers on the board
 
