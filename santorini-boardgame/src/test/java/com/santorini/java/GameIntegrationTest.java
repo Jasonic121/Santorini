@@ -2,8 +2,6 @@ package com.santorini.java;
 
 import org.junit.Test;
 import org.junit.Before;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.After;
@@ -48,8 +46,8 @@ public class GameIntegrationTest {
         game.executeTurn(0, indexThree, 1, indexThree, 0); // Player 1 moves worker 0 to (3, 1) and builds a level 1 block at (3, 0)
         game.executeTurn(1, 1, indexThree, 0, indexThree); // Player 2 moves worker 1 to (1, 3) and builds a level 1 block at (0, 3)
         game.executeTurn(0, indexFour, 1, indexThree, 0); // Player 1 moves worker 0 to (4, 1) and builds a level 1 block at (3, 0)
-        game.executeTurn(0, indexThree, 0, indexFour, 0); // Player 2 moves worker 0 to (3, 0) and builds a level 1 block at (4, 0)
-
+        game.executeTurn(0, indexThree, 0, indexFour, 0); // Player 2 win
+        assertTrue(game.getEndGameFlag());
     }
 
     @After
