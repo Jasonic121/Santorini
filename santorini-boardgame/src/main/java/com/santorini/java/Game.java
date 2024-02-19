@@ -49,7 +49,7 @@ public class Game {
             
             loseCondition();
 
-            executeTurn(workerId); 
+            executeTurn(workerId, 1, 1, 1, 0); 
 
         }
     }
