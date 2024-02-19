@@ -43,20 +43,46 @@ public class Player {
         return false;
     }
     
-    // Check if a player has lost
     /**
      * Checks if the player has lost the game.
      * A player loses the game if all their workers have no possible moves.
      *
-     * @return true if the player has lost, false otherwise.
+     * @param board the game board
+     * @return true if the player has lost, false otherwise
      */
-    public boolean checkLose() {
+    public boolean checkLose(Board board) {
         for (Worker worker : workers) {
-            if (worker.checkMovePossibilities()) {
+            if (checkMovePossibilities(worker, board)) {
                 return false;
             }
         }
         return true;
+    }
+
+    /**
+     * Checks the move possibilities for a given worker.
+     * 
+     * @param worker the worker for which to check move possibilities
+     * @return true if there are valid move possibilities, false otherwise
+     */
+    private boolean checkMovePossibilities(Worker worker, Board board) {
+        final int boardLengthIndex = 4; 
+        Cell targetCell;
+        for (int i = -1; i <= 1; i++) {
+            for (int j = -1; j <= 1; j++) {
+                // Offset the current cell by i and j
+                int targetX = worker.getCurrentCell().getX() + i;
+                int targetY = worker.getCurrentCell().getY() + j;
+                // Inside the board
+                if (targetX >= 0 && targetX <= boardLengthIndex && targetY >= 0 && targetY <= boardLengthIndex) {
+                    targetCell = board.getCell(targetX, targetY);
+                    if (!targetCell.isOccupied() && Math.abs(targetCell.getHeight() - worker.getCurrentCell().getHeight()) <= 1) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     /*
@@ -96,6 +122,10 @@ public class Player {
     
     public int getWorkerAmount() {
         return workers.size();
+    }
+
+    public Worker getWorker(int workerIndex) {
+        return workers.get(workerIndex);
     }
 
     public int getPlayerId() {
