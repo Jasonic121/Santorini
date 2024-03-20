@@ -51,7 +51,7 @@ public class Worker {
             this.currentCell.setOccupied(false);
             destination.setOccupied(true);
             this.currentCell = destination;
-        };
+        }
     }
 
     /**
