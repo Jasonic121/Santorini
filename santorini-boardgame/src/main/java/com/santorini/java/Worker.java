@@ -46,6 +46,21 @@ public class Worker {
      * @throws IllegalStateException if the destination cell is not adjacent, already occupied, or more than one level higher.
      */
     public void moveWorkerToCell(Cell destination) {
+        if (validateMove(destination)) {
+            // Move the worker to the destination cell
+            this.currentCell.setOccupied(false);
+            destination.setOccupied(true);
+            this.currentCell = destination;
+        };
+    }
+
+    /**
+     * Validates a move to the specified destination cell.
+     *
+     * @param destination The destination cell to move to.
+     * @throws IllegalStateException if the move is not valid.
+     */
+    private boolean validateMove(Cell destination) {
         // List of conditions that must be met for a move to be valid
         if (!isAdjacent(destination)) {
             throw new IllegalStateException("Cannot move to a non-adjacent cell");
@@ -56,11 +71,10 @@ public class Worker {
         if (Math.abs(destination.getHeight() - this.currentCell.getHeight()) > 1) {
             throw new IllegalStateException("Cannot move to a cell that is more than one level higher");
         }
-
-        // Move the worker to the destination cell
-        this.currentCell.setOccupied(false);
-        destination.setOccupied(true);
-        this.currentCell = destination;
+        if (destination.hasDome()) {
+            throw new IllegalStateException("Cannot move to a cell that has a dome");
+        }
+        else return true;
     }
 
     /**
@@ -70,13 +84,28 @@ public class Worker {
      * @throws IllegalStateException if the target cell is not adjacent or already occupied.
      */
     public void buildAt(Cell targetCell) {
+        if(validateBuild(targetCell)) {
+            targetCell.buildBlock();
+        }
+    }
+
+    /**
+     * Validates a build at the specified target cell.
+     *
+     * @param targetCell The target cell to build at.
+     * @throws IllegalStateException if the build is not valid.
+     */
+    private boolean validateBuild(Cell targetCell) {
         if (!isAdjacent(targetCell)) {
             throw new IllegalStateException("Cannot build on a non-adjacent cell");
         }
-        if(targetCell.isOccupied()){
+        if (targetCell.isOccupied()) {
             throw new IllegalStateException("Cannot build on an occupied cell");
         }
-        targetCell.buildBlock();
+        if (targetCell.hasDome()) {
+            throw new IllegalStateException("Cannot build on a cell that has a dome");
+        }
+        else return true;
     }
 
     /**

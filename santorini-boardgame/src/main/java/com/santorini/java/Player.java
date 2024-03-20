@@ -54,7 +54,7 @@ public class Player {
      * @param targetCell  the cell on which to build the structure
      */
     public void build(int workerIndex, Cell targetCell) {
-        workers.get(workerIndex).buildAt(targetCell);
+        getWorker(workerIndex).buildAt(targetCell);
         buildPoints--;
     }
 

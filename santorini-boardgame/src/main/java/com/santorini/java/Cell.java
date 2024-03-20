@@ -36,11 +36,17 @@ public class Cell {
     public void buildBlock() {
         final int maxHeight = 4;
         if (height < maxHeight - 1) {
-            height++;
+            increaseHeight();
         } else {
-            height++;
-            this.buildDome();
+            buildDome();
         }
+    }
+
+    /**
+     * Increases the height of the cell by 1.
+     */
+    private void increaseHeight() {
+        height++;
     }
 
     /**

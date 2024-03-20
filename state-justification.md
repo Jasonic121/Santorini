@@ -13,7 +13,7 @@ Below, describe where you stored each of the following states and justify your a
 
 **Storage**: The `currentPlayer` state is stored in the `Game` class as a `Player` reference.
 
-**Justification**: Following the Information Expert principle, `Game` should manage the flow of the game, which includes tracking the player whose turn it is. This allows for encapsulation of the game flow control within a single class.
+**Justification**: By managing the flow of the game, including tracking the current player, the `Game` class effectively serves as a Controller, centralizing control actions to manage system operations. This approach is consistent with the Controller pattern, ensuring that game flow control is encapsulated within a single class responsible for overseeing game progression.
 
 ## Worker Locations
 
