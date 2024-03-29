@@ -9,7 +9,7 @@ Below, describe where you stored each of the following states and justify your a
 
 **Justification**: This aligns with the Information Expert principle, where the `Game` class is responsible for managing the players in the game. It holds the collection of `Player` objects since it's the `Game`'s role to orchestrate the turns and keep track of all participants.
 
-## Current Player
+## Current Player\
 
 **Storage**: The `currentPlayer` state is stored in the `Game` class as a `Player` reference.
 
