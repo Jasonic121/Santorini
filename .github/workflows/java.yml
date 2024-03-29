@@ -32,7 +32,7 @@ jobs:
           java-version: 21
 
       # Runs type checker for Java files
-      - name: Run Maven command in 'santorini-boardgame' directory
+      - name: Run Maven command in 'backend' directory
         run: |
-          cd santorini-boardgame
+          cd backend
           mvn -f pom.xml site
