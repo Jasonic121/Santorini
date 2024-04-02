@@ -40,6 +40,27 @@ public class App extends NanoHTTPD {
             // Start the game
             game.startGame();
             
+        } else if (uri.equals("/setup")) {
+            String[] cell1Coords = params.get("cell1").split(",");
+            String[] cell2Coords = params.get("cell2").split(",");
+            String[] cell3Coords = params.get("cell3").split(",");
+            String[] cell4Coords = params.get("cell4").split(",");
+      
+            int cell1X = Integer.parseInt(cell1Coords[0]);
+            int cell1Y = Integer.parseInt(cell1Coords[1]);
+            int cell2X = Integer.parseInt(cell2Coords[0]);
+            int cell2Y = Integer.parseInt(cell2Coords[1]);
+            int cell3X = Integer.parseInt(cell3Coords[0]);
+            int cell3Y = Integer.parseInt(cell3Coords[1]);
+            int cell4X = Integer.parseInt(cell4Coords[0]);
+            int cell4Y = Integer.parseInt(cell4Coords[1]);
+      
+            game.setupInitialWorker(
+              game.getBoard().getCell(cell1X, cell1Y),
+              game.getBoard().getCell(cell2X, cell2Y),
+              game.getBoard().getCell(cell3X, cell3Y),
+              game.getBoard().getCell(cell4X, cell4Y)
+            );
         } else if (uri.equals("/play")) {
             int x = Integer.parseInt(params.getOrDefault("x", "0"));
             int y = Integer.parseInt(params.getOrDefault("y", "0"));

@@ -53,7 +53,7 @@ public class Game {
      */
     public void startGame() {
         currentPlayer = players.get(currentPlayerIndex);
-        setupInitialWorker(board.getCell(0, 0), board.getCell(0, 1), board.getCell(1, 0), board.getCell(1, 1));
+        // setupInitialWorker(board.getCell(0, 0), board.getCell(0, 1), board.getCell(1, 0), board.getCell(1, 1));
         System.out.println("Game has started.");
 
         // while (!endGameFlag) {

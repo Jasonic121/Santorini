@@ -6,9 +6,12 @@ import './App.css';
 import map from './resources/img/background/map.png';
 
 interface Props {}
+interface State extends GameState {
+  startingGame: boolean;
+  selectedCells: Cell[];
+}
 
-
-class App extends React.Component<Props, GameState> {
+class App extends React.Component<Props, State> {
   private initialized: boolean = false;
 
   constructor(props: Props) {
@@ -17,6 +20,8 @@ class App extends React.Component<Props, GameState> {
       cells: [],
       winner: null,
       currentPlayer: 'Player 1',
+      startingGame: false,
+      selectedCells: [],
     };
   }
 
@@ -25,7 +30,9 @@ class App extends React.Component<Props, GameState> {
       const response = await fetch('http://localhost:8080/newgame');
       const json = await response.json();
       this.setState({
+        startingGame: true,
         cells: json['cells'],
+        selectedCells: [],
         winner: json['winner'],
         currentPlayer: json['currentPlayer'],
       });
@@ -35,14 +42,41 @@ class App extends React.Component<Props, GameState> {
     }
   };
 
-  play(x: number, y: number): React.MouseEventHandler {
+  play = (x: number, y: number): React.MouseEventHandler => {
     return async (e) => {
-      // prevent the default behavior on clicking a link; otherwise, it will jump to a new page.
       e.preventDefault();
-      const response = await fetch(`/play?x=${x}&y=${y}`)
-      const json = await response.json();
-      this.setState({ cells: json['cells'], winner: json['winner'], currentPlayer: json['currentPlayer']});
-    }
+
+      if (this.state.startingGame) {
+        const clickedCell = this.state.cells.find((cell) => cell.x === x && cell.y === y);
+        if (clickedCell && !this.state.selectedCells.some(cell => cell.x === clickedCell.x && cell.y === clickedCell.y)) {
+          this.setState((prevState) => ({
+            selectedCells: [...prevState.selectedCells, clickedCell],
+          }), () => {
+            if (this.state.selectedCells.length === 4) {
+              this.setupInitialWorkers();
+            }
+          });
+        }
+        console.log('Selected cells:', this.state.selectedCells);
+      } else {
+        const response = await fetch(`http://localhost:8080/play?x=${x}&y=${y}`);
+        const json = await response.json();
+        this.setState({ cells: json['cells'], winner: json['winner'], currentPlayer: json['currentPlayer'] });
+      }
+    };
+  };
+
+  setupInitialWorkers = async () => {
+    const [cell1, cell2, cell3, cell4] = this.state.selectedCells;
+    const response = await fetch(`http://localhost:8080/setup?cell1=${cell1.x},${cell1.y}&cell2=${cell2.x},${cell2.y}&cell3=${cell3.x},${cell3.y}&cell4=${cell4.x},${cell4.y}`);
+    const json = await response.json();
+    this.setState({
+      cells: json['cells'],
+      winner: json['winner'],
+      currentPlayer: json['currentPlayer'],
+      startingGame: false,
+      selectedCells: [],
+    });
   };
 
   /**
