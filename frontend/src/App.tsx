@@ -65,8 +65,10 @@ class App extends React.Component<Props, GameState> {
   createCell(cell: Cell, index: number): React.ReactNode {
     return (
       <div key={index}>
-      <BoardCell cell={cell} onClick={() => this.play(cell.x, cell.y)} />
-      </div>
+        <a href='/' onClick={this.play(cell.x, cell.y)}>
+          <BoardCell cell={cell}></BoardCell>
+        </a>
+      </div>  
     )
   }
 

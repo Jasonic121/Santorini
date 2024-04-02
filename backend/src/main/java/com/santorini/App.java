@@ -33,10 +33,13 @@ public class App extends NanoHTTPD {
         if (uri.equals("/newgame")) {
             System.out.println("Game has been reset");
             this.game = new Game();
-            // Setup initial worker positions
-            game.setupInitialWorker(game.getBoard().getCell(2, 0), game.getBoard().getCell(0, 1),
-                    game.getBoard().getCell(1, 0), game.getBoard().getCell(1, 1));
-
+            // // Setup initial worker positions
+            // game.setupInitialWorker(game.getBoard().getCell(2, 0), game.getBoard().getCell(0, 1),
+            //         game.getBoard().getCell(1, 0), game.getBoard().getCell(1, 1));
+            
+            // Start the game
+            game.startGame();
+            
         } else if (uri.equals("/play")) {
             int x = Integer.parseInt(params.getOrDefault("x", "0"));
             int y = Integer.parseInt(params.getOrDefault("y", "0"));
