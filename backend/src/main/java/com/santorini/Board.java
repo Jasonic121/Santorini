@@ -30,8 +30,22 @@ public class Board {
      * 
      * @return the grid of cells
      */
-    public ArrayList<ArrayList<Cell>> getGrid() {
-        return grid;
+    public Cell[] getGrid() {
+        int rows = grid.size();
+        int cols = grid.get(0).size();
+    
+        // Create a one-dimensional array to store the cells
+        Cell[] flattenedGrid = new Cell[rows * cols];
+    
+        // Flatten the two-dimensional grid into the one-dimensional array
+        int index = 0;
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                flattenedGrid[index] = grid.get(i).get(j);
+                index++;
+            }
+        }
+        return flattenedGrid;
     }
 
     /**

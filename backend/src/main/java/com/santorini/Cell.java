@@ -23,7 +23,23 @@ public class Cell {
         this.hasDome = false; // initially no dome
         this.occupied = false; // initially unoccupied
     }
-
+    /**
+     * Constructs a new Cell object with the specified properties.
+     *
+     * @param x           The x position of the cell.
+     * @param y           The y position of the cell.
+     * @param height      The height of the cell.
+     * @param hasDome     Whether the cell has a dome.
+     * @param occupied    Whether the cell is occupied.
+     * @param workerOwner The player ID of the worker occupying the cell (-1 if no worker).
+     */
+    public Cell(int x, int y, int height, boolean hasDome, boolean occupied) {
+        this.xPosition = x;
+        this.yPosition = y;
+        this.height = height;
+        this.hasDome = hasDome;
+        this.occupied = occupied;
+    }
     /**
      * Builder Methods
      * --------------
@@ -132,4 +148,24 @@ public class Cell {
     public boolean isOccupied() {
         return occupied;
     }
+
+    @Override
+    public String toString() {
+        return String.format(
+            "{\"x\":%d,\"y\":%d,\"height\":%d,\"hasDome\":%b,\"occupied\":%b}",
+            xPosition, yPosition, height, hasDome, occupied
+        );
+    }
+    // @Override
+    // public String toString() {
+    //     return """
+    //             {
+    //                 "x": %d,
+    //                 "y": %d,
+    //                 "height": %d,
+    //                 "hasDome": %b,
+    //                 "occupied": %b
+    //             }
+    //             """.formatted(this.xPosition, this.yPosition, this.height, this.hasDome, this.occupied);
+    // }
 }

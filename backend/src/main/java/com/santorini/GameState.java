@@ -10,19 +10,17 @@ import java.util.stream.Collectors;
  * This class stores information about the cells, winner, current player, next move
  */
 public class GameState {
-    private ArrayList<ArrayList<Cell>> cells;
-    private Board board;
+    private Cell[] cells;
     private Player winner;
     private Player currentPlayer;
     private Game game;
 
 
-    public GameState(Board board, Game game) {
-        this.board = board;
+    public GameState(Cell[] cells, Game game) {
+        this.cells = cells;
         this.game = game;
         this.winner = null;
         this.currentPlayer = game.getCurrentPlayer();
-        this.cells = board.getGrid();
     }
 
     /**
@@ -32,29 +30,43 @@ public class GameState {
      * @return the new GameState object
      */
     public static GameState getGameState(Game game) {
-        Board board = game.getBoard();
-        return new GameState(board, game);
+        Cell[] cells = game.getBoard().getGrid();
+        return new GameState(cells, game);
     }
 
 
     /** Getters and Setters **/
-
-    /**
-     * Returns the board of the game state.
-     *
-     * @return an array of Cell objects representing the cells of the game state
-     */
-    public Board getBoard() {
-        return board;
-    }
-
     /**
      * Returns the cells of the game state.
      *
      * @return an array of Cell objects representing the cells of the game state
      */
-    public ArrayList<ArrayList<Cell>> getCells() {
-        return this.cells;
+    public Cell[] getCells() {
+        Cell[] gameCells = new Cell[25];
+        Board board = game.getBoard();
+
+        for (int i = 0; i < 5; i++) {
+            for (int j = 0; j < 5; j++) {
+                Cell cell = board.getCell(i, j);
+                int height = cell.getHeight();
+                boolean hasDome = cell.hasDome();
+                boolean isOccupied = cell.isOccupied();
+
+                if (isOccupied) {
+                    for (Player player : game.getPlayers()) {
+                        for (int k = 0; k < player.getWorkerAmount(); k++) {
+                            if (player.getWorkerCurrentCell(k).equals(cell)) {
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                gameCells[5 * i + j] = new Cell(i, j, height, hasDome, isOccupied);
+            }
+        }
+
+        return gameCells;
     }
 
     /**
@@ -86,11 +98,28 @@ public class GameState {
      *
      * @return the string representation of the GameState object
      */
+    // @Override
+    // public String toString() {
+    //     StringBuilder sb = new StringBuilder();
+    //     sb.append("{ \"cells\": [");
+    //     for (int i = 0; i < cells.length; i++) {
+    //         sb.append(cells[i].toString());
+    //         if (i < cells.length - 1) {
+    //             sb.append(", ");
+    //         }
+    //     }
+    //     sb.append("], \"winner\": \"");
+    //     sb.append(this.getWinner());
+    //     sb.append("\", \"currentPlayer\": \"");
+    //     sb.append(this.getCurrentPlayer());
+    //     sb.append("\"}");
+    //     return sb.toString();
+    // }
     @Override
     public String toString() {
         return String.format(
-            "{ \"cells\": %s, \"winner\": \"%s\", \"currentPlayer\": \"%s\" }",
-            this.cells.toString(), this.getWinner().toString(), this.getCurrentPlayer().toString()
+            "{\"cells\":%s,\"winner\":\"%s\",\"currentPlayer\":\"%s\"}",
+            Arrays.toString(this.cells), this.getWinner().toString(), this.getCurrentPlayer().toString()
         );
     }
 }

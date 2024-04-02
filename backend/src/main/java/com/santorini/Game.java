@@ -13,6 +13,7 @@ public class Game {
     private Player currentPlayer;
     private boolean endGameFlag;
     private int workerId = 0;
+    private Player winner;
 
     // Constructor (initializes the board and players array list, and sets the first player to start the game)
     public Game() {
@@ -20,14 +21,15 @@ public class Game {
         board = new Board();
         players = new ArrayList<>();
 
+        // Create and add two players to the game
         Player player1 = new Player(0);
         Player player2 = new Player(1);
+        players.add(player1);
+        players.add(player2);
 
-        this.addPlayer(player1);
-        this.addPlayer(player2);
-        
         // Set which player starts the game
         currentPlayerIndex = 0; // Player 1 starts.
+        currentPlayer = players.get(currentPlayerIndex);
     }
 
     /**
@@ -118,7 +120,7 @@ public class Game {
      * Advances the game to the next player.
      * Updates the currentPlayerIndex and currentPlayer variables accordingly.
      */
-    private void nextPlayer() {
+    public void nextPlayer() {
         currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
         currentPlayer = players.get(currentPlayerIndex);
     }
@@ -185,10 +187,18 @@ public class Game {
         return players.get(currentPlayerIndex);
     }
 
+    public Player getNextPlayer() {
+        return players.get((currentPlayerIndex + 1) % players.size());
+    }
+
     public Board getBoard() {
         return board;
     }
     public boolean getEndGameFlag() {
         return endGameFlag;
+    }
+
+    public void setWinner(Player currentPlayer2) {
+        winner = currentPlayer2;
     }
 }

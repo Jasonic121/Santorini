@@ -5,7 +5,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.santorini</groupId>
-  <artifactId>santorini-boardgame</artifactId>
+  <artifactId>backend</artifactId>
   <version>1.0-SNAPSHOT</version>
 
   <name>santorini-boardgame</name>
@@ -29,11 +29,11 @@
           <artifactId>jopt-simple</artifactId>
           <version>5.0.4</version>
       </dependency>
-        <!-- https://mvnrepository.com/artifact/org.nanohttpd/nanohttpd -->
+      <!-- https://mvnrepository.com/artifact/org.nanohttpd/nanohttpd -->
       <dependency>
-        <groupId>org.nanohttpd</groupId> <!-- <groupId>com.nanohttpd</groupId> for 2.1.0 and earlier -->
-        <artifactId>nanohttpd</artifactId>
-        <version>2.3.1</version>
+          <groupId>org.nanohttpd</groupId>
+          <artifactId>nanohttpd</artifactId>
+          <version>2.3.0</version>
       </dependency>
       <dependency>
           <groupId>com.google.code.gson</groupId>
@@ -46,19 +46,21 @@
         <version>4.13.2</version>
         <scope>test</scope>
       </dependency>
-      <!-- JSON dependency for org.json.JSONObject -->
-      <dependency>
-          <groupId>org.json</groupId>
-          <artifactId>json</artifactId>
-          <version>20210307</version>
-      </dependency>      
   </dependencies>
   
   <build>
     <sourceDirectory>src/main/java</sourceDirectory> <!-- Custom source directory -->
     <testSourceDirectory>src/test/java</testSourceDirectory> <!-- Custom test directory -->
-
     <plugins>
+          <plugin>
+              <groupId>org.codehaus.mojo</groupId>
+              <artifactId>exec-maven-plugin</artifactId>
+              <version>3.1.1</version> <!-- Ensure you have the correct version -->
+              <configuration>
+                  <executable>java</executable>
+                  <mainClass>com.santorini.App</mainClass>
+              </configuration>
+          </plugin>
       <!-- adding and configuring a plugin to collect coverage information during test execution -->
       <plugin>
           <groupId>org.jacoco</groupId>
