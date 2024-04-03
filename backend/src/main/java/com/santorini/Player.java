@@ -188,6 +188,18 @@ public class Player {
         return workers.get(workerIndex);
     }
 
+    /** 
+     * Returns the cell of all the workers of the player.
+     */
+    public Cell[] getWorkerCells() {
+        Cell[] workerCells = new Cell[workers.size()];
+        for (int i = 0; i < workers.size(); i++) {
+            workerCells[i] = workers.get(i).getCurrentCell();
+        }
+        return workerCells;
+    }
+
+
     public int getPlayerId() {
         return playerId;
     }

@@ -46,6 +46,8 @@ public class Game {
         players.get(0).placeWorkerOnBoard(1, initialCell2);
         players.get(1).placeWorkerOnBoard(0, initialCell3);
         players.get(1).placeWorkerOnBoard(1, initialCell4);
+        System.out.println("Initial worker placement has been set up.");
+
     }
 
     /**

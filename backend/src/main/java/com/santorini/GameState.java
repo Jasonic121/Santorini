@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 public class GameState {
     private Cell[] cells;
     private Player winner;
-    private Player currentPlayer;
+    private int currentPlayerId;
     private Game game;
 
 
@@ -20,7 +20,7 @@ public class GameState {
         this.cells = cells;
         this.game = game;
         this.winner = null;
-        this.currentPlayer = game.getCurrentPlayer();
+        this.currentPlayerId = game.getCurrentPlayer().getPlayerId();
     }
 
     /**
@@ -52,17 +52,18 @@ public class GameState {
                 boolean hasDome = cell.hasDome();
                 boolean isOccupied = cell.isOccupied();
 
-                if (isOccupied) {
-                    for (Player player : game.getPlayers()) {
-                        for (int k = 0; k < player.getWorkerAmount(); k++) {
-                            if (player.getWorkerCurrentCell(k).equals(cell)) {
-                                break;
-                            }
+                // Check which player occupies the cell
+                Player player = null;
+                for (Player p : game.getPlayers()) {
+                    for (Cell c : p.getWorkerCells()) { // Fix: Use getWorkers() instead of getWorkerAmount()
+                        if (c.equals(cell)) {
+                            player = p;
+                            break;
                         }
                     }
                 }
 
-                gameCells[5 * i + j] = new Cell(i, j, height, hasDome, isOccupied);
+                gameCells[5 * i + j] = new Cell(i, j, height, hasDome, isOccupied, player.getPlayerId());
             }
         }
 
@@ -84,13 +85,10 @@ public class GameState {
     /**
      * Returns the current player in the game state.
      *
-     * @return the current player in the game state, or "null" if there is no current player
+     * @return the current player in the game state
      */
-    public String getCurrentPlayer() {
-        if (this.currentPlayer == null)
-            return "null";
-        else
-            return this.currentPlayer.toString();
+    public int getCurrentPlayer() {
+        return this.currentPlayerId;
     }
 
     /**
@@ -98,28 +96,11 @@ public class GameState {
      *
      * @return the string representation of the GameState object
      */
-    // @Override
-    // public String toString() {
-    //     StringBuilder sb = new StringBuilder();
-    //     sb.append("{ \"cells\": [");
-    //     for (int i = 0; i < cells.length; i++) {
-    //         sb.append(cells[i].toString());
-    //         if (i < cells.length - 1) {
-    //             sb.append(", ");
-    //         }
-    //     }
-    //     sb.append("], \"winner\": \"");
-    //     sb.append(this.getWinner());
-    //     sb.append("\", \"currentPlayer\": \"");
-    //     sb.append(this.getCurrentPlayer());
-    //     sb.append("\"}");
-    //     return sb.toString();
-    // }
     @Override
     public String toString() {
         return String.format(
-            "{\"cells\":%s,\"winner\":\"%s\",\"currentPlayer\":\"%s\"}",
-            Arrays.toString(this.cells), this.getWinner().toString(), this.getCurrentPlayer().toString()
+            "{\"cells\":%s,\"winner\":\"%s\",\"currentPlayer\":\"%d\"}",
+            Arrays.toString(this.cells), this.getWinner().toString(), this.getCurrentPlayer()
         );
     }
 }

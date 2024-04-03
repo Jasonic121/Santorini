@@ -91,7 +91,7 @@ class App extends React.Component<Props, State> {
     const currentPlayer = this.state.currentPlayer;
 
     if (winner === "null")
-      return  `Current Player: ${currentPlayer}`;
+      return  `Current Player: Player ${currentPlayer}`;
     else 
       return `Winner: ${winner}`;
   }

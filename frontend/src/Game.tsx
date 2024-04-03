@@ -10,6 +10,7 @@ interface Cell {
   height: number;
   hasDome: boolean;
   occupied: boolean;
+  occupiedBy: number | null;
 }
 
 export type { GameState, Cell };

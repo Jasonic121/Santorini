@@ -9,6 +9,7 @@ public class Cell {
     private int height;
     private boolean hasDome;
     private boolean occupied;
+    private int occupiedBy;
 
     /**
      * Constructs a new Cell object with the specified x and y positions.
@@ -33,12 +34,13 @@ public class Cell {
      * @param occupied    Whether the cell is occupied.
      * @param workerOwner The player ID of the worker occupying the cell (-1 if no worker).
      */
-    public Cell(int x, int y, int height, boolean hasDome, boolean occupied) {
+    public Cell(int x, int y, int height, boolean hasDome, boolean occupied, int occupiedBy) {
         this.xPosition = x;
         this.yPosition = y;
         this.height = height;
         this.hasDome = hasDome;
         this.occupied = occupied;
+        this.occupiedBy = occupiedBy;
     }
     /**
      * Builder Methods
@@ -156,16 +158,4 @@ public class Cell {
             xPosition, yPosition, height, hasDome, occupied
         );
     }
-    // @Override
-    // public String toString() {
-    //     return """
-    //             {
-    //                 "x": %d,
-    //                 "y": %d,
-    //                 "height": %d,
-    //                 "hasDome": %b,
-    //                 "occupied": %b
-    //             }
-    //             """.formatted(this.xPosition, this.yPosition, this.height, this.hasDome, this.occupied);
-    // }
 }
