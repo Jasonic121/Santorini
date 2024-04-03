@@ -36,6 +36,7 @@ public class Worker {
         }
         // Place the worker on the initial cell
         initialCell.setOccupied(true);
+        initialCell.setOccupiedBy(owner.getPlayerId());
         this.currentCell = initialCell;
     }
 
@@ -50,6 +51,7 @@ public class Worker {
             // Move the worker to the destination cell
             this.currentCell.setOccupied(false);
             destination.setOccupied(true);
+            destination.setOccupiedBy(owner.getPlayerId());
             this.currentCell = destination;
         }
     }

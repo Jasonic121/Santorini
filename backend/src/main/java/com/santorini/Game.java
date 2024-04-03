@@ -22,8 +22,8 @@ public class Game {
         players = new ArrayList<>();
 
         // Create and add two players to the game
-        Player player1 = new Player(0);
-        Player player2 = new Player(1);
+        Player player1 = new Player(1);
+        Player player2 = new Player(2);
         players.add(player1);
         players.add(player2);
 
@@ -32,22 +32,17 @@ public class Game {
         currentPlayer = players.get(currentPlayerIndex);
     }
 
-    /**
-     * Sets up the initial worker placement on the board.
-     * 
-     * @param initialCell  the initial cell for the first player's first worker
-     * @param initialCell2 the initial cell for the first player's second worker
-     * @param initialCell3 the initial cell for the second player's first worker
-     * @param initialCell4 the initial cell for the second player's second worker
-     */
-    public void setupInitialWorker(Cell initialCell, Cell initialCell2, Cell initialCell3, Cell initialCell4) {
-        // Place the workers on the board.
-        players.get(0).placeWorkerOnBoard(0, initialCell);
-        players.get(0).placeWorkerOnBoard(1, initialCell2);
-        players.get(1).placeWorkerOnBoard(0, initialCell3);
-        players.get(1).placeWorkerOnBoard(1, initialCell4);
-        System.out.println("Initial worker placement has been set up.");
 
+    /**
+     * Sets up the initial placement of a worker on the game board.
+     * 
+     * @param initialCell the initial cell where the worker will be placed
+     * @param workerId the ID of the worker to be placed
+     */
+    public void setupInitialWorker(Cell initialCell, int workerId) {
+        int playerIndex = workerId % 2; // Calculate the player index based on the worker ID
+        players.get(playerIndex).placeWorkerOnBoard(workerId % 2, initialCell);
+        System.out.println("Initial worker " + workerId + " placement has been set up for Player " + (playerIndex + 1) + ".");
     }
 
     /**

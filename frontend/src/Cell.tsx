@@ -9,7 +9,7 @@ interface Props {
 
 class BoardCell extends React.Component<Props> {
   render(): React.ReactNode {
-    const {cell} = this.props;
+    const { cell } = this.props;
     const occupied = cell.occupied ? 'occupied' : '';
     const dome = cell.hasDome ? 'dome' : '';
     const height = `height-${cell.height}`;
@@ -17,26 +17,26 @@ class BoardCell extends React.Component<Props> {
 
     if (cell.occupied) {
       if (cell.occupiedBy === 1) {
-      return (
-        <div className={`cell ${occupied} ${dome} ${height}`} >
-        <div className="worker player1"> o 
-          <img src={player1} alt="Player 1" style={{ width: '50px', height: '50px' }} />
-        </div>
-        </div>
-      );
-      } else {
-      return (
-        <div className={`cell ${occupied} ${dome} ${height}`} >
-          <div className="worker player0">x
-            <img src={player2} alt="Player 2" style={{ width: '50px', height: '50px' }} />
+        return (
+          <div className={`cell ${occupied} ${dome} ${height}`}>
+            <div className="worker player1">
+              1
+              <img src={player1} alt="Player 1" style={{ width: '50px', height: '50px' }} />
+            </div>
           </div>
-        </div>
-      );
+        );
+      } else {
+        return (
+          <div className={`cell ${occupied} ${dome} ${height}`}>
+            <div className="worker player2">
+              2
+              <img src={player2} alt="Player 2" style={{ width: '50px', height: '50px' }} />
+            </div>
+          </div>
+        );
       }
     } else {
-      return (
-      <div className={`cell ${occupied} ${dome} ${height}`} ></div>
-      );
+      return <div className={`cell ${occupied} ${dome} ${height}`}></div>;
     }
   }
 }

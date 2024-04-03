@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.util.Map;
 
 public class App extends NanoHTTPD {
-
+    private int totalWorkersPlaced;
     private Game game;
 
     public App() throws IOException {
@@ -33,34 +33,30 @@ public class App extends NanoHTTPD {
         if (uri.equals("/newgame")) {
             System.out.println("Game has been reset");
             this.game = new Game();
-            // // Setup initial worker positions
-            // game.setupInitialWorker(game.getBoard().getCell(2, 0), game.getBoard().getCell(0, 1),
-            //         game.getBoard().getCell(1, 0), game.getBoard().getCell(1, 1));
-            
             // Start the game
             game.startGame();
+            totalWorkersPlaced = 0;
             
         } else if (uri.equals("/setup")) {
-            String[] cell1Coords = params.get("cell1").split(",");
-            String[] cell2Coords = params.get("cell2").split(",");
-            String[] cell3Coords = params.get("cell3").split(",");
-            String[] cell4Coords = params.get("cell4").split(",");
-      
-            int cell1X = Integer.parseInt(cell1Coords[0]);
-            int cell1Y = Integer.parseInt(cell1Coords[1]);
-            int cell2X = Integer.parseInt(cell2Coords[0]);
-            int cell2Y = Integer.parseInt(cell2Coords[1]);
-            int cell3X = Integer.parseInt(cell3Coords[0]);
-            int cell3Y = Integer.parseInt(cell3Coords[1]);
-            int cell4X = Integer.parseInt(cell4Coords[0]);
-            int cell4Y = Integer.parseInt(cell4Coords[1]);
-      
-            game.setupInitialWorker(
-              game.getBoard().getCell(cell1X, cell1Y),
-              game.getBoard().getCell(cell2X, cell2Y),
-              game.getBoard().getCell(cell3X, cell3Y),
-              game.getBoard().getCell(cell4X, cell4Y)
-            );
+            String cellCoords = params.get("cell1");
+            if (cellCoords == null) {
+                cellCoords = params.get("cell2");
+            }
+            if (cellCoords == null) {
+                cellCoords = params.get("cell3");
+            }
+            if (cellCoords == null) {
+                cellCoords = params.get("cell4");
+            }
+        
+            String[] cellArray = cellCoords.split(",");
+            int cellX = Integer.parseInt(cellArray[0]);
+            int cellY = Integer.parseInt(cellArray[1]);
+
+            int workerId = totalWorkersPlaced;
+            game.setupInitialWorker(game.getBoard().getCell(cellX, cellY), workerId);
+            totalWorkersPlaced++;
+            game.nextPlayer();
         } else if (uri.equals("/play")) {
             int x = Integer.parseInt(params.getOrDefault("x", "0"));
             int y = Integer.parseInt(params.getOrDefault("y", "0"));

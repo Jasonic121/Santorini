@@ -32,7 +32,7 @@ public class Cell {
      * @param height      The height of the cell.
      * @param hasDome     Whether the cell has a dome.
      * @param occupied    Whether the cell is occupied.
-     * @param workerOwner The player ID of the worker occupying the cell (-1 if no worker).
+     * @param occupiedBy  The ID of the player occupying the cell.
      */
     public Cell(int x, int y, int height, boolean hasDome, boolean occupied, int occupiedBy) {
         this.xPosition = x;
@@ -92,6 +92,15 @@ public class Cell {
         this.occupied = occupied;
     }
 
+    /**
+     * Sets the ID of the player occupying the cell.
+     *
+     * @param playerId The ID of the player to set.
+     */
+    public void setOccupiedBy(int playerId) {
+        this.occupiedBy = playerId;
+    }
+    
     /**
      * Sets the height of the cell.
      *
@@ -154,8 +163,8 @@ public class Cell {
     @Override
     public String toString() {
         return String.format(
-            "{\"x\":%d,\"y\":%d,\"height\":%d,\"hasDome\":%b,\"occupied\":%b}",
-            xPosition, yPosition, height, hasDome, occupied
+            "{\"x\":%d,\"y\":%d,\"height\":%d,\"hasDome\":%b,\"occupied\":%b,\"occupiedBy\":%d}",
+            xPosition, yPosition, height, hasDome, occupied, occupiedBy
         );
     }
 }

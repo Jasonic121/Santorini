@@ -7,7 +7,7 @@ import map from './resources/img/background/map.png';
 
 interface Props {}
 interface State extends GameState {
-  startingGame: boolean;
+  gamePhase: int; // 0 for not started, 1 for setup, 2 for playing
   selectedCells: Cell[];
 }
 
@@ -20,7 +20,7 @@ class App extends React.Component<Props, State> {
       cells: [],
       winner: null,
       currentPlayer: 'Player 1',
-      startingGame: false,
+      gamePhase: 0,
       selectedCells: [],
     };
   }
@@ -30,7 +30,7 @@ class App extends React.Component<Props, State> {
       const response = await fetch('http://localhost:8080/newgame');
       const json = await response.json();
       this.setState({
-        startingGame: true,
+        gamePhase: 1,
         cells: json['cells'],
         selectedCells: [],
         winner: json['winner'],
@@ -46,15 +46,13 @@ class App extends React.Component<Props, State> {
     return async (e) => {
       e.preventDefault();
 
-      if (this.state.startingGame) {
+      if (this.state.gamePhase === 1) { // Setup phase
         const clickedCell = this.state.cells.find((cell) => cell.x === x && cell.y === y);
         if (clickedCell && !this.state.selectedCells.some(cell => cell.x === clickedCell.x && cell.y === clickedCell.y)) {
           this.setState((prevState) => ({
             selectedCells: [...prevState.selectedCells, clickedCell],
           }), () => {
-            if (this.state.selectedCells.length === 4) {
-              this.setupInitialWorkers();
-            }
+            this.setupInitialWorker(clickedCell);
           });
         }
         console.log('Selected cells:', this.state.selectedCells);
@@ -66,16 +64,22 @@ class App extends React.Component<Props, State> {
     };
   };
 
-  setupInitialWorkers = async () => {
-    const [cell1, cell2, cell3, cell4] = this.state.selectedCells;
-    const response = await fetch(`http://localhost:8080/setup?cell1=${cell1.x},${cell1.y}&cell2=${cell2.x},${cell2.y}&cell3=${cell3.x},${cell3.y}&cell4=${cell4.x},${cell4.y}`);
+  setupInitialWorker = async (cell: Cell) => {
+    const { selectedCells } = this.state;
+    const cellIndex = selectedCells.length;
+    const response = await fetch(`http://localhost:8080/setup?cell${cellIndex}=${cell.x},${cell.y}`);
     const json = await response.json();
     this.setState({
       cells: json['cells'],
       winner: json['winner'],
       currentPlayer: json['currentPlayer'],
-      startingGame: false,
-      selectedCells: [],
+    }, () => {
+      if (selectedCells.length === 4) {
+        this.setState({
+          gamePhase: 2, // Change to playing phase
+          selectedCells: [],
+        });
+      }
     });
   };
 
@@ -90,12 +94,12 @@ class App extends React.Component<Props, State> {
     const winner = this.state.winner;
     const currentPlayer = this.state.currentPlayer;
 
-    if (winner === "null")
-      return  `Current Player: Player ${currentPlayer}`;
-    else 
-      return `Winner: ${winner}`;
+    if (winner === "null") {
+      return `Current Player: Player ${currentPlayer} | Game Phase: ${this.state.gamePhase === 1 ? 'Setup' : 'Play'}`;
+    } else {
+      return `Winner: ${winner} | Game Phase: ${this.state.gamePhase === 1 ? 'Setup' : 'Play'}`;
+    }
   }
-
   createCell(cell: Cell, index: number): React.ReactNode {
     return (
       <div key={index}>
