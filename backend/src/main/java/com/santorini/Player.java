@@ -42,6 +42,7 @@ public class Player {
      * @param destinationCell the cell where the worker will be moved to
      */
     public void moveWorker(int workerIndex, Cell destinationCell) {
+        System.out.println("Player.java: Moving worker from" + getWorker(workerIndex).getCurrentCell().getX() + ", " + getWorker(workerIndex).getCurrentCell().getY()  + " to cell " + destinationCell.getX() + ", " + destinationCell.getY());
         workers.get(workerIndex).moveWorkerToCell(destinationCell);
         movePoints--;
     }

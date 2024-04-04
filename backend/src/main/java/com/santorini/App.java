@@ -7,7 +7,9 @@ import java.util.Map;
 public class App extends NanoHTTPD {
     private int totalWorkersPlaced;
     private Game game;
-
+    private Worker selectedWorker;
+    private Cell targetCell;
+    
     public App() throws IOException {
         super(8080); // Set the port number you want to use
         game = new Game();
@@ -32,11 +34,14 @@ public class App extends NanoHTTPD {
         // Check what type of action is being requested
         if (uri.equals("/newgame")) {
             System.out.println("Game has been reset");
+            // Create a new game
             this.game = new Game();
-            // Start the game
-            game.startGame();
+            System.out.println("Game has started.");
+
             totalWorkersPlaced = 0;
-            
+            selectedWorker = null;
+            targetCell = null;
+
         } else if (uri.equals("/setup")) {
             String cellCoords = params.get("cell1");
             if (cellCoords == null) {
@@ -60,23 +65,41 @@ public class App extends NanoHTTPD {
         
             totalWorkersPlaced++;
             game.nextPlayer();
-        } else if (uri.equals("/play")) {
+        } else if (uri.equals("/selectedWorker")) {
             int x = Integer.parseInt(params.getOrDefault("x", "0"));
             int y = Integer.parseInt(params.getOrDefault("y", "0"));
-            System.out.println("User clicked on cell (" + x + ", " + y + ")");
+        
+            Worker worker = selectWorker(x, y);
+            if (worker != null) {
+                selectedWorker = worker;
+                System.out.println("Selected worker: " + selectedWorker.getWorkerId());
+            }
+        } else if (uri.equals("/selectedTargetCell")) {
+            int x = Integer.parseInt(params.getOrDefault("x", "0"));
+            int y = Integer.parseInt(params.getOrDefault("y", "0"));
+            int workerPhase = Integer.parseInt(params.getOrDefault("workerphase", "0"));
 
-            // Find the worker at the specified position
-            Worker worker = game.findWorkerAtPosition(x, y);
+            // Find the target cell at the specified position
+            Cell targetCell = game.getBoard().getCell(x, y);
+            System.out.println("Selected target cell: (" + x + ", " + y + ")");
 
-            // If the worker is the not the current player's worker, do nothing
-            if (worker != null && worker.getOwner().getPlayerId() != game.getCurrentPlayer().getPlayerId()) {
-                worker = null;
-            } else {
-                // Perform the worker action
-                System.out.println("Worker action performed");
-                // game.performWorkerAction(worker, x, y);
+            // Perform the worker action
+            if (selectedWorker != null && targetCell != null) {
+                System.out.println("Valid target cell selected!");
+                if (workerPhase == 0) {
+                    // Move phase
+                    game.executeMoveTurn(selectedWorker.getWorkerId(), targetCell.getX(), targetCell.getY());
+                } else {
+                    // Build phase
+                    game.executeBuildTurn(selectedWorker.getWorkerId(), targetCell.getX(), targetCell.getY());
+                    selectedWorker = null; // The worker has completed its turn
+                }
+                
+                // Reset the selected worker and target cell
+                targetCell = null;
             }
         }
+
         // Generate the current game state
         GameState gameState = GameState.getGameState(this.game);
         String json = gameState.toString();
@@ -88,5 +111,30 @@ public class App extends NanoHTTPD {
         response.addHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
     
         return response;
+    }
+
+    private Worker selectWorker(int x, int y) {
+        System.out.println("User selected a worker (" + x + ", " + y + ")");
+    
+        // Find the worker at the specified position
+        Worker worker = game.findWorkerAtPosition(x, y);
+    
+        if (worker == null) {
+            System.out.println("No worker found at the selected position.");
+            return null;
+        }
+    
+        // Check if the worker belongs to the current player
+        if (!isCurrentPlayerWorker(worker)) {
+            System.out.println("You can only choose a worker that belongs to you!");
+            return null;
+        }
+    
+        System.out.println("Valid worker selected!");
+        return worker;
+    }
+    
+    private boolean isCurrentPlayerWorker(Worker worker) {
+        return worker.getOwner().getPlayerId() == game.getCurrentPlayer().getPlayerId();
     }
 }

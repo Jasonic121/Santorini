@@ -14,6 +14,7 @@ public class Game {
     private boolean endGameFlag;
     private int workerId = 0;
     private Player winner;
+    
 
     // Constructor (initializes the board and players array list, and sets the first player to start the game)
     public Game() {
@@ -46,43 +47,49 @@ public class Game {
     }
 
     /**
-     * Starts the game and executes turns until the game ends.
-     */
-    public void startGame() {
-        currentPlayer = players.get(currentPlayerIndex);
-        // setupInitialWorker(board.getCell(0, 0), board.getCell(0, 1), board.getCell(1, 0), board.getCell(1, 1));
-        System.out.println("Game has started.");
-
-        // while (!endGameFlag) {
-            // executeTurn(workerId, 2, 1, 1, 0); 
-            // loseCondition();
-        // }
-    }
-
-    /**
      * Executes a turn for the current player in the game.
      * 
      * @param workerId the ID of the worker to be moved and built with
-     * @param moveX the X-coordinate of the cell to move the worker to
-     * @param moveY the Y-coordinate of the cell to move the worker to
-     * @param buildX the X-coordinate of the cell to build on
-     * @param buildY the Y-coordinate of the cell to build on
-     */
-    public void executeTurn(int workerId, int moveX, int moveY, int buildX, int buildY) {
+     * @param x the X-coordinate of the destination cell to move the worker to
+     * @param y the Y-coordinate of the destination cell to move the worker to
+     **/
+    public void executeMoveTurn(int workerId, int x, int y) {
         System.out.println("Player " + currentPlayerIndex + "'s turn.");
         currentPlayer = players.get(currentPlayerIndex);
 
         // Reset action points at the start of the turn
         currentPlayer.resetActionPoints();
 
+        System.out.println("Game.java executeTurn: Moving from " + currentPlayer.getWorker(workerId).getCurrentCell().getX() + ", " + currentPlayer.getWorker(workerId).getCurrentCell().getY()  + " to cell " + x + ", " + y);
+
         // Move worker until move points are exhausted
-        moveWorkerUntilPointsExhausted(workerId, moveX, moveY);
+        moveWorkerUntilPointsExhausted(workerId, x, y);
 
         // Check if the game has ended
         winCondition();
 
         // Build until build points are exhausted
-        buildUntilPointsExhausted(workerId, buildX, buildY);
+        // buildUntilPointsExhausted(workerId, x, y);
+
+        // Change player
+        nextPlayer();
+    }
+
+    public void executeBuildTurn(int workerId, int x, int y) {
+        System.out.println("Player " + currentPlayerIndex + "'s turn.");
+
+        System.out.println("Game.java executeTurn: Moving from " + currentPlayer.getWorker(workerId).getCurrentCell().getX() + ", " + currentPlayer.getWorker(workerId).getCurrentCell().getY()  + " to cell " + x + ", " + y);
+
+        currentPlayer = players.get(currentPlayerIndex);
+
+        // Reset action points at the start of the turn
+        currentPlayer.resetActionPoints();
+
+        // Build until build points are exhausted
+        buildUntilPointsExhausted(workerId, x, y);
+
+        // Check if the game has ended
+        winCondition();
 
         // Change player
         nextPlayer();
@@ -97,6 +104,7 @@ public class Game {
      */
     public void moveWorkerUntilPointsExhausted(int workerId, int moveX, int moveY) {
         while (currentPlayer.checkMovePointsAvailable()) {
+            System.out.println("Game.java moveWorkerUntilPointsExhausted: Moving from " + currentPlayer.getWorker(workerId).getCurrentCell().getX() + ", " + currentPlayer.getWorker(workerId).getCurrentCell().getY()  + " to cell " + moveX + ", " + moveY);
             currentPlayer.moveWorker(workerId, board.getCell(moveX, moveY));
         }
     }

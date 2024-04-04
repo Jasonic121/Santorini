@@ -1,14 +1,16 @@
 /* es-lint-disable */
 import React, { useEffect, useState } from 'react';
-import { GameState, Cell} from './Game.tsx';
+import { GameState, Cell } from './Game.tsx';
 import BoardCell from './Cell.tsx';
 import './App.css';
 import map from './resources/img/background/map.png';
 
 interface Props {}
 interface State extends GameState {
-  gamePhase: int; // 0 for not started, 1 for setup, 2 for playing
+  gamePhase: number; // 0 for not started, 1 for setup, 2 for Worker Selection, 3 for Target Cell Selection
+  workerPhase: number; // 0 for move, 1 for build
   selectedCells: Cell[];
+  selectedWorkerCell: Cell | null;
 }
 
 class App extends React.Component<Props, State> {
@@ -19,9 +21,11 @@ class App extends React.Component<Props, State> {
     this.state = {
       cells: [],
       winner: null,
-      currentPlayer: 'Player 1',
+      currentPlayer: 0,
       gamePhase: 0,
+      workerPhase: 0,
       selectedCells: [],
+      selectedWorkerCell: null
     };
   }
 
@@ -42,27 +46,79 @@ class App extends React.Component<Props, State> {
     }
   };
 
-  play = (x: number, y: number): React.MouseEventHandler => {
-    return async (e) => {
-      e.preventDefault();
+  // selectWorker = (x: number, y: number): React.MouseEventHandler => {
+  //   return async (e) => {
+  //     e.preventDefault();
+  //     const clickedCell = this.state.cells.find((cell) => cell.x === x && cell.y === y);
 
-      if (this.state.gamePhase === 1) { // Setup phase
-        const clickedCell = this.state.cells.find((cell) => cell.x === x && cell.y === y);
-        if (clickedCell && !this.state.selectedCells.some(cell => cell.x === clickedCell.x && cell.y === clickedCell.y)) {
-          this.setState((prevState) => ({
-            selectedCells: [...prevState.selectedCells, clickedCell],
-          }), () => {
-            this.setupInitialWorker(clickedCell);
-          });
-        }
-        console.log('Selected cells:', this.state.selectedCells);
-      } else {
-        const response = await fetch(`http://localhost:8080/play?x=${x}&y=${y}`);
-        const json = await response.json();
-        this.setState({ cells: json['cells'], winner: json['winner'], currentPlayer: json['currentPlayer'] });
-      }
-    };
+  //     if (this.state.gamePhase === 1) {
+  //       this.handleSetupPhase(clickedCell);
+  //     } else if (this.state.gamePhase === 2) {
+  //       await this.handleWorkerSelection(clickedCell, x, y);
+  //     }
+  //   };
+  // };
+
+  // selectTargetCell = (x: number, y: number): React.MouseEventHandler => {
+  //   return async (e) => {
+  //     e.preventDefault();
+  //     const clickedCell = this.state.cells.find((cell) => cell.x === x && cell.y === y);
+
+  //     if (this.state.gamePhase === 3) {
+  //       this.handleSelectTargetCell(clickedCell, x, y);
+  //     };
+  //   }
+  //   // return async (e) => {
+  //   //   e.preventDefault();
+  //   //   const response = await fetch(`http://localhost:8080/selectedTargetCell?x=${x}&y=${y}`);
+  //   //   const json = await response.json();
+      
+  //   // };
+  // };
+
+
+  handleWorkerSelection = async (clickedCell: Cell | undefined, x: number, y: number) => {
+    const response = await fetch(`http://localhost:8080/selectedWorker?workerphase=${this.state.workerPhase}&x=${x}&y=${y}`);
+    const json = await response.json();
+    this.setState({ cells: json['cells'], winner: json['winner'], currentPlayer: json['currentPlayer'] });
+
+    console.log('Selected worker:', clickedCell);
+    console.log('Current player:', this.state.currentPlayer);
+
+    if (clickedCell && clickedCell.occupied && Number(clickedCell.occupiedBy) === Number(this.state.currentPlayer)) {
+      console.log('Worker belongs to current player! Now choose a target cell...');
+      this.setState({ gamePhase: 3, selectedWorkerCell: clickedCell });
+    } else {
+      console.log('Worker does not belong to current player');
+    }
   };
+
+
+  handleSelectTargetCell = async (clickedCell: Cell | undefined, x: number, y: number) => {
+    const response = await fetch(`http://localhost:8080/selectedTargetCell?workerphase=${this.state.workerPhase}&x=${x}&y=${y}`);
+    console.log('Selected target cell:', clickedCell);
+    const json = await response.json();
+    this.setState((prevState) => ({ 
+      cells: json['cells'], 
+      winner: json['winner'], 
+      currentPlayer: json['currentPlayer'], 
+      selectedWorkerCell: null,
+      workerPhase: prevState.workerPhase === 0 ? 1 : 0,
+    }));
+    console.log('Current worker phase:', this.state.workerPhase);
+  }
+
+  handleSetupPhase = (clickedCell: Cell | undefined) => {
+    if (clickedCell && !this.state.selectedCells.some(cell => cell.x === clickedCell.x && cell.y === clickedCell.y)) {
+      this.setState((prevState) => ({
+        selectedCells: [...prevState.selectedCells, clickedCell],
+      }), () => {
+        this.setupInitialWorker(clickedCell);
+      });
+    }
+    console.log('Selected cells:', this.state.selectedCells);
+  };
+
 
   setupInitialWorker = async (cell: Cell) => {
     const { selectedCells } = this.state;
@@ -76,39 +132,65 @@ class App extends React.Component<Props, State> {
     }, () => {
       if (selectedCells.length === 4) {
         this.setState({
-          gamePhase: 2, // Change to playing phase
+          gamePhase: 2, // Change to moving phase
           selectedCells: [],
         });
+        console.log('Game phase changed to:', 2);
       }
     });
   };
 
-  /**
-   * Returns the instructions based on the current game state.
-   * If there is a winner, it returns the winner's name.
-   * If there is no winner, it returns the current player's name and the next turn.
-   * 
-   * @returns The instructions as a string.
-   */
-  instructions(): string {
+  getGamePhaseString = (): string => {
+    switch (this.state.gamePhase) {
+      case 1:
+        return 'Setup';
+      case 2:
+        return 'Choose Worker';
+      case 3:
+        return 'Cell Selection';
+      default:
+        return 'Unknown';
+    }
+  };
+
+  instructions = (): string => {
     const winner = this.state.winner;
     const currentPlayer = +this.state.currentPlayer + 1;
+    const gamePhaseString = this.getGamePhaseString();
 
     if (winner === "null") {
-      return `Current Player: Player ${currentPlayer} | Game Phase: ${this.state.gamePhase === 1 ? 'Setup' : 'Play'}`;
+      return `Current Player: Player ${currentPlayer} | Game Phase: ${gamePhaseString}`;
     } else {
-      return `Winner: ${winner} | Game Phase: ${this.state.gamePhase === 1 ? 'Setup' : 'Play'}`;
+      return `Winner: ${winner} | Game Phase: ${gamePhaseString}`;
     }
-  }
-  createCell(cell: Cell, index: number): React.ReactNode {
+  };
+
+  createCell = (cell: Cell, index: number): React.ReactNode => {
+    const onClick = (e: React.MouseEvent) => {
+      e.preventDefault();
+      switch (this.state.gamePhase) {
+        case 1:
+          this.handleSetupPhase(cell);
+          break;
+        case 2:
+          this.handleWorkerSelection(cell, cell.x, cell.y);
+          break;
+        case 3:
+          this.handleSelectTargetCell(cell, cell.x, cell.y);
+          break;
+        default:
+          break;
+      }
+    };
+  
     return (
       <div key={index}>
-        <a href='/' onClick={this.play(cell.x, cell.y)}>
-          <BoardCell cell={cell}></BoardCell>
+        <a href='/' onClick={onClick}>
+          <BoardCell cell={cell} selectedWorkerCell={this.state.selectedWorkerCell}></BoardCell>
         </a>
-      </div>  
-    )
-  }
+      </div>
+    );
+  };
 
   componentDidMount(): void {
     if (!this.initialized) {
@@ -118,11 +200,10 @@ class App extends React.Component<Props, State> {
   }
 
   render(): React.ReactNode {
-    // console.log('cells', this.state.cells); //probe cells
     return (
       <div style={{ backgroundImage: `url(${map})`, backgroundSize: 'cover', backgroundRepeat: 'no-repeat', backgroundPosition: 'center', height: '100vh' }}>
         <div id="instructions">{this.instructions()}</div>
-        <div id="board" >
+        <div id="board">
           {this.state.cells.map((cell, i) => this.createCell(cell, i))}
         </div>
         <div id="bottombar" style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -130,7 +211,7 @@ class App extends React.Component<Props, State> {
         </div>
       </div>
     );
-    }
+  }
 }
 
 export default App;

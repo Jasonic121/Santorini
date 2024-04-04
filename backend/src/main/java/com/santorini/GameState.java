@@ -14,6 +14,7 @@ public class GameState {
     private Player winner;
     private int currentPlayerId;
     private Game game;
+    private Cell[] availableCells;
 
 
     public GameState(Cell[] cells, Game game) {

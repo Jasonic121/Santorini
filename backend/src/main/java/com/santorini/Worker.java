@@ -49,6 +49,7 @@ public class Worker {
      * @throws IllegalStateException if the destination cell is not adjacent, already occupied, or more than one level higher.
      */
     public void moveWorkerToCell(Cell destination) {
+        System.out.println("Worker.java Moving from " + currentCell.getX() + ", " + currentCell.getY() + " to " + destination.getX() + ", " + destination.getY());
         if (validateMove(destination)) {
             // Move the worker to the destination cell
             this.currentCell.setOccupied(false);
@@ -120,6 +121,7 @@ public class Worker {
      */
     private boolean isAdjacent(Cell targetCell) {
         if (targetCell == null) {
+            System.out.println("Target cell is null");
             return false;
         }
 
@@ -128,7 +130,8 @@ public class Worker {
         int currentY = this.currentCell.getY(); 
         int targetX = targetCell.getX();
         int targetY = targetCell.getY();
-
+        System.out.println("Current cell: " + currentX + ", " + currentY);
+        System.out.println("Target cell: " + targetX + ", " + targetY);
         return Math.abs(currentX - targetX) <= 1 && Math.abs(currentY - targetY) <= 1
                 && !(currentX == targetX && currentY == targetY);
     }
