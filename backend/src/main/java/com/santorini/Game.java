@@ -22,8 +22,8 @@ public class Game {
         players = new ArrayList<>();
 
         // Create and add two players to the game
-        Player player1 = new Player(1);
-        Player player2 = new Player(2);
+        Player player1 = new Player(0);
+        Player player2 = new Player(1);
         players.add(player1);
         players.add(player2);
 
@@ -37,12 +37,12 @@ public class Game {
      * Sets up the initial placement of a worker on the game board.
      * 
      * @param initialCell the initial cell where the worker will be placed
-     * @param workerId the ID of the worker to be placed
+     * @param playerId the ID of the player placing the worker
+     * @param workerIndex the index of the worker being placed
      */
-    public void setupInitialWorker(Cell initialCell, int workerId) {
-        int playerIndex = workerId % 2; // Calculate the player index based on the worker ID
-        players.get(playerIndex).placeWorkerOnBoard(workerId % 2, initialCell);
-        System.out.println("Initial worker " + workerId + " placement has been set up for Player " + (playerIndex + 1) + ".");
+    public void setupInitialWorker(Cell initialCell, int playerId, int workerIndex) {
+        players.get(playerId).placeWorkerOnBoard(workerIndex, initialCell);
+        System.out.println("Initial worker " + workerIndex + " placement has been set up for Player " + playerId + ".");
     }
 
     /**

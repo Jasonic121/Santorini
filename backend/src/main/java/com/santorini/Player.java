@@ -37,7 +37,7 @@ public class Player {
     /**
      * Moves the specified worker to the given destination cell.
      * Decreases the move points of the player.
-     *
+     * 
      * @param workerIndex the index of the worker to be moved
      * @param destinationCell the cell where the worker will be moved to
      */
@@ -171,7 +171,8 @@ public class Player {
      * @return the current cell of the worker
      */
     public Cell getWorkerCurrentCell(int workerIndex) {
-        return workers.get(workerIndex).getCurrentCell();
+        Worker worker = workers.get(workerIndex);
+        return worker.getCurrentCell();
     }
     
     public int getWorkerAmount() {

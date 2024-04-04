@@ -52,40 +52,48 @@ public class App extends NanoHTTPD {
             String[] cellArray = cellCoords.split(",");
             int cellX = Integer.parseInt(cellArray[0]);
             int cellY = Integer.parseInt(cellArray[1]);
-
-            int workerId = totalWorkersPlaced;
-            game.setupInitialWorker(game.getBoard().getCell(cellX, cellY), workerId);
+        
+            int playerId = totalWorkersPlaced % 2;
+            int workerIndex = totalWorkersPlaced / 2;
+        
+            game.setupInitialWorker(game.getBoard().getCell(cellX, cellY), playerId, workerIndex);
+        
             totalWorkersPlaced++;
             game.nextPlayer();
         } else if (uri.equals("/play")) {
             int x = Integer.parseInt(params.getOrDefault("x", "0"));
             int y = Integer.parseInt(params.getOrDefault("y", "0"));
-
+            System.out.println("User clicked on cell (" + x + ", " + y + ")");
             // Get the current player
             Player currentPlayer = game.getCurrentPlayer();
 
             // Find the worker at the specified position
             Worker worker = null;
             for (int i = 0; i < currentPlayer.getWorkerAmount(); i++) {
-                if (currentPlayer.getWorkerCurrentCell(i).getX() == x && currentPlayer.getWorkerCurrentCell(i).getY() == y) {
+                Cell workerCell = currentPlayer.getWorkerCurrentCell(i);
+                System.out.println("Worker " + i + " current cell: " + workerCell);
+                if (workerCell != null && workerCell.getX() == x && workerCell.getY() == y) {
                     worker = currentPlayer.getWorker(i);
                     break;
-                }
-            }
-
-            if (worker != null) {
-                // Move the worker to the specified position
-                currentPlayer.moveWorker(worker.getWorkerId(), game.getBoard().getCell(x, y));
-
-                // Check if the game has ended
-                if (currentPlayer.checkWin()) {
-                    game.setWinner(currentPlayer);
-                } else if (currentPlayer.checkLose(game.getBoard())) {
-                    game.setWinner(game.getNextPlayer());
                 } else {
-                    // Switch to the next player
-                    game.nextPlayer();
+                    System.out.println("Click on a cell with your worker!");
                 }
+}
+
+            if (worker != null) { // Worker found where the user clicked
+                System.out.println("Worker " + worker.getWorkerId() + " found at cell (" + x + ", " + y + ")");
+                // // Move the worker to the specified position
+                // currentPlayer.moveWorker(worker.getWorkerId(), game.getBoard().getCell(x, y));
+
+                // // Check if the game has ended
+                // if (currentPlayer.checkWin()) {
+                //     game.setWinner(currentPlayer);
+                // } else if (currentPlayer.checkLose(game.getBoard())) {
+                //     game.setWinner(game.getNextPlayer());
+                // } else {
+                //     // Switch to the next player
+                //     game.nextPlayer();
+                // }
             }
         }
         // Generate the current game state

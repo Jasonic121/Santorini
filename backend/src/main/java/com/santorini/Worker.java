@@ -17,6 +17,7 @@ public class Worker {
     public Worker(Player owner, int workerId) {
         this.owner = owner;
         this.workerId = workerId;
+        this.currentCell = null;
     }
 
     /**
@@ -37,7 +38,8 @@ public class Worker {
         // Place the worker on the initial cell
         initialCell.setOccupied(true);
         initialCell.setOccupiedBy(owner.getPlayerId());
-        this.currentCell = initialCell;
+        currentCell = initialCell;
+        System.out.println("Current cell: " + currentCell.getX() + ", " + currentCell.getY());
     }
 
     /**
@@ -137,10 +139,6 @@ public class Worker {
      * @return The current cell of the worker.
      */
     public Cell getCurrentCell() {
-        if (currentCell == null) {
-            throw new IllegalStateException("Worker has not been placed on a cell");
-        }
-
         return currentCell;
     }
 

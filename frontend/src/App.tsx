@@ -92,7 +92,7 @@ class App extends React.Component<Props, State> {
    */
   instructions(): string {
     const winner = this.state.winner;
-    const currentPlayer = this.state.currentPlayer;
+    const currentPlayer = +this.state.currentPlayer + 1;
 
     if (winner === "null") {
       return `Current Player: Player ${currentPlayer} | Game Phase: ${this.state.gamePhase === 1 ? 'Setup' : 'Play'}`;

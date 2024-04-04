@@ -16,7 +16,7 @@ class BoardCell extends React.Component<Props> {
     const occupiedBy = cell.occupiedBy;
 
     if (cell.occupied) {
-      if (cell.occupiedBy === 1) {
+      if (cell.occupiedBy === 0) {
         return (
           <div className={`cell ${occupied} ${dome} ${height}`}>
             <div className="worker player1">
