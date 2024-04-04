@@ -189,6 +189,15 @@ public class Player {
         return workers.get(workerIndex);
     }
 
+    /**
+     * Returns the list of workers belonging to this player.
+     *
+     * @return the list of workers
+     */
+    public ArrayList<Worker> getWorkers() {
+        return workers;
+    }
+    
     /** 
      * Returns the cell of all the workers of the player.
      */
@@ -199,6 +208,7 @@ public class Player {
         }
         return workerCells;
     }
+
 
 
     public int getPlayerId() {

@@ -64,36 +64,17 @@ public class App extends NanoHTTPD {
             int x = Integer.parseInt(params.getOrDefault("x", "0"));
             int y = Integer.parseInt(params.getOrDefault("y", "0"));
             System.out.println("User clicked on cell (" + x + ", " + y + ")");
-            // Get the current player
-            Player currentPlayer = game.getCurrentPlayer();
 
             // Find the worker at the specified position
-            Worker worker = null;
-            for (int i = 0; i < currentPlayer.getWorkerAmount(); i++) {
-                Cell workerCell = currentPlayer.getWorkerCurrentCell(i);
-                System.out.println("Worker " + i + " current cell: " + workerCell);
-                if (workerCell != null && workerCell.getX() == x && workerCell.getY() == y) {
-                    worker = currentPlayer.getWorker(i);
-                    break;
-                } else {
-                    System.out.println("Click on a cell with your worker!");
-                }
-}
+            Worker worker = game.findWorkerAtPosition(x, y);
 
-            if (worker != null) { // Worker found where the user clicked
-                System.out.println("Worker " + worker.getWorkerId() + " found at cell (" + x + ", " + y + ")");
-                // // Move the worker to the specified position
-                // currentPlayer.moveWorker(worker.getWorkerId(), game.getBoard().getCell(x, y));
-
-                // // Check if the game has ended
-                // if (currentPlayer.checkWin()) {
-                //     game.setWinner(currentPlayer);
-                // } else if (currentPlayer.checkLose(game.getBoard())) {
-                //     game.setWinner(game.getNextPlayer());
-                // } else {
-                //     // Switch to the next player
-                //     game.nextPlayer();
-                // }
+            // If the worker is the not the current player's worker, do nothing
+            if (worker != null && worker.getOwner().getPlayerId() != game.getCurrentPlayer().getPlayerId()) {
+                worker = null;
+            } else {
+                // Perform the worker action
+                System.out.println("Worker action performed");
+                // game.performWorkerAction(worker, x, y);
             }
         }
         // Generate the current game state

@@ -154,6 +154,48 @@ public class Game {
     }
 
     /**
+     * Finds the worker at the specified position on the game board.
+     *
+     * @param x the X-coordinate of the position
+     * @param y the Y-coordinate of the position
+     * @return the worker at the specified position, or null if no worker is found
+     */
+    public Worker findWorkerAtPosition(int x, int y) {
+        for (Player player : players) {
+            for (Worker worker : player.getWorkers()) {
+                Cell workerCell = worker.getCurrentCell();
+                if (workerCell != null && workerCell.getX() == x && workerCell.getY() == y) {
+                    System.out.println("Worker found at position (" + x + ", " + y + ")");
+                    return worker;
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Performs the worker action (move and build) at the specified position.
+     *
+     * @param worker the worker performing the action
+     * @param x the X-coordinate of the position
+     * @param y the Y-coordinate of the position
+     */
+    public void performWorkerAction(Worker worker, int x, int y) {
+        // Move the worker to the specified position
+        currentPlayer.moveWorker(worker.getWorkerId(), board.getCell(x, y));
+
+        // Check if the game has ended
+        if (currentPlayer.checkWin()) {
+            setWinner(currentPlayer);
+        } else if (currentPlayer.checkLose(board)) {
+            setWinner(getNextPlayer());
+        } else {
+            // Switch to the next player
+            nextPlayer();
+        }
+    }
+
+    /**
      * Setter Methods
      * --------------
      */
