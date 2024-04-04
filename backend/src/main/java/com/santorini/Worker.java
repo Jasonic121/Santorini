@@ -56,6 +56,7 @@ public class Worker {
             destination.setOccupied(true);
             destination.setOccupiedBy(owner.getPlayerId());
             this.currentCell = destination;
+            System.out.println("Current cell set to: " + currentCell.getX() + ", " + currentCell.getY());
         }
     }
 
@@ -89,6 +90,8 @@ public class Worker {
      * @throws IllegalStateException if the target cell is not adjacent or already occupied.
      */
     public void buildAt(Cell targetCell) {
+        System.out.println("Worker.java Building at " + targetCell.getX() + ", " + targetCell.getY());
+
         if(validateBuild(targetCell)) {
             targetCell.buildBlock();
         }

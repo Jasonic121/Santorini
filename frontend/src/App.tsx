@@ -105,7 +105,7 @@ class App extends React.Component<Props, State> {
       selectedWorkerCell: null,
       workerPhase: prevState.workerPhase === 0 ? 1 : 0,
     }));
-    console.log('Current worker phase:', this.state.workerPhase);
+    console.log("Worker phase changed!");
   }
 
   handleSetupPhase = (clickedCell: Cell | undefined) => {
@@ -141,13 +141,14 @@ class App extends React.Component<Props, State> {
   };
 
   getGamePhaseString = (): string => {
-    switch (this.state.gamePhase) {
+    const { gamePhase, workerPhase } = this.state;
+    switch (gamePhase) {
       case 1:
         return 'Setup';
       case 2:
-        return 'Choose Worker';
+        return workerPhase === 0 ? 'Moving... (Choose Worker)' : 'Building... (Choose Worker)';
       case 3:
-        return 'Cell Selection';
+        return workerPhase === 0 ? 'Moving... (Choose Cell)' : 'Building... (Choose Cell)';
       default:
         return 'Unknown';
     }
@@ -169,13 +170,13 @@ class App extends React.Component<Props, State> {
     const onClick = (e: React.MouseEvent) => {
       e.preventDefault();
       switch (this.state.gamePhase) {
-        case 1:
+        case 1: // Setup Phase
           this.handleSetupPhase(cell);
           break;
-        case 2:
+        case 2: // Worker Selection
           this.handleWorkerSelection(cell, cell.x, cell.y);
           break;
-        case 3:
+        case 3: // Target Cell Selection
           this.handleSelectTargetCell(cell, cell.x, cell.y);
           break;
         default:

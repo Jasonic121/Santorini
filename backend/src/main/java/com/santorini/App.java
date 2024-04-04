@@ -9,7 +9,7 @@ public class App extends NanoHTTPD {
     private Game game;
     private Worker selectedWorker;
     private Cell targetCell;
-    
+
     public App() throws IOException {
         super(8080); // Set the port number you want to use
         game = new Game();
@@ -89,10 +89,13 @@ public class App extends NanoHTTPD {
                 if (workerPhase == 0) {
                     // Move phase
                     game.executeMoveTurn(selectedWorker.getWorkerId(), targetCell.getX(), targetCell.getY());
+                    System.out.println("Worker " + selectedWorker.getWorkerId() + " moved to cell (" + x + ", " + y + ")!!!");
                 } else {
                     // Build phase
+                    System.out.println("Worker " + selectedWorker.getWorkerId() + " building at cell (" + x + ", " + y + ")!!!");
                     game.executeBuildTurn(selectedWorker.getWorkerId(), targetCell.getX(), targetCell.getY());
                     selectedWorker = null; // The worker has completed its turn
+                    System.out.println("Completed Build!");
                 }
                 
                 // Reset the selected worker and target cell

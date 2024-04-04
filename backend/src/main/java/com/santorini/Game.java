@@ -60,25 +60,19 @@ public class Game {
         // Reset action points at the start of the turn
         currentPlayer.resetActionPoints();
 
-        System.out.println("Game.java executeTurn: Moving from " + currentPlayer.getWorker(workerId).getCurrentCell().getX() + ", " + currentPlayer.getWorker(workerId).getCurrentCell().getY()  + " to cell " + x + ", " + y);
+        System.out.println("Game.java executeMoveTurn: Moving from " + currentPlayer.getWorker(workerId).getCurrentCell().getX() + ", " + currentPlayer.getWorker(workerId).getCurrentCell().getY()  + " to cell " + x + ", " + y);
 
         // Move worker until move points are exhausted
         moveWorkerUntilPointsExhausted(workerId, x, y);
 
         // Check if the game has ended
         winCondition();
-
-        // Build until build points are exhausted
-        // buildUntilPointsExhausted(workerId, x, y);
-
-        // Change player
-        nextPlayer();
     }
 
     public void executeBuildTurn(int workerId, int x, int y) {
         System.out.println("Player " + currentPlayerIndex + "'s turn.");
 
-        System.out.println("Game.java executeTurn: Moving from " + currentPlayer.getWorker(workerId).getCurrentCell().getX() + ", " + currentPlayer.getWorker(workerId).getCurrentCell().getY()  + " to cell " + x + ", " + y);
+        System.out.println("Game.java executeBuildTurn: Building at cell " + x + ", " + y);
 
         currentPlayer = players.get(currentPlayerIndex);
 
@@ -104,7 +98,7 @@ public class Game {
      */
     public void moveWorkerUntilPointsExhausted(int workerId, int moveX, int moveY) {
         while (currentPlayer.checkMovePointsAvailable()) {
-            System.out.println("Game.java moveWorkerUntilPointsExhausted: Moving from " + currentPlayer.getWorker(workerId).getCurrentCell().getX() + ", " + currentPlayer.getWorker(workerId).getCurrentCell().getY()  + " to cell " + moveX + ", " + moveY);
+            // System.out.println("Game.java moveWorkerUntilPointsExhausted: Moving from " + currentPlayer.getWorker(workerId).getCurrentCell().getX() + ", " + currentPlayer.getWorker(workerId).getCurrentCell().getY()  + " to cell " + moveX + ", " + moveY);
             currentPlayer.moveWorker(workerId, board.getCell(moveX, moveY));
         }
     }
@@ -118,6 +112,7 @@ public class Game {
      */
     public void buildUntilPointsExhausted(int workerId, int buildX, int buildY) {
         while (currentPlayer.checkBuildPointsAvailable()) {
+            System.out.println("Game.java buildUntilPointsExhausted: Worker is at cell " + currentPlayer.getWorker(workerId).getCurrentCell().getX() + ", " + currentPlayer.getWorker(workerId).getCurrentCell().getY() + " and building at cell " + buildX + ", " + buildY);
             currentPlayer.build(workerId, board.getCell(buildX, buildY));
         }
     }
