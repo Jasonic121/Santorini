@@ -14,7 +14,7 @@ public class Game {
     private boolean endGameFlag;
     private int workerId = 0;
     private Player winner;
-    
+    private Cell[] validCells;
 
     // Constructor (initializes the board and players array list, and sets the first player to start the game)
     public Game() {
@@ -31,6 +31,8 @@ public class Game {
         // Set which player starts the game
         currentPlayerIndex = 0; // Player 1 starts.
         currentPlayer = players.get(currentPlayerIndex);
+        
+        validCells = null;
     }
 
 
@@ -60,7 +62,9 @@ public class Game {
         // Reset action points at the start of the turn
         currentPlayer.resetActionPoints();
 
-        System.out.println("Game.java executeMoveTurn: Moving from " + currentPlayer.getWorker(workerId).getCurrentCell().getX() + ", " + currentPlayer.getWorker(workerId).getCurrentCell().getY()  + " to cell " + x + ", " + y);
+        System.out.println("Game.java executeMoveTurn: Moving from " + currentPlayer.getWorker(workerId).getCurrentCell().getX() + ", " + currentPlayer.getWorker(workerId).getCurrentCell().getY()  + " to cell " + x + ", " + y
+        );
+        validCells = this.board.validateCellsForMoving(currentPlayer.getWorker(workerId).getCurrentCell());
 
         // Move worker until move points are exhausted
         moveWorkerUntilPointsExhausted(workerId, x, y);
@@ -78,6 +82,8 @@ public class Game {
 
         // Reset action points at the start of the turn
         currentPlayer.resetActionPoints();
+
+        validCells = this.board.validateCellsForBuilding(currentPlayer.getWorker(workerId).getCurrentCell());
 
         // Build until build points are exhausted
         buildUntilPointsExhausted(workerId, x, y);
@@ -98,8 +104,16 @@ public class Game {
      */
     public void moveWorkerUntilPointsExhausted(int workerId, int moveX, int moveY) {
         while (currentPlayer.checkMovePointsAvailable()) {
-            // System.out.println("Game.java moveWorkerUntilPointsExhausted: Moving from " + currentPlayer.getWorker(workerId).getCurrentCell().getX() + ", " + currentPlayer.getWorker(workerId).getCurrentCell().getY()  + " to cell " + moveX + ", " + moveY);
-            currentPlayer.moveWorker(workerId, board.getCell(moveX, moveY));
+
+            validCells = this.board.validateCellsForMoving(currentPlayer.getWorker(workerId).getCurrentCell());
+
+            // Validate whether moveX and moveY cell is a valid cell to move to
+            for (Cell cell : validCells) {
+                if (cell.getX() == moveX && cell.getY() == moveY) {
+                    currentPlayer.moveWorker(workerId, board.getCell(moveX, moveY));
+                    break;
+                }
+            }
         }
     }
 
@@ -243,5 +257,9 @@ public class Game {
 
     public void setWinner(Player currentPlayer2) {
         winner = currentPlayer2;
+    }
+
+    public Cell[] getValidCells() {
+        return validCells;
     }
 }

@@ -39,7 +39,6 @@ public class Worker {
         initialCell.setOccupied(true);
         initialCell.setOccupiedBy(owner.getPlayerId());
         currentCell = initialCell;
-        System.out.println("Current cell: " + currentCell.getX() + ", " + currentCell.getY());
     }
 
     /**
@@ -56,7 +55,7 @@ public class Worker {
             destination.setOccupied(true);
             destination.setOccupiedBy(owner.getPlayerId());
             this.currentCell = destination;
-            System.out.println("Current cell set to: " + currentCell.getX() + ", " + currentCell.getY());
+            System.out.println("Worker cell set to: " + currentCell.getX() + ", " + currentCell.getY());
         }
     }
 

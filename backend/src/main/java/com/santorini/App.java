@@ -8,7 +8,7 @@ public class App extends NanoHTTPD {
     private int totalWorkersPlaced;
     private Game game;
     private Worker selectedWorker;
-    private Cell targetCell;
+    private Cell[] validCells;
 
     public App() throws IOException {
         super(8080); // Set the port number you want to use
@@ -40,7 +40,7 @@ public class App extends NanoHTTPD {
 
             totalWorkersPlaced = 0;
             selectedWorker = null;
-            targetCell = null;
+            validCells = null;
 
         } else if (uri.equals("/setup")) {
             String cellCoords = params.get("cell1");
@@ -73,7 +73,19 @@ public class App extends NanoHTTPD {
             if (worker != null) {
                 selectedWorker = worker;
                 System.out.println("Selected worker: " + selectedWorker.getWorkerId());
+                
+                // Determine the valid target cells for the selected worker
+                if (game.getCurrentPlayer().getMovePoints() > 0) {
+                    validCells = game.getBoard().validateCellsForMoving(selectedWorker.getCurrentCell());
+                } else if (game.getCurrentPlayer().getBuildPoints() > 0) {
+                    validCells = game.getBoard().validateCellsForBuilding(selectedWorker.getCurrentCell());
+                }
+                
+                for(Cell cell : validCells) {
+                    System.out.println("Valid cell: (" + cell.getX() + ", " + cell.getY() + ")");
+                }
             }
+            
         } else if (uri.equals("/selectedTargetCell")) {
             int x = Integer.parseInt(params.getOrDefault("x", "0"));
             int y = Integer.parseInt(params.getOrDefault("y", "0"));
@@ -106,6 +118,21 @@ public class App extends NanoHTTPD {
         // Generate the current game state
         GameState gameState = GameState.getGameState(this.game);
         String json = gameState.toString();
+        // add the valid cells to json
+        json = json.substring(0, json.length() - 1) + ",\"validCells\":";
+        if (validCells == null) {
+            json += "[]}";
+        } else {
+            json += "[";
+            for (int i = 0; i < validCells.length; i++) {
+                json += validCells[i].toString();
+                if (i < validCells.length - 1) {
+                    json += ",";
+                }
+            }
+            json += "]}";
+        }
+
         Response response = newFixedLengthResponse(Response.Status.OK, "application/json", json);
 
         // Set CORS headers
@@ -116,6 +143,7 @@ public class App extends NanoHTTPD {
         return response;
     }
 
+    // Helper Classes
     private Worker selectWorker(int x, int y) {
         System.out.println("User selected a worker (" + x + ", " + y + ")");
     

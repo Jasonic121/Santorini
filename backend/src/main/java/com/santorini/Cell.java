@@ -100,7 +100,7 @@ public class Cell {
     public void setOccupiedBy(int playerId) {
         this.occupiedBy = playerId;
     }
-    
+
     /**
      * Sets the height of the cell.
      *

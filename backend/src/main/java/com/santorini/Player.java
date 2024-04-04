@@ -210,9 +210,15 @@ public class Player {
         return workerCells;
     }
 
-
-
     public int getPlayerId() {
         return playerId;
+    }
+
+    public int getMovePoints() {
+        return movePoints;
+    }
+
+    public int getBuildPoints() {
+        return buildPoints;
     }
 }

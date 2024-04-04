@@ -14,14 +14,15 @@ public class GameState {
     private Player winner;
     private int currentPlayerId;
     private Game game;
-    private Cell[] availableCells;
+    private Cell[] validCells;
 
 
-    public GameState(Cell[] cells, Game game) {
+    public GameState(Cell[] cells, Game game, Cell[] validCells) {
         this.cells = cells;
         this.game = game;
         this.winner = null;
         this.currentPlayerId = game.getCurrentPlayer().getPlayerId();
+        this.validCells = validCells;
     }
 
     /**
@@ -32,7 +33,8 @@ public class GameState {
      */
     public static GameState getGameState(Game game) {
         Cell[] cells = game.getBoard().getGrid();
-        return new GameState(cells, game);
+        Cell[] validCells = game.getValidCells();
+        return new GameState(cells, game, validCells);
     }
 
 
