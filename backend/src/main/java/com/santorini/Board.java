@@ -59,7 +59,7 @@ public class Board {
                     continue;
                 }
                 Cell cell = grid.get(i).get(j);
-                System.out.println("Checking worker height: " + workerCell.getHeight() + " and cell height: " + cell.getHeight());
+                // System.out.println("Checking worker height: " + workerCell.getHeight() + " and cell height: " + cell.getHeight());
                 if (isAdjacent(x, y, i, j) && !cell.isOccupied() && !cell.hasDome()) {
                     if(isBuilding) { // building validation
                         validCells.add(cell);
