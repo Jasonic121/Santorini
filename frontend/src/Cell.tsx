@@ -5,6 +5,9 @@ import player2 from './resources/img/workers/player_2/worker1.png';
 import selectedWorkerImage from './resources/img/blocks/move.png';
 import validMoveImage from './resources/img/blocks/build.png'; 
 import bottomImage from './resources/img/blocks/bottom.png';
+import middle from './resources/img/blocks/middle.png';
+import top from './resources/img/blocks/top.png';
+import domeimg from './resources/img/blocks/dome.png';
 import './Cell.css';
 interface Props {
   cell: Cell;
@@ -38,6 +41,18 @@ class BoardCell extends React.Component<Props> {
       backgroundImages.push(`url(${bottomImage})`);
     }
 
+    if (cell.height === 2) {
+      backgroundImages.push(`url(${middle})`);
+    }
+
+    if (cell.height === 3) {
+      backgroundImages.push(`url(${top})`);
+    }
+
+    if (cell.hasDome && cell.height === 3) {
+      backgroundImages.push(`url(${domeimg})`);
+    }
+
     const backgroundImage = backgroundImages.length > 0 ? backgroundImages.join(', ') : 'none';
 
     const cellBackground: React.CSSProperties = {
@@ -54,11 +69,12 @@ class BoardCell extends React.Component<Props> {
         <div className={`cell ${occupied} ${dome} ${height}`} style={cellBackground}>
           <div className={`worker player${cell.occupiedBy}`}>
             <img src={playerImage} alt={playerAlt} style={{ width: '50px', height: '50px' }} />
+            {cell.height}
           </div>
         </div>
       );
     } else {
-      return <div className={`cell ${occupied} ${dome} ${height}`} style={cellBackground}></div>;
+      return <div className={`cell ${occupied} ${dome} ${height}`} style={cellBackground}>{cell.height}</div>;
     }
   }
 }

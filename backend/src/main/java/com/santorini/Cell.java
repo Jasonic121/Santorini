@@ -52,11 +52,13 @@ public class Cell {
      * Otherwise, a dome is built on top of the block.
      */
     public void buildBlock() {
-        final int maxHeight = 4;
-        if (height < maxHeight - 1) {
-            increaseHeight();
-        } else {
+        final int maxHeight = 3;
+        if (height == maxHeight) {
             buildDome();
+            increaseHeight();
+            System.out.println("Dome built on cell " + xPosition + ", " + yPosition + ". Height increased to " + height);
+        } else {
+            increaseHeight();
         }
     }
 
@@ -75,6 +77,7 @@ public class Cell {
         if (hasDome) {
             throw new IllegalStateException("Cell already has a dome");
         }
+        System.out.println("Dome built on cell " + xPosition + ", " + yPosition);
         hasDome = true;
     }
 

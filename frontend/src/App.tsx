@@ -82,6 +82,8 @@ class App extends React.Component<Props, State> {
           selectedWorkerCell: null,
           workerPhase: prevState.workerPhase === 0 ? 1 : 0,
           validCells: json['validCells'],
+          // gamePhase will change to 2 if the previous workerPhase was 1 and the previous gamePhase was 3
+          gamePhase: prevState.workerPhase === 1 && prevState.gamePhase === 3 ? 2 : prevState.gamePhase,
         }));
     } else {
         console.log('Clicked cell is not a valid move or build location');
