@@ -5,6 +5,7 @@ import player2 from './resources/img/workers/player_2/worker1.png';
 import selectedWorkerImage from './resources/img/blocks/move.png';
 import validMoveImage from './resources/img/blocks/build.png'; 
 import bottomImage from './resources/img/blocks/bottom.png';
+import './Cell.css';
 interface Props {
   cell: Cell;
   selectedWorkerCell: Cell | null;
@@ -40,23 +41,15 @@ class BoardCell extends React.Component<Props> {
 
 
     if (cell.occupied) {
-      if (cell.occupiedBy === 0) {
-        return (
-          <div className={`cell ${occupied} ${dome} ${height}`} style={cellStyle}>
-            <div className="worker player1">
-              <img src={player1} alt="Player 1" style={{ width: '50px', height: '50px' }} />
-            </div>
+      const playerImage = cell.occupiedBy === 0 ? player1 : player2;
+      const playerAlt = cell.occupiedBy === 0 ? 'Player 1' : 'Player 2';
+      return (
+        <div className={`cell ${occupied} ${dome} ${height}`} style={cellStyle}>
+          <div className={`worker player${cell.occupiedBy}`}>
+            <img src={playerImage} alt={playerAlt} style={{ width: '50px', height: '50px' }} />
           </div>
-        );
-      } else if (cell.occupiedBy === 1) {
-        return (
-          <div className={`cell ${occupied} ${dome} ${height}`} style={cellStyle}>
-            <div className="worker player2">
-              <img src={player2} alt="Player 2" style={{ width: '50px', height: '50px' }} />
-            </div>
-          </div>
-        );
-      }
+        </div>
+      );
     } else {
       return <div className={`cell ${occupied} ${dome} ${height}`} style={cellStyle}></div>;
     }
