@@ -82,9 +82,7 @@ class App extends React.Component<Props, State> {
           selectedWorkerCell: null,
           workerPhase: prevState.workerPhase === 0 ? 1 : 0,
           validCells: json['validCells'],
-          gamePhase: 2,
         }));
-        console.log("Worker phase changed!");
     } else {
         console.log('Clicked cell is not a valid move or build location');
     }
@@ -129,7 +127,7 @@ class App extends React.Component<Props, State> {
       case 1:
         return 'Setup';
       case 2:
-        return workerPhase === 0 ? 'Moving... (Choose Worker)' : 'Building... (Choose Worker)';
+        return 'Moving... (Choose Worker)';
       case 3:
         return workerPhase === 0 ? 'Moving... (Choose Cell)' : 'Building... (Choose Cell)';
       default:
@@ -152,6 +150,7 @@ class App extends React.Component<Props, State> {
   createCell = (cell: Cell, index: number): React.ReactNode => {
     const onClick = (e: React.MouseEvent) => {
       e.preventDefault();
+      console.log("gamePhase: ", this.state.gamePhase, "workerPhase: ", this.state.workerPhase);
       switch (this.state.gamePhase) {
         case 1: // Setup Phase
           this.handleSetupPhase(cell);
