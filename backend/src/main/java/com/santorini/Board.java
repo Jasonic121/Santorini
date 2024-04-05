@@ -1,4 +1,5 @@
 package com.santorini;
+
 import java.util.ArrayList;
 
 /**
@@ -22,70 +23,50 @@ public class Board {
 
     /**
      * Validates the adjacent cells for moving from the given worker cell.
-     * 
+     *
      * @param workerCell the cell of the worker
      * @return an array of valid adjacent cells for moving
      */
     public Cell[] validateCellsForMoving(Cell workerCell) {
-        int x = workerCell.getX();
-        int y = workerCell.getY();
-        ArrayList<Cell> validCells = new ArrayList<Cell>();
-        for (int i = x - 1 ; i <= x + 1; i++) {
-            for (int j = y - 1; j <= y + 1; j++) {
-                if (i < 0 || i >= gridLength || j < 0 || j >= gridLength) {
-                    continue;
-                }
-                if (isAdjacent(x, y, i, j) && !isOccupied(i, j) && !hasDome(x, y) && heightDifference(workerCell, grid.get(i).get(j))) {
-                    validCells.add(grid.get(i).get(j));
-                }
-            }
-        }
-        return validCells.toArray(new Cell[validCells.size()]);
+        return validateAdjacentCells(workerCell, false);
     }
 
     /**
      * Validates the adjacent cells for building from the given worker cell.
-     * 
+     *
      * @param workerCell the cell of the worker
      * @return an array of valid adjacent cells for building
      */
     public Cell[] validateCellsForBuilding(Cell workerCell) {
+        return validateAdjacentCells(workerCell, true);
+    }
+
+    /**
+     * Validates the adjacent cells for moving or building from the given worker cell.
+     *
+     * @param workerCell the cell of the worker
+     * @param isBuilding true if validating for building, false for moving
+     * @return an array of valid adjacent cells
+     */
+    private Cell[] validateAdjacentCells(Cell workerCell, boolean isBuilding) {
         int x = workerCell.getX();
         int y = workerCell.getY();
         ArrayList<Cell> validCells = new ArrayList<Cell>();
+
         for (int i = x - 1; i <= x + 1; i++) {
             for (int j = y - 1; j <= y + 1; j++) {
                 if (i < 0 || i >= gridLength || j < 0 || j >= gridLength) {
                     continue;
                 }
-                if (isAdjacent(x, y, i, j) && !isOccupied(i, j) && !hasDome(x, y)) {
-                    validCells.add(grid.get(i).get(j));
+                Cell cell = grid.get(i).get(j);
+                if (isAdjacent(x, y, i, j) && !cell.isOccupied() && !cell.hasDome() &&
+                        (!isBuilding || Math.abs(workerCell.getHeight() - cell.getHeight()) <= 1)) {
+                    validCells.add(cell);
                 }
             }
         }
+
         return validCells.toArray(new Cell[validCells.size()]);
-    }
-
-    /**
-     * Checks if the height difference between two cells is at most 1.
-     *
-     * @param workerCell The cell where the worker is currently located.
-     * @param targetCell The cell where the worker wants to move.
-     * @return true if the height difference is at most 1, false otherwise.
-     */
-    private boolean heightDifference(Cell workerCell, Cell targetCell) {
-        return Math.abs(workerCell.getHeight() - targetCell.getHeight()) <= 1;
-    }
-
-    /**
-     * Checks if a specific cell on the board has a dome.
-     *
-     * @param x the x-coordinate of the cell
-     * @param y the y-coordinate of the cell
-     * @return true if the cell has a dome, false otherwise
-     */
-    private boolean hasDome(int x, int y) {
-        return grid.get(x).get(y).hasDome();
     }
 
     /**
@@ -102,47 +83,26 @@ public class Board {
     }
 
     /**
-     * Checks if a specific position on the board is occupied by a player.
-     *
-     * @param x The x-coordinate of the position.
-     * @param y The y-coordinate of the position.
-     * @return true if the position is occupied, false otherwise.
-     */
-    private boolean isOccupied(int x, int y) {
-        return grid.get(x).get(y).isOccupied();
-    }
-    
-    /**
      * Getter Methods
      * --------------
      */
 
     /**
      * Returns the grid of cells on the board.
-     * 
+     *
      * @return the grid of cells
      */
     public Cell[] getGrid() {
-        int rows = grid.size();
-        int cols = grid.get(0).size();
-    
-        // Create a one-dimensional array to store the cells
-        Cell[] flattenedGrid = new Cell[rows * cols];
-    
-        // Flatten the two-dimensional grid into the one-dimensional array
-        int index = 0;
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                flattenedGrid[index] = grid.get(i).get(j);
-                index++;
-            }
+        ArrayList<Cell> flattenedGrid = new ArrayList<Cell>();
+        for (ArrayList<Cell> row : grid) {
+            flattenedGrid.addAll(row);
         }
-        return flattenedGrid;
+        return flattenedGrid.toArray(new Cell[flattenedGrid.size()]);
     }
 
     /**
      * Returns the cell at the specified coordinates on the board.
-     * 
+     *
      * @param x the x-coordinate of the cell
      * @param y the y-coordinate of the cell
      * @return the cell at the specified coordinates
@@ -154,14 +114,13 @@ public class Board {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < gridLength; i++) {
-            for (int j = 0; j < gridLength; j++) {
-                sb.append(grid.get(i).get(j).toString());
+        for (ArrayList<Cell> row : grid) {
+            for (Cell cell : row) {
+                sb.append(cell.toString());
                 sb.append(" ");
             }
             sb.append("\n");
         }
         return sb.toString();
-
     }
 }

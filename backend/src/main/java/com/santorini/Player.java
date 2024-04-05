@@ -19,7 +19,6 @@ public class Player {
     public Player(int playerId) {
         this.playerId = playerId;
         this.workers = new ArrayList<Worker>();
-        // Each player starts with two workers.
         this.workers.add(new Worker(this, 0));
         this.workers.add(new Worker(this, 1));
     }
@@ -42,7 +41,6 @@ public class Player {
      * @param destinationCell the cell where the worker will be moved to
      */
     public void moveWorker(int workerIndex, Cell destinationCell) {
-        // System.out.println("Player.java: Moving worker from" + getWorker(workerIndex).getCurrentCell().getX() + ", " + getWorker(workerIndex).getCurrentCell().getY()  + " to cell " + destinationCell.getX() + ", " + destinationCell.getY());
         workers.get(workerIndex).moveWorkerToCell(destinationCell);
         movePoints--;
     }
@@ -98,26 +96,9 @@ public class Player {
      * @return true if there are valid move possibilities, false otherwise
      */
     private boolean checkMovePossibilities(Worker worker, Board board) {
-        if (worker == null || worker.getCurrentCell() == null || board == null) {
-            throw new IllegalArgumentException("Worker, its current cell, or board cannot be null");
-        }
-        final int boardLengthIndex = 4; 
-        Cell targetCell;
-        for (int i = -1; i <= 1; i++) {
-            for (int j = -1; j <= 1; j++) {
-                // Offset the current cell by i and j
-                int targetX = worker.getCurrentCell().getX() + i;
-                int targetY = worker.getCurrentCell().getY() + j;
-                // Inside the board
-                if (targetX >= 0 && targetX <= boardLengthIndex && targetY >= 0 && targetY <= boardLengthIndex) {
-                    targetCell = board.getCell(targetX, targetY);
-                    if (!targetCell.isOccupied() && Math.abs(targetCell.getHeight() - worker.getCurrentCell().getHeight()) <= 1) {
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
+        Cell currentCell = worker.getCurrentCell();
+        Cell[] validCells = board.validateCellsForMoving(currentCell);
+        return validCells.length > 0;
     }
 
     /**
@@ -140,11 +121,7 @@ public class Player {
      * @return true if move points are available, false otherwise.
      */
     public boolean checkMovePointsAvailable() {
-        // Implement logic to check if a move is available
-        if (movePoints == 0) {
-            return false;
-        }
-        return true;
+        return movePoints > 0;
     }
 
     /**
@@ -153,11 +130,7 @@ public class Player {
      * @return true if build points are available, false otherwise.
      */
     public boolean checkBuildPointsAvailable() {
-        // Implement logic to check if a build is available
-        if (buildPoints == 0) {
-            return false;
-        }
-        return true;
+        return buildPoints > 0;
     }
 
     /**
@@ -172,8 +145,7 @@ public class Player {
      * @return the current cell of the worker
      */
     public Cell getWorkerCurrentCell(int workerIndex) {
-        Worker worker = workers.get(workerIndex);
-        return worker.getCurrentCell();
+        return workers.get(workerIndex).getCurrentCell();
     }
     
     public int getWorkerAmount() {
@@ -198,8 +170,8 @@ public class Player {
     public ArrayList<Worker> getWorkers() {
         return workers;
     }
-    
-    /** 
+
+    /**
      * Returns the cell of all the workers of the player.
      */
     public Cell[] getWorkerCells() {

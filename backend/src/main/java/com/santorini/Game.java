@@ -12,7 +12,6 @@ public class Game {
     private int currentPlayerIndex;
     private Player currentPlayer;
     private boolean endGameFlag;
-    private int workerId = 0;
     private Player winner;
     private Cell[] validCells;
 
@@ -23,10 +22,8 @@ public class Game {
         players = new ArrayList<>();
 
         // Create and add two players to the game
-        Player player1 = new Player(0);
-        Player player2 = new Player(1);
-        players.add(player1);
-        players.add(player2);
+        players.add(new Player(0));
+        players.add(new Player(1));
 
         // Set which player starts the game
         currentPlayerIndex = 0; // Player 1 starts.
@@ -34,7 +31,6 @@ public class Game {
         
         validCells = null;
     }
-
 
     /**
      * Sets up the initial placement of a worker on the game board.
@@ -57,40 +53,20 @@ public class Game {
      **/
     public void executeMoveTurn(int workerId, int x, int y) {
         System.out.println("Player " + currentPlayerIndex + "'s Move turn.");
-        currentPlayer = players.get(currentPlayerIndex);
-
-        // Reset action points at the start of the turn
         currentPlayer.resetActionPoints();
 
-        // System.out.println("Game.java executeMoveTurn: Moving from " + currentPlayer.getWorker(workerId).getCurrentCell().getX() + ", " + currentPlayer.getWorker(workerId).getCurrentCell().getY()  + " to cell " + x + ", " + y);
         validCells = this.board.validateCellsForMoving(currentPlayer.getWorker(workerId).getCurrentCell());
-
-        // Move worker until move points are exhausted
         moveWorkerUntilPointsExhausted(workerId, x, y);
-
-        // Check if the game has ended
         winCondition();
     }
 
     public void executeBuildTurn(int workerId, int x, int y) {
         System.out.println("Player " + currentPlayerIndex + "'s Build turn.");
-
-        // System.out.println("Game.java executeBuildTurn: Building at cell " + x + ", " + y);
-
-        currentPlayer = players.get(currentPlayerIndex);
-
-        // Reset action points at the start of the turn
         currentPlayer.resetActionPoints();
 
         validCells = this.board.validateCellsForBuilding(currentPlayer.getWorker(workerId).getCurrentCell());
-
-        // Build until build points are exhausted
         buildUntilPointsExhausted(workerId, x, y);
-
-        // Check if the game has ended
         winCondition();
-
-        // Change player
         nextPlayer();
     }
 
@@ -103,15 +79,9 @@ public class Game {
      */
     public void moveWorkerUntilPointsExhausted(int workerId, int moveX, int moveY) {
         while (currentPlayer.checkMovePointsAvailable()) {
-
-            validCells = this.board.validateCellsForMoving(currentPlayer.getWorker(workerId).getCurrentCell());
-
-            // Validate whether moveX and moveY cell is a valid cell to move to
-            for (Cell cell : validCells) {
-                if (cell.getX() == moveX && cell.getY() == moveY) {
-                    currentPlayer.moveWorker(workerId, board.getCell(moveX, moveY));
-                    break;
-                }
+            Cell targetCell = board.getCell(moveX, moveY);
+            if (isValidCell(targetCell, validCells)) {
+                currentPlayer.moveWorker(workerId, targetCell);
             }
         }
     }
@@ -125,9 +95,27 @@ public class Game {
      */
     public void buildUntilPointsExhausted(int workerId, int buildX, int buildY) {
         while (currentPlayer.checkBuildPointsAvailable()) {
-            // System.out.println("Game.java buildUntilPointsExhausted: Worker is at cell " + currentPlayer.getWorker(workerId).getCurrentCell().getX() + ", " + currentPlayer.getWorker(workerId).getCurrentCell().getY() + " and building at cell " + buildX + ", " + buildY);
-            currentPlayer.build(workerId, board.getCell(buildX, buildY));
+            Cell targetCell = board.getCell(buildX, buildY);
+            if (isValidCell(targetCell, validCells)) {
+                currentPlayer.build(workerId, targetCell);
+            }
         }
+    }
+
+    /**
+     * Checks if the specified cell is a valid cell to move or build on.
+     *
+     * @param targetCell the cell to check
+     * @param validCells the array of valid cells
+     * @return true if the cell is valid, false otherwise
+     */
+    private boolean isValidCell(Cell targetCell, Cell[] validCells) {
+        for (Cell cell : validCells) {
+            if (cell.getX() == targetCell.getX() && cell.getY() == targetCell.getY()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -140,24 +128,13 @@ public class Game {
     }
 
     /**
-     * Checks if the current player has lost the game.
-     * If the current player has lost, it prints a message and ends the game.
-     */
-    private void loseCondition() {
-        if (currentPlayer.checkLose(board)) {
-            System.out.println("Player " + currentPlayer.getPlayerId() + " has lost!");
-            endGame();
-        }
-    }
-
-    /**
      * Checks if the current player has won the game.
      * If the current player has won, it prints a message and ends the game.
      */
     private void winCondition() {
         if (currentPlayer.checkWin()) {
-        System.out.println("Player " + currentPlayer.getPlayerId() + " has won!");
-        endGame();
+            System.out.println("Player " + currentPlayer.getPlayerId() + " has won!");
+            endGame();
         }
     }
 
@@ -190,57 +167,16 @@ public class Game {
     }
 
     /**
-     * Performs the worker action (move and build) at the specified position.
-     *
-     * @param worker the worker performing the action
-     * @param x the X-coordinate of the position
-     * @param y the Y-coordinate of the position
-     */
-    public void performWorkerAction(Worker worker, int x, int y) {
-        // Move the worker to the specified position
-        currentPlayer.moveWorker(worker.getWorkerId(), board.getCell(x, y));
-
-        // Check if the game has ended
-        if (currentPlayer.checkWin()) {
-            setWinner(currentPlayer);
-        } else if (currentPlayer.checkLose(board)) {
-            setWinner(getNextPlayer());
-        } else {
-            // Switch to the next player
-            nextPlayer();
-        }
-    }
-
-    /**
-     * Setter Methods
-     * --------------
-     */
-    
-    /**
-     * Adds a player to the game.
-     * 
-     * @param player the player to be added
-     */
-    public void addPlayer(Player player) {
-        players.add(player);
-    }
-    
-    /**
      * Getter Methods
      * --------------
      */
 
-    /**
-     * Returns the list of players in the game.
-     *
-     * @return the list of players
-     */
     public ArrayList<Player> getPlayers() {
         return players;
     }
 
     public Player getCurrentPlayer() {
-        return players.get(currentPlayerIndex);
+        return currentPlayer;
     }
 
     public Player getNextPlayer() {
@@ -250,12 +186,13 @@ public class Game {
     public Board getBoard() {
         return board;
     }
+
     public boolean getEndGameFlag() {
         return endGameFlag;
     }
 
-    public void setWinner(Player currentPlayer2) {
-        winner = currentPlayer2;
+    public void setWinner(Player player) {
+        winner = player;
     }
 
     public Cell[] getValidCells() {
