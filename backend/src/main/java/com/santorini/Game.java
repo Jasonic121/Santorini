@@ -134,6 +134,7 @@ public class Game {
     private void winCondition() {
         if (currentPlayer.checkWin()) {
             System.out.println("Player " + currentPlayer.getPlayerId() + " has won!");
+            setWinner(currentPlayer.getPlayerId());
             endGame();
         }
     }
@@ -191,11 +192,19 @@ public class Game {
         return endGameFlag;
     }
 
-    public void setWinner(Player player) {
-        winner = player;
+    public void setWinner(int playerId) {
+        winner = players.get(playerId);
     }
 
     public Cell[] getValidCells() {
         return validCells;
+    }
+
+    public Player getWinner() {
+        return winner;
+    }
+
+    public int getWinnerId() {
+        return winner != null ? winner.getPlayerId() : -1;
     }
 }

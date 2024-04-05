@@ -38,53 +38,52 @@ public class GameState {
     }
 
 
-    /** Getters and Setters **/
-    /**
-     * Returns the cells of the game state.
-     *
-     * @return an array of Cell objects representing the cells of the game state
-     */
-    public Cell[] getCells() {
-        Cell[] gameCells = new Cell[25];
-        Board board = game.getBoard();
+    // /** Getters and Setters **/
+    // /**
+    //  * Returns the cells of the game state.
+    //  *
+    //  * @return an array of Cell objects representing the cells of the game state
+    //  */
+    // public Cell[] getCells() {
+    //     Cell[] gameCells = new Cell[25];
+    //     Board board = game.getBoard();
 
-        for (int i = 0; i < 5; i++) {
-            for (int j = 0; j < 5; j++) {
-                Cell cell = board.getCell(i, j);
-                int height = cell.getHeight();
-                boolean hasDome = cell.hasDome();
-                boolean isOccupied = cell.isOccupied();
+    //     for (int i = 0; i < 5; i++) {
+    //         for (int j = 0; j < 5; j++) {
+    //             Cell cell = board.getCell(i, j);
+    //             int height = cell.getHeight();
+    //             boolean hasDome = cell.hasDome();
+    //             boolean isOccupied = cell.isOccupied();
 
-                // Check which player occupies the cell
-                Player player = null;
-                for (Player p : game.getPlayers()) {
-                    for (Cell c : p.getWorkerCells()) { // Fix: Use getWorkers() instead of getWorkerAmount()
-                        if (c.equals(cell)) {
-                            player = p;
-                            break;
-                        }
-                    }
-                }
+    //             // Check which player occupies the cell
+    //             Player player = null;
+    //             for (Player p : game.getPlayers()) {
+    //                 for (Cell c : p.getWorkerCells()) {
+    //                     if (c.equals(cell)) {
+    //                         player = p;
+    //                         break;
+    //                     }
+    //                 }
+    //             }
 
-                gameCells[5 * i + j] = new Cell(i, j, height, hasDome, isOccupied, player.getPlayerId());
-            }
-        }
+    //             gameCells[5 * i + j] = new Cell(i, j, height, hasDome, isOccupied, player.getPlayerId());
+    //         }
+    //     }
 
-        return gameCells;
-    }
+    //     return gameCells;
+    // }
 
     /**
      * Returns the winner of the game state.
      *
-     * @return the winner of the game state, or "null" if there is no winner
+     * @return the winner of the game state, or "-1" if there is no winner
      */
-    public String getWinner() {
-        if (this.winner == null)
-            return "null";
+    public int getWinner() {
+        if (this.game.getWinner() == null)
+            return -1;
         else
-            return this.winner.toString();
+            return this.game.getWinner().getPlayerId();
     }
-
     /**
      * Returns the current player in the game state.
      *
@@ -102,8 +101,8 @@ public class GameState {
     @Override
     public String toString() {
         return String.format(
-            "{\"cells\":%s,\"winner\":\"%s\",\"currentPlayer\":\"%d\"}",
-            Arrays.toString(this.cells), this.getWinner().toString(), this.getCurrentPlayer()
+            "{\"cells\":%s,\"winner\":%d,\"currentPlayer\":%d}",
+            Arrays.toString(this.cells), this.getWinner(), this.getCurrentPlayer()
         );
     }
 }

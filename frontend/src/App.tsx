@@ -4,6 +4,7 @@ import { GameState, Cell } from './Game.tsx';
 import BoardCell from './Cell.tsx';
 import './App.css';
 import map from './resources/img/background/map.png';
+import gameOverImage from './resources/img/background/victory.png';
 
 interface Props {}
 
@@ -12,6 +13,7 @@ interface State extends GameState {
   workerPhase: number; // 0 for move, 1 for build
   selectedCells: Cell[];
   selectedWorkerCell: Cell | null;
+  isGameOver: boolean;
 }
 
 class App extends React.Component<Props, State> {
@@ -21,13 +23,14 @@ class App extends React.Component<Props, State> {
     super(props);
     this.state = {
       cells: [],
-      winner: null,
+      winner: -1,
       currentPlayer: 0,
       gamePhase: 0,
       workerPhase: 0,
       selectedCells: [],
       selectedWorkerCell: null,
       validCells: [],
+      isGameOver: false,
     };
   }
 
@@ -44,6 +47,7 @@ class App extends React.Component<Props, State> {
         validCells: json['validCells'],
         selectedWorkerCell: null,
         workerPhase: 0,
+        isGameOver: false,
       });
       console.log('cells', this.state.cells);
     } catch (error) {
@@ -84,6 +88,7 @@ class App extends React.Component<Props, State> {
           validCells: json['validCells'],
           // gamePhase will change to 2 if the previous workerPhase was 1 and the previous gamePhase was 3
           gamePhase: prevState.workerPhase === 1 && prevState.gamePhase === 3 ? 2 : prevState.gamePhase,
+          isGameOver: json['winner'] !== -1,
         }));
     } else {
         console.log('Clicked cell is not a valid move or build location');
@@ -142,10 +147,10 @@ class App extends React.Component<Props, State> {
     const currentPlayer = +this.state.currentPlayer + 1;
     const gamePhaseString = this.getGamePhaseString();
 
-    if (winner === "null") {
+    if (winner === -1) {
       return `Current Player: Player ${currentPlayer} | Game Phase: ${gamePhaseString}`;
     } else {
-      return `Winner: ${winner} | Game Phase: ${gamePhaseString}`;
+      return `Winner: Player ${winner}`;
     }
   };
 
@@ -187,6 +192,11 @@ class App extends React.Component<Props, State> {
   render(): React.ReactNode {
     return (
       <div style={{ backgroundImage: `url(${map})`, backgroundSize: 'cover', backgroundRepeat: 'no-repeat', backgroundPosition: 'center', height: '100vh' }}>
+        {this.state.isGameOver && (
+          <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+            <img src={gameOverImage} alt="Game Over" style={{ maxWidth: '100%', maxHeight: '100%' }} />
+          </div>
+        )}
         <div id="instructions">{this.instructions()}</div>
         <div id="board">
           {this.state.cells.map((cell, i) => this.createCell(cell, i))}
