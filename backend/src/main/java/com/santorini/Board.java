@@ -64,8 +64,16 @@ public class Board {
                     if(isBuilding) { // building validation
                         validCells.add(cell);
                     } else { // moving validation
-                        if (cell.getHeight() - workerCell.getHeight() <= 1 && cell.getHeight() <= 3) {
-                            System.out.println("Valid moving cell: " + cell.toString());
+                        // if (cell.getHeight() - workerCell.getHeight() <= 1 && cell.getHeight() <= 3) {
+                        //     System.out.println("Valid moving cell: " + cell.toString());
+                        //     validCells.add(cell);
+                        // }
+                        if (cell.getHeight() > workerCell.getHeight()) { //moving up
+                            if (cell.getHeight() - workerCell.getHeight() <= 1 && cell.getHeight() <= 3) {
+                                System.out.println("Valid moving cell: " + cell.toString());
+                                validCells.add(cell);
+                            }
+                        } else { // moving down
                             validCells.add(cell);
                         }
                     }
