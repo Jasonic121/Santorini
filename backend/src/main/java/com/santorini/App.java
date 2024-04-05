@@ -9,6 +9,7 @@ public class App extends NanoHTTPD {
     private Game game;
     private Worker selectedWorker;
     private Cell[] validCells;
+    private int workerPhase = 0;
 
     public App() throws IOException {
         super(8080); // Set the port number you want to use
@@ -72,7 +73,7 @@ public class App extends NanoHTTPD {
             Worker worker = selectWorker(x, y);
             if (worker != null) {
                 selectedWorker = worker;
-                System.out.println("Selected worker: " + selectedWorker.getWorkerId());
+                // System.out.println("Selected worker: " + selectedWorker.getWorkerId());
                 
                 // Determine the valid target cells for the selected worker
                 if (game.getCurrentPlayer().getMovePoints() > 0) {
@@ -80,38 +81,31 @@ public class App extends NanoHTTPD {
                 } else if (game.getCurrentPlayer().getBuildPoints() > 0) {
                     validCells = game.getBoard().validateCellsForBuilding(selectedWorker.getCurrentCell());
                 }
-                
-                for(Cell cell : validCells) {
-                    System.out.println("Valid cell: (" + cell.getX() + ", " + cell.getY() + ")");
-                }
             }
             
         } else if (uri.equals("/selectedTargetCell")) {
             int x = Integer.parseInt(params.getOrDefault("x", "0"));
             int y = Integer.parseInt(params.getOrDefault("y", "0"));
-            int workerPhase = Integer.parseInt(params.getOrDefault("workerphase", "0"));
 
             // Find the target cell at the specified position
             Cell targetCell = game.getBoard().getCell(x, y);
-            System.out.println("Selected target cell: (" + x + ", " + y + ")");
 
             // Perform the worker action
-            if (selectedWorker != null && targetCell != null) {
-                System.out.println("Valid target cell selected!");
-                if (workerPhase == 0) {
+            if (selectedWorker != null && targetCell != null && !targetCell.isOccupied()) {
 
+                if (workerPhase == 0) {
                     // Move phase
                     game.executeMoveTurn(selectedWorker.getWorkerId(), targetCell.getX(), targetCell.getY());
-                    System.out.println("Worker " + selectedWorker.getWorkerId() + " moved to cell (" + x + ", " + y + ")!!!");
-
+        
                     // Get the valid cells for building after moving
                     validCells = game.getBoard().validateCellsForBuilding(selectedWorker.getCurrentCell());
-                    
+                    workerPhase = 1; // Move to the build phase
+                    System.out.println("Completed Move!");
                 } else {
-                    // Build phase
-                    System.out.println("Worker " + selectedWorker.getWorkerId() + " building at cell (" + x + ", " + y + ")!!!");
+                    // Build phase          
                     game.executeBuildTurn(selectedWorker.getWorkerId(), targetCell.getX(), targetCell.getY());
-                    selectedWorker = null; // The worker has completed its turn
+                    validCells = null; // Reset the valid cells
+                    workerPhase = 0; // Reset the worker phase back to move phase
                     System.out.println("Completed Build!");
                 }
                 

@@ -48,14 +48,14 @@ public class Worker {
      * @throws IllegalStateException if the destination cell is not adjacent, already occupied, or more than one level higher.
      */
     public void moveWorkerToCell(Cell destination) {
-        System.out.println("Worker.java Moving from " + currentCell.getX() + ", " + currentCell.getY() + " to " + destination.getX() + ", " + destination.getY());
+        // System.out.println("Worker.java Moving from " + currentCell.getX() + ", " + currentCell.getY() + " to " + destination.getX() + ", " + destination.getY());
         if (validateMove(destination)) {
             // Move the worker to the destination cell
             this.currentCell.setOccupied(false);
             destination.setOccupied(true);
             destination.setOccupiedBy(owner.getPlayerId());
             this.currentCell = destination;
-            System.out.println("Worker cell set to: " + currentCell.getX() + ", " + currentCell.getY());
+            // System.out.println("Worker cell set to: " + currentCell.getX() + ", " + currentCell.getY());
         }
     }
 
@@ -89,7 +89,7 @@ public class Worker {
      * @throws IllegalStateException if the target cell is not adjacent or already occupied.
      */
     public void buildAt(Cell targetCell) {
-        System.out.println("Worker.java Building at " + targetCell.getX() + ", " + targetCell.getY());
+        // System.out.println("Worker.java Building at " + targetCell.getX() + ", " + targetCell.getY());
 
         if(validateBuild(targetCell)) {
             targetCell.buildBlock();
@@ -132,8 +132,6 @@ public class Worker {
         int currentY = this.currentCell.getY(); 
         int targetX = targetCell.getX();
         int targetY = targetCell.getY();
-        System.out.println("Current cell: " + currentX + ", " + currentY);
-        System.out.println("Target cell: " + targetX + ", " + targetY);
         return Math.abs(currentX - targetX) <= 1 && Math.abs(currentY - targetY) <= 1
                 && !(currentX == targetX && currentY == targetY);
     }

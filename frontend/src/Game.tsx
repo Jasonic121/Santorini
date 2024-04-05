@@ -14,4 +14,4 @@ interface Cell {
   occupiedBy: number | null;
 }
 
-export type { GameState };
+export type { GameState, Cell};

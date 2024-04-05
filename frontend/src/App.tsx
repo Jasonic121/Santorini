@@ -41,6 +41,9 @@ class App extends React.Component<Props, State> {
         selectedCells: [],
         winner: json['winner'],
         currentPlayer: json['currentPlayer'],
+        validCells: json['validCells'],
+        selectedWorkerCell: null,
+        workerPhase: 0,
       });
       console.log('cells', this.state.cells);
     } catch (error) {
@@ -66,19 +69,27 @@ class App extends React.Component<Props, State> {
 
 
   handleSelectTargetCell = async (clickedCell: Cell | undefined, x: number, y: number) => {
-    const response = await fetch(`http://localhost:8080/selectedTargetCell?workerphase=${this.state.workerPhase}&x=${x}&y=${y}`);
-    console.log('Selected target cell:', clickedCell);
-    const json = await response.json();
-    this.setState((prevState) => ({ 
-      cells: json['cells'], 
-      winner: json['winner'], 
-      currentPlayer: json['currentPlayer'], 
-      selectedWorkerCell: null,
-      workerPhase: prevState.workerPhase === 0 ? 1 : 0,
-      validCells: json['validCells'],
-    }));
-    console.log("Worker phase changed!");
-  }
+    const isValidCell = this.state.validCells.find(cell => cell.x === x && cell.y === y);
+
+    if (isValidCell) {
+        const response = await fetch(`http://localhost:8080/selectedTargetCell?workerphase=${this.state.workerPhase}&x=${x}&y=${y}`);
+        console.log('Selected target cell:', clickedCell);
+        const json = await response.json();
+        this.setState((prevState) => ({ 
+          cells: json['cells'], 
+          winner: json['winner'], 
+          currentPlayer: json['currentPlayer'], 
+          selectedWorkerCell: null,
+          workerPhase: prevState.workerPhase === 0 ? 1 : 0,
+          validCells: json['validCells'],
+          gamePhase: 2,
+        }));
+        console.log("Worker phase changed!");
+    } else {
+        console.log('Clicked cell is not a valid move or build location');
+    }
+}
+
 
   handleSetupPhase = (clickedCell: Cell | undefined) => {
     if (clickedCell && !this.state.selectedCells.some(cell => cell.x === clickedCell.x && cell.y === clickedCell.y)) {

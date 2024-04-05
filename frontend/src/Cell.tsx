@@ -22,18 +22,25 @@ class BoardCell extends React.Component<Props> {
     const isSelectedWorker = selectedWorkerCell?.x === cell.x && selectedWorkerCell?.y === cell.y;
     const isValidMove = validMoves?.some(move => move.x === cell.x && move.y === cell.y);
 
-    console.log("Valid Moves: ", validMoves);
+    // console.log("Valid Moves: ", validMoves);
 
-    let backgroundImage = 'none';
+    let backgroundImages: string[] = [];
+    
     if (isSelectedWorker) {
-      backgroundImage = `url(${selectedWorkerImage})`;
-    } else if (isValidMove) {
-      backgroundImage = `url(${validMoveImage})`;
-    } else if (cell.height === 1) {
-      backgroundImage = `url(${bottomImage})`;
+      backgroundImages.push(`url(${selectedWorkerImage})`);
     }
 
-    const cellStyle: React.CSSProperties = {
+    if (isValidMove) {
+      backgroundImages.push(`url(${validMoveImage})`);
+    }
+
+    if (cell.height === 1) {
+      backgroundImages.push(`url(${bottomImage})`);
+    }
+
+    const backgroundImage = backgroundImages.length > 0 ? backgroundImages.join(', ') : 'none';
+
+    const cellBackground: React.CSSProperties = {
       backgroundImage,
       backgroundSize: 'cover',
       backgroundPosition: 'center',
@@ -44,14 +51,14 @@ class BoardCell extends React.Component<Props> {
       const playerImage = cell.occupiedBy === 0 ? player1 : player2;
       const playerAlt = cell.occupiedBy === 0 ? 'Player 1' : 'Player 2';
       return (
-        <div className={`cell ${occupied} ${dome} ${height}`} style={cellStyle}>
+        <div className={`cell ${occupied} ${dome} ${height}`} style={cellBackground}>
           <div className={`worker player${cell.occupiedBy}`}>
             <img src={playerImage} alt={playerAlt} style={{ width: '50px', height: '50px' }} />
           </div>
         </div>
       );
     } else {
-      return <div className={`cell ${occupied} ${dome} ${height}`} style={cellStyle}></div>;
+      return <div className={`cell ${occupied} ${dome} ${height}`} style={cellBackground}></div>;
     }
   }
 }
