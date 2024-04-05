@@ -6,6 +6,7 @@ import './App.css';
 import map from './resources/img/background/map.png';
 
 interface Props {}
+
 interface State extends GameState {
   gamePhase: number; // 0 for not started, 1 for setup, 2 for Worker Selection, 3 for Target Cell Selection
   workerPhase: number; // 0 for move, 1 for build
@@ -25,7 +26,8 @@ class App extends React.Component<Props, State> {
       gamePhase: 0,
       workerPhase: 0,
       selectedCells: [],
-      selectedWorkerCell: null
+      selectedWorkerCell: null,
+      validCells: [],
     };
   }
 
@@ -46,37 +48,6 @@ class App extends React.Component<Props, State> {
     }
   };
 
-  // selectWorker = (x: number, y: number): React.MouseEventHandler => {
-  //   return async (e) => {
-  //     e.preventDefault();
-  //     const clickedCell = this.state.cells.find((cell) => cell.x === x && cell.y === y);
-
-  //     if (this.state.gamePhase === 1) {
-  //       this.handleSetupPhase(clickedCell);
-  //     } else if (this.state.gamePhase === 2) {
-  //       await this.handleWorkerSelection(clickedCell, x, y);
-  //     }
-  //   };
-  // };
-
-  // selectTargetCell = (x: number, y: number): React.MouseEventHandler => {
-  //   return async (e) => {
-  //     e.preventDefault();
-  //     const clickedCell = this.state.cells.find((cell) => cell.x === x && cell.y === y);
-
-  //     if (this.state.gamePhase === 3) {
-  //       this.handleSelectTargetCell(clickedCell, x, y);
-  //     };
-  //   }
-  //   // return async (e) => {
-  //   //   e.preventDefault();
-  //   //   const response = await fetch(`http://localhost:8080/selectedTargetCell?x=${x}&y=${y}`);
-  //   //   const json = await response.json();
-      
-  //   // };
-  // };
-
-
   handleWorkerSelection = async (clickedCell: Cell | undefined, x: number, y: number) => {
     const response = await fetch(`http://localhost:8080/selectedWorker?workerphase=${this.state.workerPhase}&x=${x}&y=${y}`);
     const json = await response.json();
@@ -87,7 +58,7 @@ class App extends React.Component<Props, State> {
 
     if (clickedCell && clickedCell.occupied && Number(clickedCell.occupiedBy) === Number(this.state.currentPlayer)) {
       console.log('Worker belongs to current player! Now choose a target cell...');
-      this.setState({ gamePhase: 3, selectedWorkerCell: clickedCell });
+      this.setState({ gamePhase: 3, selectedWorkerCell: clickedCell, validCells: json['validCells']});
     } else {
       console.log('Worker does not belong to current player');
     }
@@ -104,6 +75,7 @@ class App extends React.Component<Props, State> {
       currentPlayer: json['currentPlayer'], 
       selectedWorkerCell: null,
       workerPhase: prevState.workerPhase === 0 ? 1 : 0,
+      validCells: json['validCells'],
     }));
     console.log("Worker phase changed!");
   }
@@ -187,7 +159,7 @@ class App extends React.Component<Props, State> {
     return (
       <div key={index}>
         <a href='/' onClick={onClick}>
-          <BoardCell cell={cell} selectedWorkerCell={this.state.selectedWorkerCell}></BoardCell>
+          <BoardCell cell={cell} selectedWorkerCell={this.state.selectedWorkerCell} validCells={this.state.validCells}></BoardCell>
         </a>
       </div>
     );

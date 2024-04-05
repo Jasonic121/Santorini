@@ -55,6 +55,9 @@ public class Board {
         ArrayList<Cell> validCells = new ArrayList<Cell>();
         for (int i = x - 1; i <= x + 1; i++) {
             for (int j = y - 1; j <= y + 1; j++) {
+                if (i < 0 || i >= gridLength || j < 0 || j >= gridLength) {
+                    continue;
+                }
                 if (isAdjacent(x, y, i, j) && !isOccupied(i, j) && !hasDome(x, y)) {
                     validCells.add(grid.get(i).get(j));
                 }

@@ -99,9 +99,14 @@ public class App extends NanoHTTPD {
             if (selectedWorker != null && targetCell != null) {
                 System.out.println("Valid target cell selected!");
                 if (workerPhase == 0) {
+
                     // Move phase
                     game.executeMoveTurn(selectedWorker.getWorkerId(), targetCell.getX(), targetCell.getY());
                     System.out.println("Worker " + selectedWorker.getWorkerId() + " moved to cell (" + x + ", " + y + ")!!!");
+
+                    // Get the valid cells for building after moving
+                    validCells = game.getBoard().validateCellsForBuilding(selectedWorker.getCurrentCell());
+                    
                 } else {
                     // Build phase
                     System.out.println("Worker " + selectedWorker.getWorkerId() + " building at cell (" + x + ", " + y + ")!!!");
@@ -118,6 +123,7 @@ public class App extends NanoHTTPD {
         // Generate the current game state
         GameState gameState = GameState.getGameState(this.game);
         String json = gameState.toString();
+        
         // add the valid cells to json
         json = json.substring(0, json.length() - 1) + ",\"validCells\":";
         if (validCells == null) {

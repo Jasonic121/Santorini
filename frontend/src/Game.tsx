@@ -2,6 +2,7 @@ interface GameState {
   cells: Cell[];
   winner: string | null;
   currentPlayer: number;
+  validCells: Cell[];
 }
 
 interface Cell {
@@ -13,4 +14,4 @@ interface Cell {
   occupiedBy: number | null;
 }
 
-export type { GameState, Cell };
+export type { GameState };
