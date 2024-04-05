@@ -59,9 +59,16 @@ public class Board {
                     continue;
                 }
                 Cell cell = grid.get(i).get(j);
-                if (isAdjacent(x, y, i, j) && !cell.isOccupied() && !cell.hasDome() &&
-                        (!isBuilding || Math.abs(workerCell.getHeight() - cell.getHeight()) <= 1)) {
-                    validCells.add(cell);
+                System.out.println("Checking worker height: " + workerCell.getHeight() + " and cell height: " + cell.getHeight());
+                if (isAdjacent(x, y, i, j) && !cell.isOccupied() && !cell.hasDome()) {
+                    if(isBuilding) { // building validation
+                        validCells.add(cell);
+                    } else { // moving validation
+                        if (cell.getHeight() - workerCell.getHeight() <= 1 && cell.getHeight() <= 3) {
+                            System.out.println("Valid moving cell: " + cell.toString());
+                            validCells.add(cell);
+                        }
+                    }
                 }
             }
         }
