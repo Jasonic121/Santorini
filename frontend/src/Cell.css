@@ -1,5 +1,4 @@
 .cell {
-  width: 5wh;
   height: 13vh;
   border: 2px solid #000000;
   display: flex;
@@ -9,8 +8,17 @@
   color: #150e0e;
   border-radius: 5px;
   transition: background-color 0.3s ease;
+  position: relative;
 }
 
+.height-indicator {
+  font-size: 3vh;
+  position: absolute;
+  top: 8vh;
+  left: 1.5vw;
+  display: block;
+  font-family:cursive 
+}
 
 .board {
   display: grid;

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Cell } from './Game.tsx';
 import player1 from './resources/img/workers/player_1/worker1.png';
-import player2 from './resources/img/workers/player_2/worker1.png';
+import player2 from './resources/img/workers/player_3/worker1.png';
 import selectedWorkerImage from './resources/img/blocks/move.png';
 import validMoveImage from './resources/img/blocks/build.png'; 
 import bottomImage from './resources/img/blocks/bottom.png';
@@ -60,22 +60,21 @@ class BoardCell extends React.Component<Props> {
       backgroundSize: 'cover',
       backgroundPosition: 'center',
     };
+    const playerAlt = cell.occupiedBy === 0 ? 'Player 1' : 'Player 2';
+    const playerImage = cell.occupiedBy === 0 ? player1 : player2;
 
-
-    if (cell.occupied) {
-      const playerImage = cell.occupiedBy === 0 ? player1 : player2;
-      const playerAlt = cell.occupiedBy === 0 ? 'Player 1' : 'Player 2';
-      return (
-        <div className={`cell ${occupied} ${dome} ${height}`} style={cellBackground}>
+    return (
+      <div className={`cell ${occupied} ${dome} ${height}`} style={cellBackground}>
+        {cell.occupied && (
           <div className={`worker player${cell.occupiedBy}`}>
             <img src={playerImage} alt={playerAlt} style={{ width: '50px', height: '50px' }} />
-            {cell.height} <span style={{ fontSize: '10px' }}></span>         
           </div>
-        </div>
-      );
-    } else {
-      return <div className={`cell ${occupied} ${dome} ${height}`} style={cellBackground}>{cell.height}</div>;
-    }
+        )}
+        {cell.height !== 0 && (
+          <span className="height-indicator">{cell.height}</span>
+        )}
+      </div>
+    );
   }
 }
 
