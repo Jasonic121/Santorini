@@ -45,13 +45,19 @@
 }
 
 .selected-worker {
-  background-image: url('./resources/img/blocks/move.png');
+  background-image: url('./resources/img/blocks/choose_worker.png');
   background-size: cover;
   background-position: center;
   z-index: 0;
 }
 
 .valid-move {
+  background-image: url('./resources/img/blocks/move.png');
+  background-size: cover;
+  background-position: center;
+}
+
+.valid-build {
   background-image: url('./resources/img/blocks/build.png');
   background-size: cover;
   background-position: center;
