@@ -44,9 +44,8 @@ public class Cell {
      */
 
     /**
-     * Sets the height of the cell to the specified value.
-     *
-     * @param height The height of the cell.
+     * Sets the occupied status of the cell.
+     * @param occupied The occupied status of the cell.
      */
     public void setOccupied(boolean occupied) {
         this.occupied = occupied;
