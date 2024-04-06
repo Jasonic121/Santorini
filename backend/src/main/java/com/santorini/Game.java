@@ -215,7 +215,6 @@ public class Game {
     /**
      * Sets the winner of the game.
      * @param playerId the ID of the player who won the game
-     * @return void
      */
     public void setWinner(int playerId) {
         winner = players.get(playerId);

@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.Map;
 
 public class App extends NanoHTTPD {
-    private final static int PORT_NUM = 8080;
+    private static final int PORT_NUM = 8080;
     private int totalWorkersPlaced;
     private Game game;
     private Worker selectedWorker;

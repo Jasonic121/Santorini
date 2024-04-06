@@ -47,7 +47,6 @@ public class Cell {
      * Sets the height of the cell to the specified value.
      *
      * @param height The height of the cell.
-     * @return void
      */
     public void setOccupied(boolean occupied) {
         this.occupied = occupied;
@@ -57,7 +56,6 @@ public class Cell {
      * Sets the player ID of the player occupying the cell.
      *
      * @param playerId The ID of the player occupying the cell.
-     * @return void
      */
     public void setOccupiedBy(int playerId) {
         this.occupiedBy = playerId;
@@ -68,22 +66,47 @@ public class Cell {
      * --------------
      */
 
+    /**
+     * Returns the x-coordinate of the cell.
+     *
+     * @return The x-coordinate of the cell.
+     */
     public int getX() {
         return xPosition;
     }
 
+    /**
+     * Returns the y-coordinate of the cell.
+     *
+     * @return The y-coordinate of the cell.
+     */
     public int getY() {
         return yPosition;
     }
 
+    /**
+     * Returns the height of the cell.
+     *
+     * @return The height of the cell.
+     */
     public int getHeight() {
         return height;
     }
 
+    /**
+     * Returns true if the cell has a dome, false otherwise.
+     *
+     * @return true if the cell has a dome, false otherwise
+     */
     public boolean hasDome() {
         return hasDome;
     }
 
+    /**
+     * Returns true if the cell is occupied, false otherwise.
+     *
+     * @return true if the cell is occupied, false otherwise
+     */
     public boolean isOccupied() {
         return occupied;
     }
