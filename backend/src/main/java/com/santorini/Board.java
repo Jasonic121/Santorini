@@ -55,7 +55,7 @@ public class Board {
 
         for (int i = x - 1; i <= x + 1; i++) {
             for (int j = y - 1; j <= y + 1; j++) {
-                if (i < 0 || i >= gridLength || j < 0 || j >= gridLength) {
+                if (i < 0 || i >= gridLength || j < 0 || j >= gridLength  || (i == x && j == y)) {
                     continue;
                 }
                 Cell cell = grid.get(i).get(j);

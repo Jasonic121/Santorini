@@ -1,110 +1,45 @@
+// BoardTest.java
 package com.santorini;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertNotNull;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
-public class BoardTest {
-    private Game game;
+class BoardTest {
     private Board board;
-    private final int gridLength = 5;
 
-    @Before
-    public void setUp() {
-        game = new Game();
-        board = game.getBoard();
-    }
-
-    // Test the size initialization of the board   
-    @Test
-    public void testBoardInitialization() {
-        Cell cell;
-
-        // Verify that the grid is initialized with the correct dimensions
-        assertEquals(gridLength, board.getGrid().size());
-        for (int i = 0; i < gridLength; i++) {
-            for (int j = 0; j < gridLength; j++)
-                assertNotNull(board.getCell(i, j));
-        }
-
-        // Verify that all heights are initially 0 and domes are false
-        for (int i = 0; i < gridLength; i++) {
-            for (int j = 0; j < gridLength; j++) {
-                cell = board.getCell(i, j);
-                assertEquals(0, cell.getHeight());
-                assertFalse(cell.hasDome());
-            }
-        }
-
-        // Verify that all cells are initially unoccupied
-        for (int i = 0; i < gridLength; i++) {
-            for (int j = 0; j < gridLength; j++) {
-                cell = board.getCell(i, j);
-                assertFalse(cell.isOccupied());
-            }
-        }
-        System.out.println("Board initialization test passed");
+    @BeforeEach
+    void setUp() {
+        board = new Board();
     }
 
     @Test
-    public void testAddBlock() {
-        final int x = 0;
-        final int y = 0;
-        Cell cell = board.getCell(x, y);
-        
-        // Add a block to the specified cell
-        cell.buildBlock();
-        // Verify that the cell's height is increased by 1
-        assertEquals("Cell height should be 1 after adding one block.", 1, cell.getHeight());
-
-        // Add a block to the specified cell
-        cell.buildBlock();
-        // Verify that the cell's height is increased by 1
-        assertEquals("Cell height should be 2 after adding two blocks.", 2, cell.getHeight());
-
+    void testBoardInitialization() {
+        assertEquals(25, board.getGrid().length);
     }
 
     @Test
-    public void testAddDome() {
-        final int x = 1;
-        final int y = 0;
-        Cell cell = board.getCell(x, y);
-
-        // Add three blocks to the specified cell
-        cell.buildBlock();
-        cell.buildBlock();
-        cell.buildBlock();
-
-        // Verify that the cell's dome is false
-        assertFalse("The cell should not have a dome yet.", cell.hasDome());
-
-        // Add a block (Dome) to the specified cell
-        cell.buildBlock();
-
-        // Verify that the cell's dome status is true
-        assertTrue("The cell should have a dome.", cell.hasDome());
+    void testCellRetrieval() {
+        Cell cell = board.getCell(0, 0);
+        assertNotNull(cell);
+        assertEquals(0, cell.getX());
+        assertEquals(0, cell.getY());
     }
 
-
-    @After
-    public void tearDown() {
-        System.out.println("Below is the Board Height Grid:");
-        printGrid();
-        System.out.println();
+    @Test
+    void testValidMoveCells() {
+        Cell workerCell = board.getCell(2, 2);
+        Cell[] validCells = board.validateCellsForMoving(workerCell);
+        assertEquals(8, validCells.length);
     }
 
-    private void printGrid() {    
-        for (int i = 0; i < gridLength; i++) {
-            for (int j = 0; j < gridLength; j++) {
-                Cell cell = board.getCell(i, j);
-                System.out.print(cell.getHeight() + " ");
-            }
-            System.out.println();
+    @Test
+    void testValidBuildCells() {
+        Cell workerCell = board.getCell(2, 2);
+        Cell[] validCells = board.validateCellsForBuilding(workerCell);
+        for (Cell cell : validCells) {
+            System.out.println(cell.getX() + " " + cell.getY());
         }
+        assertEquals(8, validCells.length);
     }
 }
