@@ -176,7 +176,13 @@ class App extends React.Component<Props, State> {
     return (
       <div key={index}>
         <a href='/' onClick={onClick}>
-          <BoardCell cell={cell} selectedWorkerCell={this.state.selectedWorkerCell} validCells={this.state.validCells}></BoardCell>
+        <BoardCell
+          cell={cell}
+          selectedWorkerCell={this.state.selectedWorkerCell}
+          validCells={this.state.validCells}
+          isCurrentPlayerWorker={Number(cell.occupiedBy) === this.state.currentPlayer}
+          currentPlayer={this.state.currentPlayer}
+        ></BoardCell>
         </a>
       </div>
     );

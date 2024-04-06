@@ -7,12 +7,14 @@ import validMoveImage from './resources/img/blocks/build.png';
 import bottomImage from './resources/img/blocks/bottom.png';
 import middle from './resources/img/blocks/middle.png';
 import top from './resources/img/blocks/top.png';
-import domeimg from './resources/img/blocks/dome.png';
+import domeImg from './resources/img/blocks/dome.png';
 import './Cell.css';
 interface Props {
   cell: Cell;
   selectedWorkerCell: Cell | null;
   validCells: Cell[];
+  isCurrentPlayerWorker: boolean;
+  currentPlayer: number;
 }
 
 class BoardCell extends React.Component<Props> {
@@ -50,7 +52,7 @@ class BoardCell extends React.Component<Props> {
     }
 
     if (cell.hasDome && cell.height === 4) {
-      backgroundImages.push(`url(${domeimg})`);
+      backgroundImages.push(`url(${domeImg})`);
     }
 
     const backgroundImage = backgroundImages.length > 0 ? backgroundImages.join(', ') : 'none';
@@ -60,16 +62,16 @@ class BoardCell extends React.Component<Props> {
       backgroundSize: 'cover',
       backgroundPosition: 'center',
     };
+
     const playerAlt = cell.occupiedBy === 0 ? 'Player 1' : 'Player 2';
     const playerImage = cell.occupiedBy === 0 ? player1 : player2;
-
-    return (
+    const isCurrentPlayerWorker = this.props.isCurrentPlayerWorker && cell.occupied && Number(cell.occupiedBy) === this.props.currentPlayer;    return (
       <div className={`cell ${occupied} ${dome} ${height}`} style={cellBackground}>
-        {cell.occupied && (
-          <div className={`worker player${cell.occupiedBy}`}>
-            <img src={playerImage} alt={playerAlt} style={{ width: '50px', height: '50px' }} />
-          </div>
-        )}
+          {cell.occupied && (
+            <div className={`worker player${cell.occupiedBy} ${isCurrentPlayerWorker ? 'currentPlayerWorker' : ''}`}>
+              <img src={playerImage} alt={playerAlt} style={{ width: '8vh', height: '8vh' }} />
+            </div>
+          )}
         {cell.height !== 0 && (
           <span className="height-indicator">{cell.height}</span>
         )}
