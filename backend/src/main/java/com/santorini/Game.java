@@ -172,38 +172,75 @@ public class Game {
      * --------------
      */
 
+    /**
+     * Returns the list of players in the game.
+     * @return the list of players
+     */
     public ArrayList<Player> getPlayers() {
         return players;
     }
 
+    /**
+     * Returns the current player in the game.
+     * @return the current player
+     */
     public Player getCurrentPlayer() {
         return currentPlayer;
     }
 
+    /**
+     * Returns the next player in the game.
+     * @return the next player
+     */
     public Player getNextPlayer() {
         return players.get((currentPlayerIndex + 1) % players.size());
     }
 
+    /**
+     * Returns the game board.
+     * @return the game board
+     */
     public Board getBoard() {
         return board;
     }
 
+    /**
+     * Returns the endGameFlag.
+     * @return the endGameFlag
+     */
     public boolean getEndGameFlag() {
         return endGameFlag;
     }
-
+    
+    /**
+     * Sets the winner of the game.
+     * @param playerId the ID of the player who won the game
+     * @return void
+     */
     public void setWinner(int playerId) {
         winner = players.get(playerId);
     }
 
+    /**
+     * Returns the winner of the game.
+     * @return the winner of the game
+     */
     public Cell[] getValidCells() {
         return validCells;
     }
 
+    /**
+     * Returns the winner of the game.
+     * @return the winner of the game
+     */
     public Player getWinner() {
         return winner;
     }
 
+    /**
+     * Returns the ID of the winner of the game.
+     * @return the ID of the winner of the game
+     */
     public int getWinnerId() {
         return winner != null ? winner.getPlayerId() : -1;
     }

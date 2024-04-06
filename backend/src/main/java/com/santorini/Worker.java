@@ -80,6 +80,7 @@ public class Worker {
      * Validates a build at the specified target cell.
      *
      * @param targetCell The target cell to build at.
+     * @return true if the build is valid, false otherwise.
      */
     private boolean validateBuild(Cell targetCell) {
         if (targetCell.isOccupied()) {
@@ -96,14 +97,26 @@ public class Worker {
      * --------------
      */
 
+    /**
+     * Represents a cell in the Santorini game board.
+     * @return the current cell where the worker is located
+     */
     public Cell getCurrentCell() {
         return currentCell;
     }
-
+    /**
+     * Returns the player who owns the worker.
+     *
+     * @return the player who owns the worker
+     */
     public Player getOwner() {
         return owner;
     }
-
+    /**
+     * Returns the ID of the worker.
+     *
+     * @return the ID of the worker
+     */
     public int getWorkerId() {
         return workerId;
     }

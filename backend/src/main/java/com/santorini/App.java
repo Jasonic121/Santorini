@@ -4,14 +4,15 @@ import java.io.IOException;
 import java.util.Map;
 
 public class App extends NanoHTTPD {
+    private final static int PORT_NUM = 8080;
     private int totalWorkersPlaced;
     private Game game;
     private Worker selectedWorker;
     private Cell[] validCells;
     private int workerPhase = 0;
-
+    
     public App() throws IOException {
-        super(8080); // Set the port number you want to use
+        super(PORT_NUM); // Set the port number you want to use
         game = new Game();
         start(NanoHTTPD.SOCKET_READ_TIMEOUT, false);
         System.out.println("Server is running! Access it at http://localhost:8080/");

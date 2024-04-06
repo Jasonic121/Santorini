@@ -8,7 +8,7 @@ import java.util.ArrayList;
 public class Board {
     private ArrayList<ArrayList<Cell>> grid;
     private final int gridLength = 5;
-
+    private final int MAX_HEIGHT = 3;
     // Constructor
     public Board() {
         this.grid = new ArrayList<ArrayList<Cell>>();
@@ -69,7 +69,7 @@ public class Board {
                         //     validCells.add(cell);
                         // }
                         if (cell.getHeight() > workerCell.getHeight()) { //moving up
-                            if (cell.getHeight() - workerCell.getHeight() <= 1 && cell.getHeight() <= 3) {
+                            if (cell.getHeight() - workerCell.getHeight() <= 1 && cell.getHeight() <= MAX_HEIGHT) {
                                 System.out.println("Valid moving cell: " + cell.toString());
                                 validCells.add(cell);
                             }

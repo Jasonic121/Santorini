@@ -43,10 +43,22 @@ public class Cell {
      * --------------
      */
 
+    /**
+     * Sets the height of the cell to the specified value.
+     *
+     * @param height The height of the cell.
+     * @return void
+     */
     public void setOccupied(boolean occupied) {
         this.occupied = occupied;
     }
 
+    /**
+     * Sets the player ID of the player occupying the cell.
+     *
+     * @param playerId The ID of the player occupying the cell.
+     * @return void
+     */
     public void setOccupiedBy(int playerId) {
         this.occupiedBy = playerId;
     }

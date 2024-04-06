@@ -172,7 +172,9 @@ public class Player {
     }
 
     /**
-     * Returns the cell of all the workers of the player.
+     * Returns an array of cells occupied by the player's workers.
+     *
+     * @return an array of cells occupied by the player's workers
      */
     public Cell[] getWorkerCells() {
         Cell[] workerCells = new Cell[workers.size()];
