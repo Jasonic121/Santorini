@@ -20,36 +20,41 @@
   font-family: cursive;
 }
 
-.playable {
-  /* background-color: #a0d8ef; */
-}
-
-.occupied {
-  /* background-color: #90ee90; */
-}
-
-.dome {
-  /* background-color: #ffffe0; */
-}
-
-.height-0 {
-  /* background-color: #ffffff; */
-}
-
 .height-1 {
-  /* background-color: #ab2f2f; */
+  background-image: url('./resources/img/blocks/bottom.png');
+  background-size: cover;
+  background-position: center;
 }
 
 .height-2 {
-  /* background-color: #808080; */
+  background-image: url('./resources/img/blocks/middle.png');
+  background-size: cover;
+  background-position: center;
 }
 
 .height-3 {
-  /* background-color: #a9a9a9; */
+  background-image: url('./resources/img/blocks/top.png');
+  background-size: cover;
+  background-position: center;
 }
 
-.height-4 {
-  /* background-color: #fafafa; */
+.dome {
+  background-image: url('./resources/img/blocks/dome.png');
+  background-size: cover;
+  background-position: center;
+}
+
+.selected-worker {
+  background-image: url('./resources/img/blocks/move.png');
+  background-size: cover;
+  background-position: center;
+  z-index: 0;
+}
+
+.valid-move {
+  background-image: url('./resources/img/blocks/build.png');
+  background-size: cover;
+  background-position: center;
 }
 
 .currentPlayerWorker {
@@ -59,12 +64,17 @@
 .currentPlayerWorker::before {
   content: '';
   position: absolute;
-  top: -5px;
-  left: -5px;
-  right: -5px;
-  bottom: -5px;
+  top: -3.5vh;
+  left: -3.5vh;
+  right: -3.5vh;
+  bottom: -3.5vh;
   background-image: url('./resources/img/blocks/choose_worker.png');
   background-size: cover;
   background-position: center;
   z-index: 1;
+}
+
+.worker img {
+  width: 8vh;
+  height: 8vh;
 }

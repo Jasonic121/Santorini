@@ -182,6 +182,8 @@ class App extends React.Component<Props, State> {
           validCells={this.state.validCells}
           isCurrentPlayerWorker={Number(cell.occupiedBy) === this.state.currentPlayer}
           currentPlayer={this.state.currentPlayer}
+          currentGamePhase={this.state.gamePhase}
+          currentWorkerPhase={this.state.workerPhase}
         ></BoardCell>
         </a>
       </div>
