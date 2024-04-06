@@ -69,7 +69,8 @@ class BoardCell extends React.Component<Props> {
         <div className={`cell ${occupied} ${dome} ${height}`} style={cellBackground}>
           <div className={`worker player${cell.occupiedBy}`}>
             <img src={playerImage} alt={playerAlt} style={{ width: '50px', height: '50px' }} />
-            {cell.height} <span style={{ fontSize: '10px' }}></span>          </div>
+            {cell.height} <span style={{ fontSize: '10px' }}></span>         
+          </div>
         </div>
       );
     } else {

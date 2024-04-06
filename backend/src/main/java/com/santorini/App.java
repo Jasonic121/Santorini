@@ -41,6 +41,7 @@ public class App extends NanoHTTPD {
             totalWorkersPlaced = 0;
             selectedWorker = null;
             validCells = null;
+            workerPhase = 0;
 
         } else if (uri.equals("/setup")) {
             String cellCoords = params.get("cell1");
