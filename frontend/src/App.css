@@ -1,3 +1,11 @@
+.app {
+  background-image: url('./resources/img/background/map.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  height: 100vh;
+}
+
 #board {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
@@ -12,12 +20,35 @@
   text-align: center;
   margin-bottom: 1vh;
   font-size: 3vh;
-  font-family:fantasy;
+  font-family: fantasy;
   color: #000000;
   background-color: rgba(0, 0, 0, 0.6);
   padding: 2.5vh;
   border-radius: 5px;
-  /* background-color: aqua; */
+}
+
+#bottombar {
+  display: flex;
+  justify-content: space-between;
+}
+
+.game-over {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.game-over-image {
+  background-image: url('./resources/img/background/victory.png');
+  background-size: cover;
+  background-position: center;
+  max-width: 100%;
+  max-height: 100%;
 }
 
 html,
