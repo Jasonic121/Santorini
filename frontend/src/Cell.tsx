@@ -32,14 +32,30 @@ class BoardCell extends React.Component<Props> {
 
     return (
       <div className={`cell ${occupied} ${dome} ${height} ${isSelectedWorker ? 'selected-worker' : ''} ${isValidMove ? 'valid-move' : ''} ${isValidBuild ? 'valid-build' : ''}`}>
-        {cell.occupied && (
-        <div className={`worker player${cell.occupiedBy} ${ (currentGamePhase!=1) && (!currentWorkerPhase) && isCurrentPlayerWorker && (!hasSelectedWorker) ? 'currentPlayerWorker' : ''}`}>
-            <img src={playerImage} alt={playerAlt} />
-          </div>
-        )}
-        {cell.height !== 0 && (
-          <span className="height-indicator">{cell.height}</span>
-        )}
+        <div className="cell-content">
+          
+          {cell.occupied && (
+            <div className={`worker player${cell.occupiedBy} ${(currentGamePhase !== 1) && (!currentWorkerPhase) && isCurrentPlayerWorker && (!hasSelectedWorker) ? 'currentPlayerWorker' : ''}`}>
+              <img src={playerImage} alt={playerAlt} />
+            </div>
+          )}
+
+          {cell.height !== 0 && (
+            <span className="height-indicator">{cell.height}</span>
+          )}
+
+        </div>
+        
+        {/* <div className={`cell ${occupied} ${dome} ${height} ${isSelectedWorker ? 'selected-worker' : ''} ${isValidMove ? 'valid-move' : ''} ${isValidBuild ? 'valid-build' : ''}`}>
+          {cell.occupied && (
+          <div className={`worker player${cell.occupiedBy} ${ (currentGamePhase!=1) && (!currentWorkerPhase) && isCurrentPlayerWorker && (!hasSelectedWorker) ? 'currentPlayerWorker' : ''}`}>
+              <img src={playerImage} alt={playerAlt} />
+            </div>
+          )}
+          {cell.height !== 0 && (
+            <span className="height-indicator">{cell.height}</span>
+          )}
+        </div> */}
       </div>
     );
   }

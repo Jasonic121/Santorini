@@ -146,9 +146,18 @@ class App extends React.Component<Props, State> {
     const gamePhaseString = this.getGamePhaseString();
 
     if (winner === -1) {
-      return `Current Player: Player ${currentPlayer} | Game Phase: ${gamePhaseString}`;
+      return (
+        <div>
+          <a style={{ marginRight: '30vw' }}>
+            Game Phase: {gamePhaseString}
+          </a>
+          <a>
+            Current Player: Player {currentPlayer}
+          </a>
+        </div>
+      );
     } else {
-      return `Winner: Player ${winner}`;
+      return <div style={{ color: 'red'}}>Winner =============== Player {winner}</div>;
     }
   };
 
