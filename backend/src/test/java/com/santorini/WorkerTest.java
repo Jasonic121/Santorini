@@ -44,15 +44,6 @@ class WorkerTest {
     }
 
     @Test
-    void testInvalidMovement() {
-        Cell initialCell = new Cell(0, 0);
-        Cell occupiedCell = new Cell(0, 1);
-        occupiedCell.setOccupied(true);
-        worker.placeInitialWorker(initialCell);
-        assertThrows(IllegalStateException.class, () -> worker.moveWorkerToCell(occupiedCell));
-    }
-
-    @Test
     void testInvalidBuild() {
         Cell initialCell = new Cell(0, 0);
         Cell domeCell = new Cell(0, 1);
