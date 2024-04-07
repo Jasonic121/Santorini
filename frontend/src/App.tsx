@@ -150,20 +150,28 @@ class App extends React.Component<Props, State> {
     if (winner === -1) {
       return (
         <div className = 'in-game'>
-          <a style={{ marginRight: '30vw' }}>
-            Game Phase: {gamePhaseString}
+          <a className='instruction-text'>
+            Player {currentPlayer}'s Turn
           </a>
-          <a>
-            Current Player: Player {currentPlayer}
+          <a className='instruction-text'>
+            {gamePhaseString}
           </a>
         </div>
       );
     } else {
       return (
-        <div className = 'end-game'>
-          <a>
-            PLAYER {+winner + 1} WINS!
+        <div className = 'in-game'>
+          <a className='instruction-text'>
+            Thank you for playing!
           </a>
+          <a className='instruction-text'>
+            Press New Game to Start
+          </a>
+          <div className = 'end-game'>
+            <a>
+              PLAYER {+winner + 1} WINS!
+            </a>
+          </div>
         </div>
       );
     }
@@ -221,11 +229,11 @@ class App extends React.Component<Props, State> {
   // The layout is a string of 25 cells separated by semicolons
   // The first 3 numbers in each cell represent the (height, dome, occupiedBy) of the cell
   testLayout = 
-  `1,0,-1;0,0,-1;0,0,-1;2,0,0;0,0,-1;` + // row 1
-  `1,0,-1;0,0,-1;0,0,-1;2,0,1;0,0,-1;` + // row 2
-  `1,0,-1;0,0,-1;0,0,-1;2,0,0;0,0,-1;` + // row 3
+  `1,0,-1;0,0,-1;2,0,1;0,0,-1;0,0,1;` + // row 1
+  `1,0,-1;0,0,-1;0,0,-1;2,0,0;3,0,-1;` + // row 2
+  `1,0,-1;0,0,-1;0,0,-1;2,0,0;3,0,-1;` + // row 3
   `1,0,-1;0,0,-1;0,0,-1;3,0,-1;0,0,-1;` + // row 4
-  `1,0,-1;0,0,-1;0,0,-1;2,0,1;0,0,-1;` + // row 5
+  `1,0,-1;0,0,-1;0,0,-1;2,0,-1;0,0,-1;` + // row 5
   `0`; // 0 is the current player
 
 
@@ -252,11 +260,11 @@ class App extends React.Component<Props, State> {
     return (
       <div className="app">
         <div id="instructions">{this.instructions()}</div>
-        {this.state.isGameOver && (
+        {/* {this.state.isGameOver && (
           <div className="game-over">
             <div className="game-over-image"></div>
           </div>
-        )}
+        )} */}
         <div id="board">
           {this.state.cells.map((cell, i) => this.createCell(cell, i))}
         </div>

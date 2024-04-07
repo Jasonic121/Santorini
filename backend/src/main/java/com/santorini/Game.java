@@ -60,6 +60,7 @@ public class Game {
         moveWorkerUntilPointsExhausted(workerId, x, y);
         System.out.println("Worker current cell: " + currentPlayer.getWorker(workerId).getCurrentCell().getX() + ", " + currentPlayer.getWorker(workerId).getCurrentCell().getY() + " height: " + currentPlayer.getWorker(workerId).getCurrentCell().getHeight());
         winCondition();
+        loseCondition();
     }
 
     public void executeBuildTurn(int workerId, int x, int y) {
@@ -69,6 +70,7 @@ public class Game {
         validCells = this.board.validateCellsForBuilding(currentPlayer.getWorker(workerId).getCurrentCell());
         buildUntilPointsExhausted(workerId, x, y);
         winCondition();
+        loseCondition();
         nextPlayer();
     }
 
@@ -136,10 +138,23 @@ public class Game {
     private void winCondition() {
         if (currentPlayer.checkWin()) {
             System.out.println("Player " + currentPlayer.getPlayerId() + " has won!");
-            setWinner(currentPlayer.getPlayerId());
+            setWinner(currentPlayerIndex);
             endGame();
         }
     }
+
+    /**
+     * Checks if the current player has lost the game.
+     * If the current player has lost, it prints a message and ends the game.
+     */
+    private void loseCondition() {
+        if (currentPlayer.checkLose(board)) {
+            System.out.println("Player " + currentPlayer.getPlayerId() + " has lost!");
+            setWinner(currentPlayerIndex == 0 ? 1 : 0);
+            endGame();
+        }
+    }
+
 
     /**
      * Ends the game and sets the endGameFlag to true.

@@ -17,9 +17,15 @@
   margin: 0 auto;
 }
 
+.instruction-text {
+  left: 50%;
+  margin-right: 10vw;
+  margin-left: 10vw;
+}
 .in-game {
   background-image: url('./resources/img/labels/gods_menu.png');
-  background-size:contain;
+  background-size: cover;
+  background-position: center;
   text-align: center;
   font-size: 3vh;
   font-family: 'LillyBelle';
@@ -31,14 +37,15 @@
 }
 
 .end-game {
-  /* background-image: url('./resources/img/labels/chosen_player.png');
-  background-size:100%;
-  background-position: center;
-  background-repeat: no-repeat; */
+  background-image: url('./resources/img/labels/chosen_player.png');
+  background-size:105%;
+  background-position: top;
+  background-repeat: no-repeat;
   text-align: center;
   font-size: 5vh;
   font-family: 'LillyBelle';
   font-weight: bolder;
+  background-color: bisque;
   color: #ee0606;
   padding: 2.5vh;
   border-radius: 5px;
@@ -57,6 +64,7 @@
   position: absolute;
 }
 
+/*
 .game-over {
   position: absolute;
   top: 0;
@@ -72,7 +80,7 @@
 .game-over-image {
   background-image: url('./resources/img/background/victory.png');
   background-size:cover;
-  background-position: center;
+  background-position: center; 
   position: absolute;
   top: 0;
   left: 0;
@@ -84,13 +92,12 @@
   max-width: 100%;
   max-height: 100%;
   z-index: 3;
-}
+} */
 
 .bottom-bar {
   display: flex;
   justify-content: space-between;
   padding: 1vh;
-  /* background-color: rgba(0, 0, 0, 0.6); */
   border-radius: 5px;
   margin: 1vh;
   z-index: 4;

@@ -70,7 +70,6 @@ public class Player {
             if (worker.getCurrentCell().getHeight() == winHeight) {
                 return true;
             }
-            System.out.println("Worker " + worker.getWorkerId() + " height: " + worker.getCurrentCell().getHeight());
         }
         return false;
     }
