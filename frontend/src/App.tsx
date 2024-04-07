@@ -7,7 +7,7 @@ import './App.css';
 interface Props {}
 
 interface State extends GameState {
-  gamePhase: number; // 0 for not started, 1 for setup, 2 for Worker Selection, 3 for Target Cell Selection
+  gamePhase: number; // 0 for not started, 1 for setup, 2 for Worker Selection, 3 for Target Cell Selection, 4 for Game Over
   workerPhase: number; // 0 for move, 1 for build
   selectedCells: Cell[];
   selectedWorkerCell: Cell | null;
@@ -135,8 +135,10 @@ class App extends React.Component<Props, State> {
         return 'Moving... (Choose Worker)';
       case 3:
         return workerPhase === 0 ? 'Moving... (Choose Cell)' : 'Building... (Choose Cell)';
+      case 4:
+        return 'Game Over';
       default:
-        return 'Unknown';
+        return 'Press New Game to Start';
     }
   };
 
@@ -147,7 +149,7 @@ class App extends React.Component<Props, State> {
 
     if (winner === -1) {
       return (
-        <div>
+        <div className = 'in-game'>
           <a style={{ marginRight: '30vw' }}>
             Game Phase: {gamePhaseString}
           </a>
@@ -157,13 +159,24 @@ class App extends React.Component<Props, State> {
         </div>
       );
     } else {
-      return <div style={{ color: 'red'}}>Winner =============== Player {+winner+1}</div>;
+      return (
+        <div className = 'end-game'>
+          <a>
+            PLAYER {+winner + 1} WINS!
+          </a>
+        </div>
+      );
     }
   };
 
   createCell = (cell: Cell, index: number): React.ReactNode => {
     const onClick = (e: React.MouseEvent) => {
       e.preventDefault();
+      if (this.state.isGameOver) {
+        console.log('Game is over. Please start a new game.');
+        this.setState({ validCells: []});
+        return;
+      }
       console.log("gamePhase: ", this.state.gamePhase, "workerPhase: ", this.state.workerPhase);
       switch (this.state.gamePhase) {
         case 1: // Setup Phase
@@ -238,18 +251,18 @@ class App extends React.Component<Props, State> {
   render(): React.ReactNode {
     return (
       <div className="app">
+        <div id="instructions">{this.instructions()}</div>
         {this.state.isGameOver && (
           <div className="game-over">
             <div className="game-over-image"></div>
           </div>
         )}
-        <div id="instructions">{this.instructions()}</div>
         <div id="board">
           {this.state.cells.map((cell, i) => this.createCell(cell, i))}
         </div>
-        <div id="bottombar">
-          <button onClick={this.newGame}>New Game</button>
-          <button onClick={() => this.sendTestLayout(this.testLayout)}>Test Layout</button>
+        <div id="bottombar" className='bottom-bar'>
+          <button onClick={this.newGame} className='new-game'>New Game</button>
+          <button onClick={() => this.sendTestLayout(this.testLayout)} className = 'test-layout'>Test Layout</button>
         </div>
       </div>
     );

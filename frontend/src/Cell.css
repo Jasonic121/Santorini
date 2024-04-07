@@ -16,6 +16,10 @@
   z-index: 2;
 }
 
+.cell:hover {
+  background-color: rgba(100, 238, 226, 0.6);
+}
+
 .height-indicator {
   font-size: 3vh;
   position: absolute;
