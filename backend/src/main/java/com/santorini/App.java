@@ -113,6 +113,19 @@ public class App extends NanoHTTPD {
                 // Reset the selected worker and target cell
                 targetCell = null;
             }
+        } else if (uri.equals("/testLayout")) {
+            String layout = params.get("layout");
+            if (layout != null) {
+                String[] testCells = layout.split(";");
+                for (int i = 0; i < testCells.length; i += 5) {
+                    for (int j = i; j < i + 5 && j < testCells.length; j++) {
+                        System.out.print(testCells[j] + ";");
+                    }
+                    System.out.println();
+                }
+                setupTestLayout(layout);
+                System.out.println("Test layout dimensions: cell=" + testCells.length);
+            }
         }
 
         // Generate the current game state
@@ -145,6 +158,65 @@ public class App extends NanoHTTPD {
     }
 
     // Helper Classes
+    private void setupTestLayout(String layout) {
+        // Reset the game
+        this.game = new Game();
+        totalWorkersPlaced = 4;
+        selectedWorker = null;
+        validCells = null;
+        workerPhase = 0;
+        int player1WorkerIDCounter = 0;
+        int player2WorkerIDCounter = 0;
+        // Parse the layout string and set up the board accordingly
+        String[] testCells = layout.split(";");
+        if (testCells.length != 26) {
+            System.out.println("Invalid layout format: The board should have 26 cells");
+            return;
+        }
+        for (int i = 0; i < 5; i++) {
+            for (int j = 0; j < 5; j++) {
+                String[] cellInfo = testCells[i * 5 + j].split(",");
+                if (cellInfo.length != 3) {
+                    System.out.println("Invalid layout format: Each cell should have 3 characters");
+                    return;
+                }
+                int height = Integer.parseInt(cellInfo[0]);
+                boolean hasDome = cellInfo[1].equals("1");
+                int occupiedBy = Integer.parseInt(cellInfo[2]);
+    
+                Cell cell = game.getBoard().getCell(i, j);
+                cell.setHeight(height);
+                cell.setDome(hasDome);
+    
+                if (occupiedBy != -1) {
+                    Player testPlayer = game.getPlayers().get(occupiedBy);
+                    Worker testWorker;
+                    if(occupiedBy == 0) {
+                        testWorker = testPlayer.getWorkers()[player1WorkerIDCounter];
+                        player1WorkerIDCounter++;
+                    }
+                    else {
+                        testWorker = testPlayer.getWorkers()[player2WorkerIDCounter];
+                        player2WorkerIDCounter++;
+                    }
+                    testWorker.setCurrentCell(cell);
+                    cell.setWorker(testWorker);
+                    System.out.println("Worker " + testWorker.getWorkerId() + " owned by Player: "+ testPlayer.getPlayerId()+ " placed at (" + i + ", " + j + ")");
+                    System.out.println("Cell " + i + ", " + j + " height: " + height + ", hasDome: " + hasDome + ", occupied:" + cell.isOccupied() + ", occupied by: " + occupiedBy);
+                }
+            }
+        }
+    
+        // Set the current player based on the last character of the layout string
+        if (layout.length() < testCells.length * 4) {
+            System.out.println("Invalid layout format: Missing current player information");
+            return;
+        }
+        int currentPlayerId = Character.getNumericValue(layout.charAt(layout.length() - 1));
+        System.out.println("Current player: " + currentPlayerId);
+        game.setCurrentPlayer(game.getPlayers().get(currentPlayerId));
+    }
+
     private Worker selectWorker(int x, int y) {
         System.out.println("User selected a worker (" + x + ", " + y + ")");
     

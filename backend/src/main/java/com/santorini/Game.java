@@ -54,9 +54,11 @@ public class Game {
     public void executeMoveTurn(int workerId, int x, int y) {
         System.out.println("Player " + currentPlayerIndex + "'s Move turn.");
         currentPlayer.resetActionPoints();
+        System.out.println("Worker current cell: " + currentPlayer.getWorker(workerId).getCurrentCell().getX() + ", " + currentPlayer.getWorker(workerId).getCurrentCell().getY() + " height: " + currentPlayer.getWorker(workerId).getCurrentCell().getHeight());
 
         validCells = this.board.validateCellsForMoving(currentPlayer.getWorker(workerId).getCurrentCell());
         moveWorkerUntilPointsExhausted(workerId, x, y);
+        System.out.println("Worker current cell: " + currentPlayer.getWorker(workerId).getCurrentCell().getX() + ", " + currentPlayer.getWorker(workerId).getCurrentCell().getY() + " height: " + currentPlayer.getWorker(workerId).getCurrentCell().getHeight());
         winCondition();
     }
 
@@ -171,7 +173,10 @@ public class Game {
      * Getter Methods
      * --------------
      */
-
+    public void setCurrentPlayer(Player player) {
+        this.currentPlayer = player;
+        this.currentPlayerIndex = players.indexOf(player);
+    }
     /**
      * Returns the list of players in the game.
      * @return the list of players

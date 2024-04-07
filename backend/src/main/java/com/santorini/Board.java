@@ -70,13 +70,13 @@ public class Board {
                         // }
                         if (cell.getHeight() > workerCell.getHeight()) { //moving up
                             if (cell.getHeight() - workerCell.getHeight() <= 1 && cell.getHeight() <= maxHeight) {
-                                System.out.println("Valid moving cell: " + cell.toString());
+                                // System.out.println("Valid moving cell: " + cell.toString());
                                 validCells.add(cell);
                             }
                         } else { // moving down
                             validCells.add(cell);
                         }
-                    }
+                    } 
                 }
             }
         }

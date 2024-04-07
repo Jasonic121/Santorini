@@ -16,7 +16,7 @@ interface State extends GameState {
 
 class App extends React.Component<Props, State> {
   private initialized: boolean = false;
-
+  private testing: boolean = false;
   constructor(props: Props) {
     super(props);
     this.state = {
@@ -157,7 +157,7 @@ class App extends React.Component<Props, State> {
         </div>
       );
     } else {
-      return <div style={{ color: 'red'}}>Winner =============== Player {winner}</div>;
+      return <div style={{ color: 'red'}}>Winner =============== Player {+winner+1}</div>;
     }
   };
 
@@ -204,6 +204,37 @@ class App extends React.Component<Props, State> {
     }
   }
 
+  // Test Layout: This layout is used to test the game logic
+  // The layout is a string of 25 cells separated by semicolons
+  // The first 3 numbers in each cell represent the (height, dome, occupiedBy) of the cell
+  testLayout = 
+  `1,0,-1;0,0,-1;0,0,-1;2,0,0;0,0,-1;` + // row 1
+  `1,0,-1;0,0,-1;0,0,-1;2,0,1;0,0,-1;` + // row 2
+  `1,0,-1;0,0,-1;0,0,-1;2,0,0;0,0,-1;` + // row 3
+  `1,0,-1;0,0,-1;0,0,-1;3,0,-1;0,0,-1;` + // row 4
+  `1,0,-1;0,0,-1;0,0,-1;2,0,1;0,0,-1;` + // row 5
+  `0`; // 0 is the current player
+
+
+  sendTestLayout = async (layout: string) => {
+    try {
+        const response = await fetch(`http://localhost:8080/testLayout?layout=${layout}`);
+        const json = await response.json();
+        this.setState({
+            cells: json['cells'],
+            winner: json['winner'],
+            currentPlayer: json['currentPlayer'],
+            gamePhase: 2,
+            workerPhase: 0,
+            validCells: json['validCells'],
+        });
+        console.log("state", this.state);
+        this.testing = true;
+    } catch (error) {
+        console.error('Error parsing JSON:', error);
+    }
+  };
+  
   render(): React.ReactNode {
     return (
       <div className="app">
@@ -218,6 +249,7 @@ class App extends React.Component<Props, State> {
         </div>
         <div id="bottombar">
           <button onClick={this.newGame}>New Game</button>
+          <button onClick={() => this.sendTestLayout(this.testLayout)}>Test Layout</button>
         </div>
       </div>
     );

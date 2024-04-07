@@ -39,40 +39,6 @@ public class GameState {
 
 
     // /** Getters and Setters **/
-    // /**
-    //  * Returns the cells of the game state.
-    //  *
-    //  * @return an array of Cell objects representing the cells of the game state
-    //  */
-    // public Cell[] getCells() {
-    //     Cell[] gameCells = new Cell[25];
-    //     Board board = game.getBoard();
-
-    //     for (int i = 0; i < 5; i++) {
-    //         for (int j = 0; j < 5; j++) {
-    //             Cell cell = board.getCell(i, j);
-    //             int height = cell.getHeight();
-    //             boolean hasDome = cell.hasDome();
-    //             boolean isOccupied = cell.isOccupied();
-
-    //             // Check which player occupies the cell
-    //             Player player = null;
-    //             for (Player p : game.getPlayers()) {
-    //                 for (Cell c : p.getWorkerCells()) {
-    //                     if (c.equals(cell)) {
-    //                         player = p;
-    //                         break;
-    //                     }
-    //                 }
-    //             }
-
-    //             gameCells[5 * i + j] = new Cell(i, j, height, hasDome, isOccupied, player.getPlayerId());
-    //         }
-    //     }
-
-    //     return gameCells;
-    // }
-
     /**
      * Returns the winner of the game state.
      *

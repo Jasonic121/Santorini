@@ -1,3 +1,4 @@
+// Cell.java
 package com.santorini;
 
 /**
@@ -8,8 +9,7 @@ public class Cell {
     private int yPosition;
     private int height;
     private boolean hasDome;
-    private boolean occupied;
-    private int occupiedBy;
+    private Worker worker;
 
     /**
      * Constructs a new Cell object with the specified x and y positions.
@@ -22,7 +22,7 @@ public class Cell {
         this.yPosition = y;
         this.height = 0;
         this.hasDome = false;
-        this.occupied = false;
+        this.worker = null;
     }
 
     /**
@@ -44,20 +44,35 @@ public class Cell {
      */
 
     /**
-     * Sets the occupied status of the cell.
-     * @param occupied The occupied status of the cell.
+     * Sets the worker on the cell.
      */
-    public void setOccupied(boolean occupied) {
-        this.occupied = occupied;
+    public void setWorker(Worker worker) {
+        this.worker = worker;
     }
 
     /**
-     * Sets the player ID of the player occupying the cell.
-     *
-     * @param playerId The ID of the player occupying the cell.
+     * Removes the worker from the cell.
      */
-    public void setOccupiedBy(int playerId) {
-        this.occupiedBy = playerId;
+    public void removeWorker() {
+        this.worker = null;
+    }
+
+    /**
+     * Sets the height of the cell.
+     *
+     * @param height The height to be set for the cell.
+     */
+    public void setHeight(int height) {
+        this.height = height;
+    }
+
+    /**
+     * Sets the dome status of the cell.
+     *
+     * @param hasDome The dome status to be set for the cell.
+     */
+    public void setDome(boolean hasDome) {
+        this.hasDome = hasDome;
     }
 
     /**
@@ -102,19 +117,28 @@ public class Cell {
     }
 
     /**
-     * Returns true if the cell is occupied, false otherwise.
+     * Returns true if the cell is occupied by a worker, false otherwise.
      *
-     * @return true if the cell is occupied, false otherwise
+     * @return true if the cell is occupied by a worker, false otherwise
      */
     public boolean isOccupied() {
-        return occupied;
+        return worker != null;
+    }
+
+    /**
+     * Returns the worker occupying the cell.
+     *
+     * @return The worker occupying the cell, or null if no worker is present.
+     */
+    public Worker getWorker() {
+        return worker;
     }
 
     @Override
     public String toString() {
         return String.format(
             "{\"x\":%d,\"y\":%d,\"height\":%d,\"hasDome\":%b,\"occupied\":%b,\"occupiedBy\":%d}",
-            xPosition, yPosition, height, hasDome, occupied, occupiedBy
+            xPosition, yPosition, height, hasDome, isOccupied(), worker != null ? worker.getOwner().getPlayerId() : -1
         );
     }
 }

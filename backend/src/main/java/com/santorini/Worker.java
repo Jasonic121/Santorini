@@ -28,8 +28,7 @@ public class Worker {
         if (initialCell.isOccupied()) {
             throw new IllegalStateException("Cannot place a worker on an occupied cell");
         }
-        initialCell.setOccupied(true);
-        initialCell.setOccupiedBy(owner.getPlayerId());
+        initialCell.setWorker(this);
         currentCell = initialCell;
     }
 
@@ -40,9 +39,8 @@ public class Worker {
      */
     public void moveWorkerToCell(Cell destination) {
         if (validateMove(destination)) {
-            currentCell.setOccupied(false);
-            destination.setOccupied(true);
-            destination.setOccupiedBy(owner.getPlayerId());
+            currentCell.removeWorker();
+            destination.setWorker(this);
             currentCell = destination;
         }
     }
@@ -56,8 +54,10 @@ public class Worker {
         if (destination.isOccupied()) {
             throw new IllegalStateException("Cannot move to an occupied cell");
         }
-        if (Math.abs(destination.getHeight() - currentCell.getHeight()) > 1) {
-            throw new IllegalStateException("Cannot move to a cell that is more than one level higher");
+        if (destination.getHeight() > currentCell.getHeight()) { // Moving up
+            if (destination.getHeight() - currentCell.getHeight() > 1) {
+                throw new IllegalStateException("Cannot move to a cell that is more than one level higher");
+            }
         }
         if (destination.hasDome()) {
             throw new IllegalStateException("Cannot move to a cell that has a dome");
@@ -119,5 +119,12 @@ public class Worker {
      */
     public int getWorkerId() {
         return workerId;
+    }
+    /**
+     * Sets the current cell of the worker.
+     * @param currentCell the current cell of the worker
+     */
+    public void setCurrentCell(Cell currentCell) {
+        this.currentCell = currentCell;
     }
 }

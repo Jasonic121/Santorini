@@ -1,3 +1,4 @@
+// Player.java
 package com.santorini;
 import java.util.ArrayList;
 
@@ -6,7 +7,7 @@ import java.util.ArrayList;
  */
 public class Player {
     private int playerId;
-    private ArrayList<Worker> workers;
+    private Worker[] workers;
     private int movePoints = 1;
     private int buildPoints = 1;
 
@@ -18,9 +19,9 @@ public class Player {
      */
     public Player(int playerId) {
         this.playerId = playerId;
-        this.workers = new ArrayList<Worker>();
-        this.workers.add(new Worker(this, 0));
-        this.workers.add(new Worker(this, 1));
+        this.workers = new Worker[2];
+        this.workers[0] = new Worker(this, 0);
+        this.workers[1] = new Worker(this, 1);
     }
 
     /**
@@ -30,7 +31,7 @@ public class Player {
      * @param initialCell the initial cell where the worker will be placed
      */
     public void placeWorkerOnBoard(int workerIndex, Cell initialCell) {
-        workers.get(workerIndex).placeInitialWorker(initialCell);
+        workers[workerIndex].placeInitialWorker(initialCell);
     }
 
     /**
@@ -41,7 +42,7 @@ public class Player {
      * @param destinationCell the cell where the worker will be moved to
      */
     public void moveWorker(int workerIndex, Cell destinationCell) {
-        workers.get(workerIndex).moveWorkerToCell(destinationCell);
+        workers[workerIndex].moveWorkerToCell(destinationCell);
         movePoints--;
     }
 
@@ -69,6 +70,7 @@ public class Player {
             if (worker.getCurrentCell().getHeight() == winHeight) {
                 return true;
             }
+            System.out.println("Worker " + worker.getWorkerId() + " height: " + worker.getCurrentCell().getHeight());
         }
         return false;
     }
@@ -145,11 +147,16 @@ public class Player {
      * @return the current cell of the worker
      */
     public Cell getWorkerCurrentCell(int workerIndex) {
-        return workers.get(workerIndex).getCurrentCell();
+        return workers[workerIndex].getCurrentCell();
     }
     
-    public int getWorkerAmount() {
-        return workers.size();
+    /**
+     * Returns the number of workers the player has.
+     *
+     * @return the number of workers the player has
+     */
+    public int getWorkerCount() {
+        return workers.length;
     }
 
     /**
@@ -159,15 +166,15 @@ public class Player {
      * @return the worker at the specified index
      */
     public Worker getWorker(int workerIndex) {
-        return workers.get(workerIndex);
+        return workers[workerIndex];
     }
 
     /**
-     * Returns the list of workers belonging to this player.
+     * Returns an array of the player's workers.
      *
-     * @return the list of workers
+     * @return an array of the player's workers
      */
-    public ArrayList<Worker> getWorkers() {
+    public Worker[] getWorkers() {
         return workers;
     }
 
@@ -177,21 +184,36 @@ public class Player {
      * @return an array of cells occupied by the player's workers
      */
     public Cell[] getWorkerCells() {
-        Cell[] workerCells = new Cell[workers.size()];
-        for (int i = 0; i < workers.size(); i++) {
-            workerCells[i] = workers.get(i).getCurrentCell();
+        Cell[] workerCells = new Cell[workers.length];
+        for (int i = 0; i < workers.length; i++) {
+            workerCells[i] = workers[i].getCurrentCell();
         }
         return workerCells;
     }
 
+    /**
+     * Returns the player's ID.
+     *
+     * @return the player's ID
+     */
     public int getPlayerId() {
         return playerId;
     }
 
+    /**
+     * Returns the player's remaining move points.
+     *
+     * @return the player's remaining move points
+     */
     public int getMovePoints() {
         return movePoints;
     }
 
+    /**
+     * Returns the player's remaining build points.
+     *
+     * @return the player's remaining build points
+     */
     public int getBuildPoints() {
         return buildPoints;
     }
