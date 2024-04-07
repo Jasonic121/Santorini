@@ -54,11 +54,8 @@ public class Game {
     public void executeMoveTurn(int workerId, int x, int y) {
         System.out.println("Player " + currentPlayerIndex + "'s Move turn.");
         currentPlayer.resetActionPoints();
-        System.out.println("Worker current cell: " + currentPlayer.getWorker(workerId).getCurrentCell().getX() + ", " + currentPlayer.getWorker(workerId).getCurrentCell().getY() + " height: " + currentPlayer.getWorker(workerId).getCurrentCell().getHeight());
-
         validCells = this.board.validateCellsForMoving(currentPlayer.getWorker(workerId).getCurrentCell());
         moveWorkerUntilPointsExhausted(workerId, x, y);
-        System.out.println("Worker current cell: " + currentPlayer.getWorker(workerId).getCurrentCell().getX() + ", " + currentPlayer.getWorker(workerId).getCurrentCell().getY() + " height: " + currentPlayer.getWorker(workerId).getCurrentCell().getHeight());
         winCondition();
         loseCondition();
     }
@@ -187,6 +184,11 @@ public class Game {
     /**
      * Getter Methods
      * --------------
+     */
+
+    /**
+     * Sets the current player in the game.
+     * @param player the player to set as the current player
      */
     public void setCurrentPlayer(Player player) {
         this.currentPlayer = player;

@@ -45,6 +45,7 @@ public class Cell {
 
     /**
      * Sets the worker on the cell.
+     * @param worker The worker to be set on the cell.
      */
     public void setWorker(Worker worker) {
         this.worker = worker;

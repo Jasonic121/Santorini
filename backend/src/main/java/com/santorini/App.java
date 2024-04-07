@@ -5,6 +5,8 @@ import java.util.Map;
 
 public class App extends NanoHTTPD {
     private static final int PORT_NUM = 8080;
+    private static final int ROW_CELL = 5;
+    private static final int BOARD_SIZE = 25;
     private int totalWorkersPlaced;
     private Game game;
     private Worker selectedWorker;
@@ -117,8 +119,8 @@ public class App extends NanoHTTPD {
             String layout = params.get("layout");
             if (layout != null) {
                 String[] testCells = layout.split(";");
-                for (int i = 0; i < testCells.length; i += 5) {
-                    for (int j = i; j < i + 5 && j < testCells.length; j++) {
+                for (int i = 0; i < testCells.length; i += ROW_CELL) {
+                    for (int j = i; j < i + ROW_CELL && j < testCells.length; j++) {
                         System.out.print(testCells[j] + ";");
                     }
                     System.out.println();
@@ -161,7 +163,7 @@ public class App extends NanoHTTPD {
     private void setupTestLayout(String layout) {
         // Reset the game
         this.game = new Game();
-        totalWorkersPlaced = 4;
+        totalWorkersPlaced = ROW_CELL - 1;
         selectedWorker = null;
         validCells = null;
         workerPhase = 0;
@@ -169,14 +171,14 @@ public class App extends NanoHTTPD {
         int player2WorkerIDCounter = 0;
         // Parse the layout string and set up the board accordingly
         String[] testCells = layout.split(";");
-        if (testCells.length != 26) {
+        if (testCells.length != BOARD_SIZE + 1) {
             System.out.println("Invalid layout format: The board should have 26 cells");
             return;
         }
-        for (int i = 0; i < 5; i++) {
-            for (int j = 0; j < 5; j++) {
-                String[] cellInfo = testCells[i * 5 + j].split(",");
-                if (cellInfo.length != 3) {
+        for (int i = 0; i < ROW_CELL; i++) {
+            for (int j = 0; j < ROW_CELL; j++) {
+                String[] cellInfo = testCells[i * ROW_CELL + j].split(",");
+                if (cellInfo.length != ROW_CELL - 2) {
                     System.out.println("Invalid layout format: Each cell should have 3 characters");
                     return;
                 }
@@ -201,14 +203,12 @@ public class App extends NanoHTTPD {
                     }
                     testWorker.setCurrentCell(cell);
                     cell.setWorker(testWorker);
-                    System.out.println("Worker " + testWorker.getWorkerId() + " owned by Player: "+ testPlayer.getPlayerId()+ " placed at (" + i + ", " + j + ")");
-                    System.out.println("Cell " + i + ", " + j + " height: " + height + ", hasDome: " + hasDome + ", occupied:" + cell.isOccupied() + ", occupied by: " + occupiedBy);
                 }
             }
         }
     
         // Set the current player based on the last character of the layout string
-        if (layout.length() < testCells.length * 4) {
+        if (layout.length() < testCells.length * ROW_CELL - 1) {
             System.out.println("Invalid layout format: Missing current player information");
             return;
         }
