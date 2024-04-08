@@ -1,4 +1,6 @@
 # Santorini Game
+![intro](https://github.com/CMU-17-214/s24-hw3-santorini-Jasonic121/assets/54169592/16fe87e0-41db-4eef-aa4e-46c59fc978b7)
+
 This is an implementation of the Santorini board game using Java for the backend and React for the frontend. The game allows two players to compete against each other, taking turns to move their workers and build towers on the game board.
 ## Table of Contents
 - Features
@@ -56,3 +58,4 @@ The project consists of two main directories:
 - `frontend`: Contains the React source code for the user interface.
 ## Contributing
 Contributions are welcome! If you find any issues or have suggestions for improvements, please create an issue or submit a pull request.
+![icon](https://github.com/CMU-17-214/s24-hw3-santorini-Jasonic121/assets/54169592/f96a71de-a18d-43b5-9484-39bd94b67ef2)
