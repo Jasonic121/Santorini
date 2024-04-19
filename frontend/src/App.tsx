@@ -43,8 +43,8 @@ class App extends React.Component<Props, State> {
       isGameOver: false,
       showGodCardSelection: true,
       selectedGodCards: [],
-      player1GodCard: null,
-      player2GodCard: null,
+    player1GodCard: null,
+    player2GodCard: null,
     };
   }
 
@@ -71,25 +71,30 @@ class App extends React.Component<Props, State> {
     }
   };
 
-  handleGodCardSelection = async (selectedCard: GodCardInterface, playerId: number) => {
-    if (playerId === 1) {
-      this.setState({ player1GodCard: selectedCard });
-    } else if (playerId === 2) {
-      this.setState({ player2GodCard: selectedCard });
+  handleGodCardSelection = async (selectedCard: GodCardInterface) => {
+    const { selectedGodCards } = this.state;
+    const playerIndex = selectedGodCards.length;
+
+    if (playerIndex < 2) {
+      const updatedSelection = [...selectedGodCards, selectedCard];
+      this.setState({ selectedGodCards: updatedSelection });
+
+      if (updatedSelection.length === 2) {
+        const player1GodCard = updatedSelection[0].name;
+        const player2GodCard = updatedSelection[1].name;
+
+        const response = await fetch(`http://localhost:8080/godCardSelection?player1GodCard=${player1GodCard}&player2GodCard=${player2GodCard}`);
+        const json = await response.json();
+        this.setState({
+          cells: json['cells'],
+          winner: json['winner'],
+          currentPlayer: json['currentPlayer'],
+          gamePhase: 1,
+          showGodCardSelection: false,
+        });
+      }
     }
-  
-    // Send the selected god cards to the server
-    const response = await fetch(`http://localhost:8080/godCardSelection?player1GodCard=${this.state.player1GodCard?.name}&player2GodCard=${this.state.player2GodCard?.name}`);
-    const json = await response.json();
-    this.setState({
-      cells: json['cells'],
-      winner: json['winner'],
-      currentPlayer: json['currentPlayer'],
-      gamePhase: 1,
-      showGodCardSelection: false,
-    });
   };
-  
 
   handleWorkerSelection = async (clickedCell: Cell | undefined, x: number, y: number) => {
     const response = await fetch(`http://localhost:8080/selectedWorker?workerphase=${this.state.workerPhase}&x=${x}&y=${y}`);
