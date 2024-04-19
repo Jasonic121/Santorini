@@ -18,6 +18,7 @@
 
 .cell:hover {
   background-color: rgba(100, 238, 226, 0.6);
+  transform: scale(1.1);
 }
 
 .height-indicator {

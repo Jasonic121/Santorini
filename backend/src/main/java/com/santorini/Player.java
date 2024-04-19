@@ -1,6 +1,5 @@
 // Player.java
 package com.santorini;
-import java.util.ArrayList;
 
 /**
  * Represents a player in the Santorini board game.
@@ -10,7 +9,7 @@ public class Player {
     private Worker[] workers;
     private int movePoints = 1;
     private int buildPoints = 1;
-
+    private GodCard godCard;    
     /**
      * Constructs a new player with the given player ID.
      * Initializes the player with two workers.
@@ -19,6 +18,7 @@ public class Player {
      */
     public Player(int playerId) {
         this.playerId = playerId;
+        this.godCard = godCard;
         this.workers = new Worker[2];
         this.workers[0] = new Worker(this, 0);
         this.workers[1] = new Worker(this, 1);
@@ -215,5 +215,23 @@ public class Player {
      */
     public int getBuildPoints() {
         return buildPoints;
+    }
+    
+    /**
+     * Returns the GodCard associated with this player.
+     *
+     * @return the GodCard associated with this player
+     */
+    public GodCard getGodCard() {
+        return godCard;
+    }
+
+    /**
+     * Sets the God card for the player.
+     * 
+     * @param godCard the God card to set
+     */
+    public void setGodCard(GodCard godCard) {
+        this.godCard = godCard;
     }
 }

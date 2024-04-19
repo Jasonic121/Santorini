@@ -46,6 +46,18 @@ public class App extends NanoHTTPD {
             validCells = null;
             workerPhase = 0;
 
+        } else if (uri.equals("/godCardSelection")) {
+            String player1GodCard = params.get("player1GodCard");
+            String player2GodCard = params.get("player2GodCard");
+            if (player1GodCard != null && player2GodCard != null) {
+                // Set the god cards for both players
+                GodCard godCard1 = game.getGodCardByName(params.get("player1GodCard"));
+                GodCard godCard2 = game.getGodCardByName(params.get("player2GodCard"));
+                game.getPlayers().get(0).setGodCard(godCard1);
+                game.getPlayers().get(1).setGodCard(godCard2);
+
+                System.out.println("God cards selected: Player 1 - " + player1GodCard + ", Player 2 - " + player2GodCard);
+            }
         } else if (uri.equals("/setup")) {
             String cellCoords = params.get("cell1");
             if (cellCoords == null) {

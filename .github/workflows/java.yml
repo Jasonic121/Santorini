@@ -36,3 +36,9 @@ jobs:
         run: |
           cd backend
           mvn -f pom.xml site
+
+      # Runs type checker for Java files
+      - name: Run Maven command in 'frontend' directory
+        run: |
+          cd frontend
+          npm build

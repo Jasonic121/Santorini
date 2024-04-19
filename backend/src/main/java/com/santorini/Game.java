@@ -55,7 +55,9 @@ public class Game {
         System.out.println("Player " + currentPlayerIndex + "'s Move turn.");
         currentPlayer.resetActionPoints();
         validCells = this.board.validateCellsForMoving(currentPlayer.getWorker(workerId).getCurrentCell());
+        currentPlayer.getGodCard().onBeforeMove(currentPlayer, workerId, x, y);
         moveWorkerUntilPointsExhausted(workerId, x, y);
+        currentPlayer.getGodCard().onAfterMove(currentPlayer, workerId, x, y);
         winCondition();
         loseCondition();
     }
@@ -65,7 +67,9 @@ public class Game {
         currentPlayer.resetActionPoints();
 
         validCells = this.board.validateCellsForBuilding(currentPlayer.getWorker(workerId).getCurrentCell());
+        currentPlayer.getGodCard().onBeforeBuild(currentPlayer, workerId, x, y);
         buildUntilPointsExhausted(workerId, x, y);
+        currentPlayer.getGodCard().onAfterBuild(currentPlayer, workerId, x, y);
         winCondition();
         loseCondition();
         nextPlayer();
@@ -133,7 +137,7 @@ public class Game {
      * If the current player has won, it prints a message and ends the game.
      */
     private void winCondition() {
-        if (currentPlayer.checkWin()) {
+        if (currentPlayer.getGodCard().checkWinCondition(currentPlayer) || currentPlayer.checkWin()) {
             System.out.println("Player " + currentPlayer.getPlayerId() + " has won!");
             setWinner(currentPlayerIndex);
             endGame();
@@ -264,5 +268,21 @@ public class Game {
      */
     public int getWinnerId() {
         return winner != null ? winner.getPlayerId() : -1;
+    }
+
+    // Example method within your Game or a separate factory class
+    public GodCard getGodCardByName(String godCardName) {
+        switch (godCardName) {
+            case "Demeter":
+                return new DemeterGodCard();
+            case "Hephaestus":
+                return new HephaestusGodCard();
+            case "Minotaur":
+                return new MinotaurGodCard();
+            case "Pan":
+                return new PanGodCard();
+            default:
+                throw new IllegalArgumentException("Unknown god card: " + godCardName);
+        }
     }
 }

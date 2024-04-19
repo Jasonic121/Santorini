@@ -3,15 +3,27 @@ import React from 'react';
 import { GameState, Cell } from './Game.tsx';
 import BoardCell from './Cell.tsx';
 import './App.css';
+import demeterCard from './resources/img/cards/demeter/card.png';
+import hephaestusCard from './resources/img/cards/hephaestus/card.png';
+import minotaurCard from './resources/img/cards/minotaur/card.png';
+import panCard from './resources/img/cards/pan/card.png';
 
 interface Props {}
 
+interface GodCardInterface {
+  name: string;
+  image: string;
+}
 interface State extends GameState {
-  gamePhase: number; // 0 for not started, 1 for setup, 2 for Worker Selection, 3 for Target Cell Selection, 4 for Game Over
+  gamePhase: number; // 0 for god card selection, 1 for setup, 2 for Worker Selection, 3 for Target Cell Selection, 4 for Game Over
   workerPhase: number; // 0 for move, 1 for build
   selectedCells: Cell[];
   selectedWorkerCell: Cell | null;
   isGameOver: boolean;
+  showGodCardSelection: boolean;
+  selectedGodCards: GodCardInterface[];
+  player1GodCard: GodCardInterface | null;
+  player2GodCard: GodCardInterface | null;
 }
 
 class App extends React.Component<Props, State> {
@@ -29,6 +41,10 @@ class App extends React.Component<Props, State> {
       selectedWorkerCell: null,
       validCells: [],
       isGameOver: false,
+      showGodCardSelection: true,
+      selectedGodCards: [],
+      player1GodCard: null,
+      player2GodCard: null,
     };
   }
 
@@ -37,7 +53,7 @@ class App extends React.Component<Props, State> {
       const response = await fetch('http://localhost:8080/newgame');
       const json = await response.json();
       this.setState({
-        gamePhase: 1,
+        gamePhase: 0,
         cells: json['cells'],
         selectedCells: [],
         winner: json['winner'],
@@ -46,12 +62,34 @@ class App extends React.Component<Props, State> {
         selectedWorkerCell: null,
         workerPhase: 0,
         isGameOver: false,
+        showGodCardSelection: true,
+        selectedGodCards: [],
       });
       console.log('cells', this.state.cells);
     } catch (error) {
       console.error('Error parsing JSON:', error);
     }
   };
+
+  handleGodCardSelection = async (selectedCard: GodCardInterface, playerId: number) => {
+    if (playerId === 1) {
+      this.setState({ player1GodCard: selectedCard });
+    } else if (playerId === 2) {
+      this.setState({ player2GodCard: selectedCard });
+    }
+  
+    // Send the selected god cards to the server
+    const response = await fetch(`http://localhost:8080/godCardSelection?player1GodCard=${this.state.player1GodCard?.name}&player2GodCard=${this.state.player2GodCard?.name}`);
+    const json = await response.json();
+    this.setState({
+      cells: json['cells'],
+      winner: json['winner'],
+      currentPlayer: json['currentPlayer'],
+      gamePhase: 1,
+      showGodCardSelection: false,
+    });
+  };
+  
 
   handleWorkerSelection = async (clickedCell: Cell | undefined, x: number, y: number) => {
     const response = await fetch(`http://localhost:8080/selectedWorker?workerphase=${this.state.workerPhase}&x=${x}&y=${y}`);
@@ -63,36 +101,33 @@ class App extends React.Component<Props, State> {
 
     if (clickedCell && clickedCell.occupied && Number(clickedCell.occupiedBy) === Number(this.state.currentPlayer)) {
       console.log('Worker belongs to current player! Now choose a target cell...');
-      this.setState({ gamePhase: 3, selectedWorkerCell: clickedCell, validCells: json['validCells']});
+      this.setState({ gamePhase: 3, selectedWorkerCell: clickedCell, validCells: json['validCells'] });
     } else {
       console.log('Worker does not belong to current player');
     }
   };
 
-
   handleSelectTargetCell = async (clickedCell: Cell | undefined, x: number, y: number) => {
     const isValidCell = this.state.validCells.find(cell => cell.x === x && cell.y === y);
 
     if (isValidCell) {
-        const response = await fetch(`http://localhost:8080/selectedTargetCell?workerphase=${this.state.workerPhase}&x=${x}&y=${y}`);
-        console.log('Selected target cell:', clickedCell);
-        const json = await response.json();
-        this.setState((prevState) => ({ 
-          cells: json['cells'], 
-          winner: json['winner'], 
-          currentPlayer: json['currentPlayer'], 
-          selectedWorkerCell: null,
-          workerPhase: prevState.workerPhase === 0 ? 1 : 0,
-          validCells: json['validCells'],
-          // gamePhase will change to 2 if the previous workerPhase was 1 and the previous gamePhase was 3
-          gamePhase: prevState.workerPhase === 1 && prevState.gamePhase === 3 ? 2 : prevState.gamePhase,
-          isGameOver: json['winner'] !== -1,
-        }));
+      const response = await fetch(`http://localhost:8080/selectedTargetCell?workerphase=${this.state.workerPhase}&x=${x}&y=${y}`);
+      console.log('Selected target cell:', clickedCell);
+      const json = await response.json();
+      this.setState((prevState) => ({
+        cells: json['cells'],
+        winner: json['winner'],
+        currentPlayer: json['currentPlayer'],
+        selectedWorkerCell: null,
+        workerPhase: prevState.workerPhase === 0 ? 1 : 0,
+        validCells: json['validCells'],
+        gamePhase: prevState.workerPhase === 1 && prevState.gamePhase === 3 ? 2 : prevState.gamePhase,
+        isGameOver: json['winner'] !== -1,
+      }));
     } else {
-        console.log('Clicked cell is not a valid move or build location');
+      console.log('Clicked cell is not a valid move or build location');
     }
-}
-
+  };
 
   handleSetupPhase = (clickedCell: Cell | undefined) => {
     if (clickedCell && !this.state.selectedCells.some(cell => cell.x === clickedCell.x && cell.y === clickedCell.y)) {
@@ -104,7 +139,6 @@ class App extends React.Component<Props, State> {
     }
     console.log('Selected cells:', this.state.selectedCells);
   };
-
 
   setupInitialWorker = async (cell: Cell) => {
     const { selectedCells } = this.state;
@@ -149,28 +183,20 @@ class App extends React.Component<Props, State> {
 
     if (winner === -1) {
       return (
-        <div className = 'in-game'>
-          <a className='instruction-text'>
-            Player {currentPlayer}'s Turn
-          </a>
-          <a className='instruction-text'>
-            {gamePhaseString}
-          </a>
+        <div className='in-game'>
+          <div className='instruction-text'>
+            Player {currentPlayer}'s Turn     {gamePhaseString}
+          </div>
         </div>
       );
     } else {
       return (
-        <div className = 'in-game'>
-          <a className='instruction-text'>
-            Thank you for playing!
-          </a>
-          <a className='instruction-text'>
-            Press New Game to Start
-          </a>
-          <div className = 'end-game'>
-            <a>
-              PLAYER {+winner + 1} WINS!
-            </a>
+        <div className='in-game'>
+          <div className='instruction-text'>
+            Thank you for playing!     Press New Game to Start
+          </div>
+          <div className='end-game'>
+            PLAYER {+winner + 1} WINS!
           </div>
         </div>
       );
@@ -182,7 +208,7 @@ class App extends React.Component<Props, State> {
       e.preventDefault();
       if (this.state.isGameOver) {
         console.log('Game is over. Please start a new game.');
-        this.setState({ validCells: []});
+        this.setState({ validCells: [] });
         return;
       }
       console.log("gamePhase: ", this.state.gamePhase, "workerPhase: ", this.state.workerPhase);
@@ -200,19 +226,19 @@ class App extends React.Component<Props, State> {
           break;
       }
     };
-  
+
     return (
       <div key={index}>
         <a href='/' onClick={onClick}>
-        <BoardCell
-          cell={cell}
-          selectedWorkerCell={this.state.selectedWorkerCell}
-          validCells={this.state.validCells}
-          isCurrentPlayerWorker={Number(cell.occupiedBy) === this.state.currentPlayer}
-          currentPlayer={this.state.currentPlayer}
-          currentGamePhase={this.state.gamePhase}
-          currentWorkerPhase={this.state.workerPhase}
-        ></BoardCell>
+          <BoardCell
+            cell={cell}
+            selectedWorkerCell={this.state.selectedWorkerCell}
+            validCells={this.state.validCells}
+            isCurrentPlayerWorker={Number(cell.occupiedBy) === this.state.currentPlayer}
+            currentPlayer={this.state.currentPlayer}
+            currentGamePhase={this.state.gamePhase}
+            currentWorkerPhase={this.state.workerPhase}
+          ></BoardCell>
         </a>
       </div>
     );
@@ -225,53 +251,95 @@ class App extends React.Component<Props, State> {
     }
   }
 
-  // Test Layout: This layout is used to test the game logic
-  // The layout is a string of 25 cells separated by semicolons
-  // The first 3 numbers in each cell represent the (height, dome, occupiedBy) of the cell
-  testLayout = 
-  `1,0,-1;0,0,-1;2,0,1;0,0,-1;0,0,1;` + // row 1
-  `1,0,-1;0,0,-1;0,0,-1;2,0,0;3,0,-1;` + // row 2
-  `1,0,-1;0,0,-1;0,0,-1;2,0,0;3,0,-1;` + // row 3
-  `1,0,-1;0,0,-1;0,0,-1;3,0,-1;0,0,-1;` + // row 4
-  `1,0,-1;0,0,-1;0,0,-1;2,0,-1;0,0,-1;` + // row 5
-  `0`; // 0 is the current player
-
+  testLayout =
+    `1,0,-1;0,0,-1;2,0,1;0,0,-1;0,0,1;` + // row 1
+    `1,0,-1;0,0,-1;0,0,-1;2,0,0;3,0,-1;` + // row 2
+    `1,0,-1;0,0,-1;0,0,-1;2,0,0;3,0,-1;` + // row 3
+    `1,0,-1;0,0,-1;0,0,-1;3,0,-1;0,0,-1;` + // row 4
+    `1,0,-1;0,0,-1;0,0,-1;2,0,-1;0,0,-1;` + // row 5
+    `0`; // 0 is the current player
 
   sendTestLayout = async (layout: string) => {
     try {
-        const response = await fetch(`http://localhost:8080/testLayout?layout=${layout}`);
-        const json = await response.json();
-        this.setState({
-            cells: json['cells'],
-            winner: json['winner'],
-            currentPlayer: json['currentPlayer'],
-            gamePhase: 2,
-            workerPhase: 0,
-            validCells: json['validCells'],
-        });
-        console.log("state", this.state);
-        this.testing = true;
+      const response = await fetch(`http://localhost:8080/testLayout?layout=${layout}`);
+      const json = await response.json();
+      this.setState({
+        cells: json['cells'],
+        winner: json['winner'],
+        currentPlayer: json['currentPlayer'],
+        gamePhase: 2,
+        workerPhase: 0,
+        validCells: json['validCells'],
+      });
+      console.log("state", this.state);
+      this.testing = true;
     } catch (error) {
-        console.error('Error parsing JSON:', error);
+      console.error('Error parsing JSON:', error);
     }
   };
-  
+
+  pass = async () => {
+    const response = await fetch('http://localhost:8080/pass');
+    const json = await response.json();
+    this.setState({
+      cells: json['cells'],
+      winner: json['winner'],
+      currentPlayer: json['currentPlayer'],
+      gamePhase: 2,
+      workerPhase: 0,
+      validCells: json['validCells'],
+    });
+  };
+
   render(): React.ReactNode {
+    const selectedGodCards = this.state.selectedGodCards;
+
     return (
       <div className="app">
-        <div id="instructions">{this.instructions()}</div>
-        {/* {this.state.isGameOver && (
-          <div className="game-over">
-            <div className="game-over-image"></div>
+        {this.state.showGodCardSelection ? (
+          <div className="god-card-selection">
+            <div
+              className={`god-card ${selectedGodCards.some(card => card.name === 'Demeter') ? 'selected' : ''}`}
+              onClick={() => this.handleGodCardSelection({ name: 'Demeter', image: demeterCard })}
+            >
+              <img src={demeterCard} alt="Demeter" />
+              <span>Demeter</span>
+            </div>
+            <div
+              className={`god-card ${selectedGodCards.some(card => card.name === 'Hephaestus') ? 'selected' : ''}`}
+              onClick={() => this.handleGodCardSelection({ name: 'Hephaestus', image: hephaestusCard })}
+            >
+              <img src={hephaestusCard} alt="Hephaestus" />
+              <span>Hephaestus</span>
+            </div>
+            <div
+              className={`god-card ${selectedGodCards.some(card => card.name === 'Minotaur') ? 'selected' : ''}`}
+              onClick={() => this.handleGodCardSelection({ name: 'Minotaur', image: minotaurCard })}
+            >
+              <img src={minotaurCard} alt="Minotaur" />
+              <span>Minotaur</span>
+            </div>
+            <div
+              className={`god-card ${selectedGodCards.some(card => card.name === 'Pan') ? 'selected' : ''}`}
+              onClick={() => this.handleGodCardSelection({ name: 'Pan', image: panCard })}
+            >
+              <img src={panCard} alt="Pan" />
+              <span>Pan</span>
+            </div>
           </div>
-        )} */}
-        <div id="board">
-          {this.state.cells.map((cell, i) => this.createCell(cell, i))}
-        </div>
-        <div id="bottombar" className='bottom-bar'>
-          <button onClick={this.newGame} className='new-game'>New Game</button>
-          <button onClick={() => this.sendTestLayout(this.testLayout)} className = 'test-layout'>Test Layout</button>
-        </div>
+        ) : (
+          <>
+            <div id="instructions">{this.instructions()}</div>
+            <div id="board">
+              {this.state.cells.map((cell, i) => this.createCell(cell, i))}
+            </div>
+            <div id="bottombar" className='bottom-bar'>
+              <button onClick={this.newGame} className='new-game'>New Game</button>
+              <button onClick={() => this.sendTestLayout(this.testLayout)} className='test-layout'>Test Layout</button>
+              <button onClick={this.pass} className='pass'>Pass</button>
+            </div>
+          </>
+        )}
       </div>
     );
   }

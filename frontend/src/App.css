@@ -22,6 +22,7 @@
   margin-right: 10vw;
   margin-left: 10vw;
 }
+
 .in-game {
   background-image: url('./resources/img/labels/gods_menu.png');
   background-size: cover;
@@ -64,36 +65,6 @@
   position: absolute;
 }
 
-/*
-.game-over {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 3;
-}
-
-.game-over-image {
-  background-image: url('./resources/img/background/victory.png');
-  background-size:cover;
-  background-position: center; 
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  max-width: 100%;
-  max-height: 100%;
-  z-index: 3;
-} */
-
 .bottom-bar {
   display: flex;
   justify-content: space-between;
@@ -103,7 +74,7 @@
   z-index: 4;
 }
 
-.new-game, .test-layout {
+.new-game, .test-layout, .pass {
   font-size: 3vh;
   font-family: 'LillyBelle';
   color: #000000;
@@ -115,6 +86,64 @@
 
 .new-game:hover, .test-layout:hover {
   background-color: rgba(0, 0, 0, 0.2);
+}
+
+/* God Card Selection Overlay */
+.god-card-selection {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.god-card {
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 10px;
+  margin: 0 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.god-card:hover {
+  background-color: #e0e0e0;
+}
+
+.god-card.selected {
+  background-color: #c0c0c0;
+}
+
+.god-card img {
+  width: 100px;
+  height: 100px;
+}
+
+.god-card span {
+  display: block;
+  text-align: center;
+  margin-top: 5px;
+}
+
+.game-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.selected-god-cards {
+  margin-left: 20px;
+}
+
+.player1-god-card,
+.player2-god-card {
+  margin-bottom: 10px;
+}
+
+.player1-god-card img,
+.player2-god-card img {
+  width: 100px;
+  height: 100px;
 }
 
 html,
