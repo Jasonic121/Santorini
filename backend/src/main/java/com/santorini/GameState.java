@@ -15,6 +15,8 @@ public class GameState {
     private int currentPlayerId;
     private Game game;
     private Cell[] validCells;
+    private int gamePhase;
+    private int workerPhase;
 
 
     public GameState(Cell[] cells, Game game, Cell[] validCells) {
@@ -38,7 +40,7 @@ public class GameState {
     }
 
 
-    // /** Getters and Setters **/
+    /** Getters and Setters **/
     /**
      * Returns the winner of the game state.
      *

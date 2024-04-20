@@ -1,7 +1,7 @@
 package com.santorini;
 
 public class DemeterGodCard extends GodCard {
-    private boolean hasBuiltOnce;
+    private boolean hasUsedExtraBuild;
 
     @Override
     public void onBeforeMove(Player player, int workerId, int x, int y) {
@@ -15,16 +15,20 @@ public class DemeterGodCard extends GodCard {
 
     @Override
     public void onBeforeBuild(Player player, int workerId, int x, int y) {
-        // No action required
+        if (!hasUsedExtraBuild) {
+            player.setBuildPoints(player.getBuildPoints() + 1);
+            System.out.println("Demeter: Build points set to: " + player.getBuildPoints());
+        }
     }
 
     @Override
     public void onAfterBuild(Player player, int workerId, int x, int y) {
-        if (!hasBuiltOnce) {
-            hasBuiltOnce = true;
+        if (!hasUsedExtraBuild) {
+            hasUsedExtraBuild = true;
         } else {
+            System.out.println("Demeter: Extra build used");
             player.resetActionPoints();
-            hasBuiltOnce = false;
+            hasUsedExtraBuild = false;
         }
     }
 

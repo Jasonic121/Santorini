@@ -1,6 +1,8 @@
 package com.santorini;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * The Game class represents a game of Santorini.
@@ -14,6 +16,7 @@ public class Game {
     private boolean endGameFlag;
     private Player winner;
     private Cell[] validCells;
+    private Map<String, GodCard> godCards;
 
     // Constructor (initializes the board and players array list, and sets the first player to start the game)
     public Game() {
@@ -30,6 +33,11 @@ public class Game {
         currentPlayer = players.get(currentPlayerIndex);
         
         validCells = null;
+        godCards = new HashMap<>();
+        godCards.put("Demeter", new DemeterGodCard());
+        godCards.put("Hephaestus", new HephaestusGodCard());
+        godCards.put("Minotaur", new MinotaurGodCard());
+        godCards.put("Pan", new PanGodCard());
     }
 
     /**
@@ -65,7 +73,6 @@ public class Game {
     public void executeBuildTurn(int workerId, int x, int y) {
         System.out.println("Player " + currentPlayerIndex + "'s Build turn.");
         currentPlayer.resetActionPoints();
-
         validCells = this.board.validateCellsForBuilding(currentPlayer.getWorker(workerId).getCurrentCell());
         currentPlayer.getGodCard().onBeforeBuild(currentPlayer, workerId, x, y);
         buildUntilPointsExhausted(workerId, x, y);

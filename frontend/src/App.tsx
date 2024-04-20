@@ -3,6 +3,7 @@ import React from 'react';
 import { GameState, Cell } from './Game.tsx';
 import BoardCell from './Cell.tsx';
 import './App.css';
+import GodCardDisplay from './GodCardDisplay.tsx';
 import demeterCard from './resources/img/cards/demeter/card.png';
 import hephaestusCard from './resources/img/cards/hephaestus/card.png';
 import minotaurCard from './resources/img/cards/minotaur/card.png';
@@ -43,8 +44,8 @@ class App extends React.Component<Props, State> {
       isGameOver: false,
       showGodCardSelection: true,
       selectedGodCards: [],
-    player1GodCard: null,
-    player2GodCard: null,
+      player1GodCard: null,
+      player2GodCard: null,
     };
   }
 
@@ -53,14 +54,14 @@ class App extends React.Component<Props, State> {
       const response = await fetch('http://localhost:8080/newgame');
       const json = await response.json();
       this.setState({
-        gamePhase: 0,
+        gamePhase: json['gamePhase'],
+        workerPhase: json['workerPhase'],
         cells: json['cells'],
         selectedCells: [],
         winner: json['winner'],
         currentPlayer: json['currentPlayer'],
         validCells: json['validCells'],
         selectedWorkerCell: null,
-        workerPhase: 0,
         isGameOver: false,
         showGodCardSelection: true,
         selectedGodCards: [],
@@ -72,29 +73,41 @@ class App extends React.Component<Props, State> {
   };
 
   handleGodCardSelection = async (selectedCard: GodCardInterface) => {
-    const { selectedGodCards } = this.state;
-    const playerIndex = selectedGodCards.length;
+    const { currentPlayer, selectedGodCards } = this.state;
+    const newSelection = [...selectedGodCards, selectedCard];
+  
+    if (currentPlayer === 0) {
+      this.setState({ player1GodCard: selectedCard });
+    } else {
+      this.setState({ player2GodCard: selectedCard });
+    }
 
-    if (playerIndex < 2) {
-      const updatedSelection = [...selectedGodCards, selectedCard];
-      this.setState({ selectedGodCards: updatedSelection });
+    console.log('Player', currentPlayer + 1, 'selected', selectedCard.name);
+  
+    this.setState({ selectedGodCards: newSelection });
+    const response = await fetch(`http://localhost:8080/godCardSelection?player=${currentPlayer}&card=${selectedCard.name}`);
+    const json = await response.json();
 
-      if (updatedSelection.length === 2) {
-        const player1GodCard = updatedSelection[0].name;
-        const player2GodCard = updatedSelection[1].name;
-
-        const response = await fetch(`http://localhost:8080/godCardSelection?player1GodCard=${player1GodCard}&player2GodCard=${player2GodCard}`);
-        const json = await response.json();
-        this.setState({
-          cells: json['cells'],
-          winner: json['winner'],
-          currentPlayer: json['currentPlayer'],
-          gamePhase: 1,
-          showGodCardSelection: false,
-        });
-      }
+    this.setState({
+      cells: json['cells'],
+      winner: json['winner'],
+      currentPlayer: json['currentPlayer'], 
+    });
+  
+    if (newSelection.length >= 2) {
+      this.setState({
+        gamePhase: 1,
+        showGodCardSelection: false,
+      });
+    } else {
+      this.setState({
+        currentPlayer: currentPlayer === 0 ? 1 : 0,
+        gamePhase: 0, 
+      });
     }
   };
+  
+  
 
   handleWorkerSelection = async (clickedCell: Cell | undefined, x: number, y: number) => {
     const response = await fetch(`http://localhost:8080/selectedWorker?workerphase=${this.state.workerPhase}&x=${x}&y=${y}`);
@@ -181,32 +194,37 @@ class App extends React.Component<Props, State> {
     }
   };
 
-  instructions = (): string => {
-    const winner = this.state.winner;
-    const currentPlayer = +this.state.currentPlayer + 1;
-    const gamePhaseString = this.getGamePhaseString();
-
-    if (winner === -1) {
-      return (
-        <div className='in-game'>
-          <div className='instruction-text'>
-            Player {currentPlayer}'s Turn     {gamePhaseString}
-          </div>
+  instructions = (): React.ReactNode => {
+    const { winner, currentPlayer, gamePhase, showGodCardSelection, player1GodCard, player2GodCard } = this.state;
+  
+    // Determine the game phase for message display
+    let instructionText;
+    if (winner !== -1) {
+      instructionText = (
+        <div className='end-game'>
+          PLAYER {winner + 1} WINS! Press New Game to Start.
+        </div>
+      );
+    } else if (showGodCardSelection) {
+      instructionText = (
+        <div className='instruction-text'>
+          Player {currentPlayer + 1}, select your god card.{"     "}
         </div>
       );
     } else {
-      return (
-        <div className='in-game'>
-          <div className='instruction-text'>
-            Thank you for playing!     Press New Game to Start
-          </div>
-          <div className='end-game'>
-            PLAYER {+winner + 1} WINS!
-          </div>
+      const gamePhaseString = this.getGamePhaseString();
+      instructionText = (
+        <div className='instruction-text'>
+          Player {currentPlayer + 1}'s Turn - {gamePhaseString}
         </div>
       );
     }
+  
+    return (
+      <div className='in-game'>{instructionText}</div>
+    );
   };
+  
 
   createCell = (cell: Cell, index: number): React.ReactNode => {
     const onClick = (e: React.MouseEvent) => {
@@ -295,48 +313,33 @@ class App extends React.Component<Props, State> {
       validCells: json['validCells'],
     });
   };
-
   render(): React.ReactNode {
-    const selectedGodCards = this.state.selectedGodCards;
+    const { selectedGodCards, gamePhase, currentPlayer, player1GodCard, player2GodCard } = this.state;
+    const displayClass = currentPlayer === 0 ? 'player1-gods-display' : 'player2-gods-display';
+    const currentPlayerGodCard = currentPlayer === 0 ? player1GodCard : player2GodCard;
 
     return (
       <div className="app">
         {this.state.showGodCardSelection ? (
-          <div className="god-card-selection">
-            <div
-              className={`god-card ${selectedGodCards.some(card => card.name === 'Demeter') ? 'selected' : ''}`}
-              onClick={() => this.handleGodCardSelection({ name: 'Demeter', image: demeterCard })}
-            >
-              <img src={demeterCard} alt="Demeter" />
-              <span>Demeter</span>
-            </div>
-            <div
-              className={`god-card ${selectedGodCards.some(card => card.name === 'Hephaestus') ? 'selected' : ''}`}
-              onClick={() => this.handleGodCardSelection({ name: 'Hephaestus', image: hephaestusCard })}
-            >
-              <img src={hephaestusCard} alt="Hephaestus" />
-              <span>Hephaestus</span>
-            </div>
-            <div
-              className={`god-card ${selectedGodCards.some(card => card.name === 'Minotaur') ? 'selected' : ''}`}
-              onClick={() => this.handleGodCardSelection({ name: 'Minotaur', image: minotaurCard })}
-            >
-              <img src={minotaurCard} alt="Minotaur" />
-              <span>Minotaur</span>
-            </div>
-            <div
-              className={`god-card ${selectedGodCards.some(card => card.name === 'Pan') ? 'selected' : ''}`}
-              onClick={() => this.handleGodCardSelection({ name: 'Pan', image: panCard })}
-            >
-              <img src={panCard} alt="Pan" />
-              <span>Pan</span>
-            </div>
+          <div>
+            <div id="instructions">{this.instructions()}</div>
+            <GodCardDisplay
+              selectedGodCards={selectedGodCards}
+              handleGodCardSelection={this.handleGodCardSelection}
+            />
           </div>
         ) : (
           <>
             <div id="instructions">{this.instructions()}</div>
             <div id="board">
               {this.state.cells.map((cell, i) => this.createCell(cell, i))}
+            </div>
+            <div className={displayClass}>
+              <GodCardDisplay
+                selectedGodCards={[player1GodCard, player2GodCard].filter(Boolean)}
+                displayOnlySelected={true}
+                currentPlayer={currentPlayer}
+              />
             </div>
             <div id="bottombar" className='bottom-bar'>
               <button onClick={this.newGame} className='new-game'>New Game</button>
@@ -348,6 +351,7 @@ class App extends React.Component<Props, State> {
       </div>
     );
   }
+  
 }
 
 export default App;

@@ -234,4 +234,22 @@ public class Player {
     public void setGodCard(GodCard godCard) {
         this.godCard = godCard;
     }
+
+    /** 
+     * Sets the player's move points.
+     * 
+     * @param movePoints the move points to set
+     */
+    public void setMovePoints(int movePoints) {
+        this.movePoints = movePoints;
+    }
+
+    /**
+     * Sets the player's build points.
+     * 
+     * @param buildPoints the build points to set
+     */
+    public void setBuildPoints(int buildPoints) {
+        this.buildPoints = buildPoints;
+    }
 }

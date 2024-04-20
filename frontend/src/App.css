@@ -97,53 +97,61 @@
 }
 
 .god-card {
-  background-color: #f0f0f0;
+  background-color: green;
   border: 1px solid #ccc;
-  border-radius: 5px;
+  border-radius: 5vh;
   padding: 10px;
-  margin: 0 10px;
+  margin: 0 5px;
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
 
 .god-card:hover {
-  background-color: #e0e0e0;
+  background-color: green;
+  transform: scale(1.1);
 }
 
 .god-card.selected {
-  background-color: #c0c0c0;
+  background-color: red;
 }
 
 .god-card img {
-  width: 100px;
-  height: 100px;
+  width: 30vh;
+  height: 50vh;
 }
 
-.god-card span {
-  display: block;
-  text-align: center;
-  margin-top: 5px;
-}
-
-.game-container {
+.god-card-display {
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
   display: flex;
-  justify-content: center;
-  align-items: center;
+  gap: 10px;
 }
 
-.selected-god-cards {
-  margin-left: 20px;
+.player1-gods-display {
+  position: absolute; /* Positions it over other content */
+  top: 50%; /* Center vertically - adjust as needed */
+  left: 13%; /* Center horizontally */
+  transform: translate(-50%, -50%); /* Adjusts the positioning to truly center based on its own dimensions */
+  width: 20%; /* Adjust based on your content size */
+  z-index: 10; /* Ensures it sits on top of other elements */
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional shadow for better visibility */
+  text-align: center;
+  border-radius: 10px; /* Optional styling */
 }
 
-.player1-god-card,
-.player2-god-card {
-  margin-bottom: 10px;
-}
-
-.player1-god-card img,
-.player2-god-card img {
-  width: 100px;
-  height: 100px;
+.player2-gods-display {
+  position: absolute; /* Positions it over other content */
+  top: 50%; /* Center vertically - adjust as needed */
+  left: 87%; /* Center horizontally */
+  transform: translate(-50%, -50%); /* Adjusts the positioning to truly center based on its own dimensions */
+  width: 20%; /* Adjust based on your content size */
+  z-index: 10; /* Ensures it sits on top of other elements */
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional shadow for better visibility */
+  text-align: center;
+  border-radius: 10px; /* Optional styling */
 }
 
 html,
