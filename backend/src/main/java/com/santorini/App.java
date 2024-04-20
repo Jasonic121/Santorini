@@ -10,7 +10,6 @@ public class App extends NanoHTTPD {
     private int totalWorkersPlaced;
     private Game game;
     private Worker selectedWorker;
-    private Cell[] validCells;
     
     public App() throws IOException {
         super(PORT_NUM); // Set the port number you want to use
@@ -42,7 +41,6 @@ public class App extends NanoHTTPD {
 
             totalWorkersPlaced = 0;
             selectedWorker = null;
-            validCells = null;
             System.out.println("gamePhase: " + game.getGamePhase());
             System.out.println("workerPhase: " + game.getWorkerPhase());
         } else if (uri.equals("/godCardSelection")) {
@@ -77,8 +75,8 @@ public class App extends NanoHTTPD {
         
             totalWorkersPlaced++;
             game.nextPlayer();
-            System.out.println("gamePhase: " + game.getGamePhase());
-            System.out.println("workerPhase: " + game.getWorkerPhase());
+            // System.out.println("gamePhase: " + game.getGamePhase());
+            // System.out.println("workerPhase: " + game.getWorkerPhase());
         } else if (uri.equals("/selectedWorker")) {
             int x = Integer.parseInt(params.getOrDefault("x", "0"));
             int y = Integer.parseInt(params.getOrDefault("y", "0"));
@@ -86,17 +84,9 @@ public class App extends NanoHTTPD {
             Worker worker = selectWorker(x, y);
             if (worker != null) {
                 selectedWorker = worker;
-                // System.out.println("Selected worker: " + selectedWorker.getWorkerId());
-                
-                // Determine the valid target cells for the selected worker
-                if (game.getCurrentPlayer().getMovePoints() > 0) {
-                    validCells = game.getBoard().validateCellsForMoving(selectedWorker.getCurrentCell());
-                } else if (game.getCurrentPlayer().getBuildPoints() > 0) {
-                    validCells = game.getBoard().validateCellsForBuilding(selectedWorker.getCurrentCell());
-                }
             }
-            System.out.println("gamePhase: " + game.getGamePhase());
-            System.out.println("workerPhase: " + game.getWorkerPhase());
+            // System.out.println("gamePhase: " + game.getGamePhase());
+            // System.out.println("workerPhase: " + game.getWorkerPhase());
         } else if (uri.equals("/selectedTargetCell")) {
             int x = Integer.parseInt(params.getOrDefault("x", "0"));
             int y = Integer.parseInt(params.getOrDefault("y", "0"));
@@ -109,17 +99,18 @@ public class App extends NanoHTTPD {
 
                 if (game.getWorkerPhase() == 0) {
                     // Move phase
+                    System.out.println("\nExecuting move turn...");
                     game.executeMoveTurn(selectedWorker.getWorkerId(), targetCell.getX(), targetCell.getY());
-                    // Get the valid cells for building after moving
-                    validCells = game.getBoard().validateCellsForBuilding(selectedWorker.getCurrentCell());
                     System.out.println("Completed Move!");
+                    System.out.println("gamePhase: " + game.getGamePhase());
+                    System.out.println("workerPhase: " + game.getWorkerPhase());
                 } else {
                     // Build phase          
+                    System.out.println("\nExecuting build turn...");
                     game.executeBuildTurn(selectedWorker.getWorkerId(), targetCell.getX(), targetCell.getY());
-                    validCells = null; // Reset the valid cells
                     System.out.println("Completed Build!");
                 }
-                
+
                 // Reset the selected worker and target cell
                 targetCell = null;
             }
@@ -145,21 +136,6 @@ public class App extends NanoHTTPD {
         // Generate the current game state
         GameState gameState = GameState.getGameState(this.game);
         String json = gameState.toString();
-        
-        // add the valid cells to json
-        json = json.substring(0, json.length() - 1) + ",\"validCells\":";
-        if (validCells == null) {
-            json += "[]}";
-        } else {
-            json += "[";
-            for (int i = 0; i < validCells.length; i++) {
-                json += validCells[i].toString();
-                if (i < validCells.length - 1) {
-                    json += ",";
-                }
-            }
-            json += "]}";
-        }
 
         Response response = newFixedLengthResponse(Response.Status.OK, "application/json", json);
 
@@ -177,8 +153,6 @@ public class App extends NanoHTTPD {
         this.game = new Game();
         totalWorkersPlaced = ROW_CELL - 1;
         selectedWorker = null;
-        validCells = null;
-        workerPhase = 0;
         int player1WorkerIDCounter = 0;
         int player2WorkerIDCounter = 0;
         // Parse the layout string and set up the board accordingly
@@ -246,6 +220,14 @@ public class App extends NanoHTTPD {
             return null;
         }
     
+        // Update the valid cells based on the selected worker
+        if (game.getCurrentPlayer().getMovePoints() > 0) {
+            game.setValidCells(game.getBoard().validateCellsForMoving(worker.getCurrentCell()));
+        } else if (game.getCurrentPlayer().getBuildPoints() > 0) {
+            game.setValidCells(game.getBoard().validateCellsForBuilding(worker.getCurrentCell()));
+        }
+    
+        game.setGamePhase(3);
         System.out.println("Valid worker selected!");
         return worker;
     }

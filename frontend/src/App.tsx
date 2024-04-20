@@ -138,16 +138,33 @@ class App extends React.Component<Props, State> {
       const response = await fetch(`http://localhost:8080/selectedTargetCell?workerphase=${this.state.workerPhase}&x=${x}&y=${y}`);
       console.log('Selected target cell:', clickedCell);
       const json = await response.json();
-      this.setState((prevState) => ({
-        cells: json['cells'],
-        winner: json['winner'],
-        currentPlayer: json['currentPlayer'],
-        selectedWorkerCell: null,
-        gamePhase: json['gamePhase'],
-        workerPhase: json['workerPhase'],
-        validCells: json['validCells'],
-        isGameOver: json['winner'] !== -1,
-      }));
+
+      if (json['gamePhase'] === 3 && json['workerPhase'] === 1) {
+        // If there are remaining build points, allow the player to choose another cell for the second build
+        this.setState((prevState) => ({
+          cells: json['cells'],
+          winner: json['winner'],
+          currentPlayer: json['currentPlayer'],
+          selectedWorkerCell: null,
+          gamePhase: 3,
+          workerPhase: 1,
+          validCells: json['validCells'],
+          isGameOver: json['winner'] !== -1,
+        }));
+        console.log("Valid cells: ", this.state.validCells);
+      } else {
+        // If there are no remaining build points, proceed to the next player's move action
+        this.setState((prevState) => ({
+          cells: json['cells'],
+          winner: json['winner'],
+          currentPlayer: json['currentPlayer'],
+          selectedWorkerCell: null,
+          gamePhase: json['gamePhase'],
+          workerPhase: json['workerPhase'],
+          validCells: json['validCells'],
+          isGameOver: json['winner'] !== -1,
+        }));
+      }
     } else {
       console.log('Clicked cell is not a valid move or build location');
     }

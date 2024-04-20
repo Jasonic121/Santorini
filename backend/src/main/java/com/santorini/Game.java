@@ -35,7 +35,7 @@ public class Game {
         currentPlayerIndex = 0; // Player 1 starts.
         currentPlayer = players.get(currentPlayerIndex);
         
-        validCells = null;
+        validCells = new Cell[0];
         godCards = new HashMap<>();
         godCards.put("Demeter", new DemeterGodCard());
         godCards.put("Hephaestus", new HephaestusGodCard());
@@ -55,7 +55,7 @@ public class Game {
     public void selectGodCard(int playerIndex, String selectedCardName) {
         if (playerIndex >= 0 && playerIndex < players.size()) {
             Player player = players.get(playerIndex);
-            GodCard selectedCard = getGodCardByName(selectedCardName);
+            GodCard selectedCard = GodCardFactory.createGodCard(selectedCardName);
             player.setGodCard(selectedCard);
             System.out.println("God card selected: Player " + (playerIndex + 1) + " - " + selectedCardName);
     
@@ -107,29 +107,64 @@ public class Game {
         System.out.println("Player " + currentPlayerIndex + "'s Move turn.");
         currentPlayer.resetActionPoints();
         validCells = this.board.validateCellsForMoving(currentPlayer.getWorker(workerId).getCurrentCell());
-        currentPlayer.getGodCard().onBeforeMove(currentPlayer, workerId, x, y);
-        moveWorkerUntilPointsExhausted(workerId, x, y);
-        currentPlayer.getGodCard().onAfterMove(currentPlayer, workerId, x, y);
+        System.out.println("Valid cells for moving: " + validCells.length);
+        if (currentPlayer.getGodCard() != null) {
+            System.out.println("Moving god card: " + currentPlayer.getGodCard().getGodCardName());
+            currentPlayer.getGodCard().onBeforeMove(currentPlayer, workerId, x, y);
+            currentPlayer.getGodCard().onMove(currentPlayer, workerId, x, y, this);
+            currentPlayer.getGodCard().onAfterMove(currentPlayer, workerId, x, y);
+            System.out.println("Completed moving god card");
+        } else {
+            moveWorkerUntilPointsExhausted(workerId, x, y);
+            System.out.println("Completed moving non-god card");
+
+        }
+        
+        
+        this.setValidCells(this.board.validateCellsForBuilding(currentPlayer.getWorker(workerId).getCurrentCell()));
+        System.out.println("Valid cells for building: " + validCells.length);
         winCondition();
         loseCondition();
         gamePhase = 3;
         workerPhase = 1;
     }
-
+    
     public void executeBuildTurn(int workerId, int x, int y) {
         System.out.println("Player " + currentPlayerIndex + "'s Build turn.");
         currentPlayer.resetActionPoints();
         validCells = this.board.validateCellsForBuilding(currentPlayer.getWorker(workerId).getCurrentCell());
-        currentPlayer.getGodCard().onBeforeBuild(currentPlayer, workerId, x, y);
-        buildUntilPointsExhausted(workerId, x, y);
-        currentPlayer.getGodCard().onAfterBuild(currentPlayer, workerId, x, y);
+        System.out.println("Valid cells for building: " + validCells.length);
+    
+        if (currentPlayer.getGodCard() != null) {
+            System.out.println("Building god card: " + currentPlayer.getGodCard().getGodCardName());
+    
+            currentPlayer.getGodCard().onBeforeBuild(currentPlayer, workerId, x, y);
+            currentPlayer.getGodCard().onBuild(currentPlayer, workerId, x, y, this);
+            currentPlayer.getGodCard().onAfterBuild(currentPlayer, workerId, x, y);
+
+            if (currentPlayer.checkBuildPointsAvailable()) {
+                // Update the valid cells for the next build action
+                // validCells = this.board.validateCellsForBuilding(currentPlayer.getWorker(workerId).getCurrentCell());
+                for (Cell cell : validCells) {
+                    System.out.println("Valid cell for building: (" + cell.getX() + ", " + cell.getY() + ")");
+                }
+                return;
+            }
+            System.out.println("Completed building god card");
+        } else {
+            buildUntilPointsExhausted(workerId, x, y);
+            System.out.println("Completed building non-god card");
+
+        }
+    
         winCondition();
         loseCondition();
         nextPlayer();
+        System.out.println("Moving to move turn\n");
         gamePhase = 2;
         workerPhase = 0;
+        validCells = new Cell[0]; 
     }
-
     /**
      * Moves the specified worker until the current player's move points are exhausted.
      *
@@ -142,6 +177,7 @@ public class Game {
             Cell targetCell = board.getCell(moveX, moveY);
             if (isValidCell(targetCell, validCells)) {
                 currentPlayer.moveWorker(workerId, targetCell);
+                validCells = this.board.validateCellsForBuilding(currentPlayer.getWorker(workerId).getCurrentCell());
             }
         }
     }
@@ -158,6 +194,7 @@ public class Game {
             Cell targetCell = board.getCell(buildX, buildY);
             if (isValidCell(targetCell, validCells)) {
                 currentPlayer.build(workerId, targetCell);
+                validCells = this.board.validateCellsForBuilding(currentPlayer.getWorker(workerId).getCurrentCell());
             }
         }
     }
@@ -244,7 +281,18 @@ public class Game {
      * Getter Methods
      * --------------
      */
-
+    /**
+     * Set game phase
+     */
+    public void setGamePhase(int gamePhase) {
+        this.gamePhase = gamePhase;
+    }
+    /**
+     * Set worker phase
+     */
+    public void setWorkerPhase(int workerPhase) {
+        this.workerPhase = workerPhase;
+    }
     /**
      * Get game phase
      * 
@@ -320,11 +368,24 @@ public class Game {
     }
 
     /**
-     * Returns the winner of the game.
-     * @return the winner of the game
+     * Returns the valid cells for the current player.
+     * @return the valid cells for the current player
      */
     public Cell[] getValidCells() {
         return validCells;
+    }
+
+    /** Remove one of the valid cells from the list of valid cells 
+     * @param cell the cell to remove from the list of valid cells
+    */
+    public void removeValidCell(Cell cell) {
+        ArrayList<Cell> validCellsList = new ArrayList<Cell>();
+        for (Cell c : validCells) {
+            if (c.getX() != cell.getX() || c.getY() != cell.getY()) {
+                validCellsList.add(c);
+            }
+        }
+        validCells = validCellsList.toArray(new Cell[0]);
     }
 
     /**
@@ -343,19 +404,7 @@ public class Game {
         return winner != null ? winner.getPlayerId() : -1;
     }
 
-    // Example method within your Game or a separate factory class
-    public GodCard getGodCardByName(String godCardName) {
-        switch (godCardName) {
-            case "Demeter":
-                return new DemeterGodCard();
-            case "Hephaestus":
-                return new HephaestusGodCard();
-            case "Minotaur":
-                return new MinotaurGodCard();
-            case "Pan":
-                return new PanGodCard();
-            default:
-                throw new IllegalArgumentException("Unknown god card: " + godCardName);
-        }
+    public void setValidCells(Cell[] validCells) {
+        this.validCells = validCells;
     }
 }
