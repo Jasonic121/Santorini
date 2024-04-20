@@ -3,6 +3,8 @@ interface GameState {
   winner: number;
   currentPlayer: number;
   validCells: Cell[];
+  gamePhase: number;
+  workerPhase: number;
 }
 
 interface Cell {

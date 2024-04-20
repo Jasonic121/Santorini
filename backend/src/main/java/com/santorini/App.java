@@ -11,7 +11,6 @@ public class App extends NanoHTTPD {
     private Game game;
     private Worker selectedWorker;
     private Cell[] validCells;
-    private int workerPhase = 0;
     
     public App() throws IOException {
         super(PORT_NUM); // Set the port number you want to use
@@ -44,32 +43,17 @@ public class App extends NanoHTTPD {
             totalWorkersPlaced = 0;
             selectedWorker = null;
             validCells = null;
-            workerPhase = 0;
+            System.out.println("gamePhase: " + game.getGamePhase());
+            System.out.println("workerPhase: " + game.getWorkerPhase());
         } else if (uri.equals("/godCardSelection")) {
             int playerIndex = Integer.parseInt(params.get("player"));
             String selectedCardName = params.get("card");
         
-            if (playerIndex >= 0 && playerIndex < game.getPlayers().size()) {
-                Player player = game.getPlayers().get(playerIndex);
-                GodCard selectedCard = game.getGodCardByName(selectedCardName);
-                player.setGodCard(selectedCard);
-                System.out.println("God card selected: Player " + (playerIndex + 1) + " - " + selectedCardName);
+            game.selectGodCard(playerIndex, selectedCardName);
         
-                boolean allSelected = true;
-                for (Player p : game.getPlayers()) {
-                    if (p.getGodCard() == null) {
-                        allSelected = false;
-                        break;
-                    }
-                }
-                if (allSelected) {
-                    System.out.println("All players have selected their god cards.");
-                } else {
-                    System.out.println("Awaiting other players to select god cards.");
-                }
-            } else {
-                System.out.println("Invalid player index: " + (playerIndex + 1));
-            }
+            System.out.println("gamePhase: " + game.getGamePhase());
+            System.out.println("workerPhase: " + game.getWorkerPhase());
+            
         } else if (uri.equals("/setup")) {
             String cellCoords = params.get("cell1");
             if (cellCoords == null) {
@@ -93,6 +77,8 @@ public class App extends NanoHTTPD {
         
             totalWorkersPlaced++;
             game.nextPlayer();
+            System.out.println("gamePhase: " + game.getGamePhase());
+            System.out.println("workerPhase: " + game.getWorkerPhase());
         } else if (uri.equals("/selectedWorker")) {
             int x = Integer.parseInt(params.getOrDefault("x", "0"));
             int y = Integer.parseInt(params.getOrDefault("y", "0"));
@@ -109,7 +95,8 @@ public class App extends NanoHTTPD {
                     validCells = game.getBoard().validateCellsForBuilding(selectedWorker.getCurrentCell());
                 }
             }
-            
+            System.out.println("gamePhase: " + game.getGamePhase());
+            System.out.println("workerPhase: " + game.getWorkerPhase());
         } else if (uri.equals("/selectedTargetCell")) {
             int x = Integer.parseInt(params.getOrDefault("x", "0"));
             int y = Integer.parseInt(params.getOrDefault("y", "0"));
@@ -120,25 +107,24 @@ public class App extends NanoHTTPD {
             // Perform the worker action
             if (selectedWorker != null && targetCell != null && !targetCell.isOccupied()) {
 
-                if (workerPhase == 0) {
+                if (game.getWorkerPhase() == 0) {
                     // Move phase
                     game.executeMoveTurn(selectedWorker.getWorkerId(), targetCell.getX(), targetCell.getY());
-        
                     // Get the valid cells for building after moving
                     validCells = game.getBoard().validateCellsForBuilding(selectedWorker.getCurrentCell());
-                    workerPhase = 1; // Move to the build phase
                     System.out.println("Completed Move!");
                 } else {
                     // Build phase          
                     game.executeBuildTurn(selectedWorker.getWorkerId(), targetCell.getX(), targetCell.getY());
                     validCells = null; // Reset the valid cells
-                    workerPhase = 0; // Reset the worker phase back to move phase
                     System.out.println("Completed Build!");
                 }
                 
                 // Reset the selected worker and target cell
                 targetCell = null;
             }
+            System.out.println("gamePhase: " + game.getGamePhase());
+            System.out.println("workerPhase: " + game.getWorkerPhase());
         } else if (uri.equals("/testLayout")) {
             String layout = params.get("layout");
             if (layout != null) {
@@ -152,6 +138,8 @@ public class App extends NanoHTTPD {
                 setupTestLayout(layout);
                 System.out.println("Test layout dimensions: cell=" + testCells.length);
             }
+            System.out.println("gamePhase: " + game.getGamePhase());
+            System.out.println("workerPhase: " + game.getWorkerPhase());
         }
 
         // Generate the current game state

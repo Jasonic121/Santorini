@@ -92,9 +92,9 @@ class App extends React.Component<Props, State> {
       cells: json['cells'],
       winner: json['winner'],
       currentPlayer: json['currentPlayer'], 
-    });
-  
-    if (newSelection.length >= 2) {
+          });
+    
+      if (newSelection.length >= 2) {
       this.setState({
         gamePhase: 1,
         showGodCardSelection: false,
@@ -112,7 +112,13 @@ class App extends React.Component<Props, State> {
   handleWorkerSelection = async (clickedCell: Cell | undefined, x: number, y: number) => {
     const response = await fetch(`http://localhost:8080/selectedWorker?workerphase=${this.state.workerPhase}&x=${x}&y=${y}`);
     const json = await response.json();
-    this.setState({ cells: json['cells'], winner: json['winner'], currentPlayer: json['currentPlayer'] });
+    this.setState({
+      cells: json['cells'],
+      winner: json['winner'],
+      currentPlayer: json['currentPlayer'],
+      gamePhase: json['gamePhase'],
+      workerPhase: json['workerPhase'],
+    });
 
     console.log('Selected worker:', clickedCell);
     console.log('Current player:', this.state.currentPlayer);
@@ -137,9 +143,9 @@ class App extends React.Component<Props, State> {
         winner: json['winner'],
         currentPlayer: json['currentPlayer'],
         selectedWorkerCell: null,
-        workerPhase: prevState.workerPhase === 0 ? 1 : 0,
+        gamePhase: json['gamePhase'],
+        workerPhase: json['workerPhase'],
         validCells: json['validCells'],
-        gamePhase: prevState.workerPhase === 1 && prevState.gamePhase === 3 ? 2 : prevState.gamePhase,
         isGameOver: json['winner'] !== -1,
       }));
     } else {
@@ -167,20 +173,16 @@ class App extends React.Component<Props, State> {
       cells: json['cells'],
       winner: json['winner'],
       currentPlayer: json['currentPlayer'],
-    }, () => {
-      if (selectedCells.length === 4) {
-        this.setState({
-          gamePhase: 2, // Change to moving phase
-          selectedCells: [],
-        });
-        console.log('Game phase changed to:', 2);
-      }
+      gamePhase: json['gamePhase'],
+      workerPhase: json['workerPhase'],
     });
   };
 
   getGamePhaseString = (): string => {
     const { gamePhase, workerPhase } = this.state;
     switch (gamePhase) {
+      case 0:
+        return 'God Card Selection';
       case 1:
         return 'Setup';
       case 2:
@@ -317,6 +319,7 @@ class App extends React.Component<Props, State> {
     const { selectedGodCards, gamePhase, currentPlayer, player1GodCard, player2GodCard } = this.state;
     const displayClass = currentPlayer === 0 ? 'player1-gods-display' : 'player2-gods-display';
     const currentPlayerGodCard = currentPlayer === 0 ? player1GodCard : player2GodCard;
+    console.log('Game phase:', gamePhase, 'workerPhase:', this.state.workerPhase);
 
     return (
       <div className="app">

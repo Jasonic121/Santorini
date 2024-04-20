@@ -19,12 +19,14 @@ public class GameState {
     private int workerPhase;
 
 
-    public GameState(Cell[] cells, Game game, Cell[] validCells) {
+    public GameState(Cell[] cells, Game game, Cell[] validCells, int gamePhase, int workerPhase) {
         this.cells = cells;
         this.game = game;
         this.winner = null;
         this.currentPlayerId = game.getCurrentPlayer().getPlayerId();
         this.validCells = validCells;
+        this.gamePhase = gamePhase;
+        this.workerPhase = workerPhase;
     }
 
     /**
@@ -36,11 +38,32 @@ public class GameState {
     public static GameState getGameState(Game game) {
         Cell[] cells = game.getBoard().getGrid();
         Cell[] validCells = game.getValidCells();
-        return new GameState(cells, game, validCells);
+        int gamePhase = game.getGamePhase();
+        int workerPhase = game.getWorkerPhase();
+        return new GameState(cells, game, validCells, gamePhase, workerPhase);
     }
 
 
     /** Getters and Setters **/
+
+    /**
+     * Returns the current game phase.
+     *
+     * @return the game phase
+     */
+    public int getGamePhase() {
+        return this.gamePhase;
+    }
+
+    /**
+     * Returns the current phase of the worker.
+     *
+     * @return the worker phase
+     */
+    public int getWorkerPhase() {
+        return this.workerPhase;
+    }
+
     /**
      * Returns the winner of the game state.
      *
@@ -69,8 +92,8 @@ public class GameState {
     @Override
     public String toString() {
         return String.format(
-            "{\"cells\":%s,\"winner\":%d,\"currentPlayer\":%d}",
-            Arrays.toString(this.cells), this.getWinner(), this.getCurrentPlayer()
+            "{\"cells\":%s,\"winner\":%d,\"currentPlayer\":%d,\"gamePhase\":%d,\"workerPhase\":%d}",
+            Arrays.toString(this.cells), this.getWinner(), this.getCurrentPlayer(), this.getGamePhase(), this.getWorkerPhase()
         );
     }
 }

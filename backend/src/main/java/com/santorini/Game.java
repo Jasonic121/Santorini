@@ -17,6 +17,9 @@ public class Game {
     private Player winner;
     private Cell[] validCells;
     private Map<String, GodCard> godCards;
+    private int gamePhase;
+    private int workerPhase;
+    private int initialSetupCount = 0;
 
     // Constructor (initializes the board and players array list, and sets the first player to start the game)
     public Game() {
@@ -38,8 +41,44 @@ public class Game {
         godCards.put("Hephaestus", new HephaestusGodCard());
         godCards.put("Minotaur", new MinotaurGodCard());
         godCards.put("Pan", new PanGodCard());
+
+        gamePhase = 0;
+        workerPhase = 0;
     }
 
+    /**
+     * Selects a god card for a player.
+     *
+     * @param playerIndex      the index of the player
+     * @param selectedCardName the name of the selected god card
+     */
+    public void selectGodCard(int playerIndex, String selectedCardName) {
+        if (playerIndex >= 0 && playerIndex < players.size()) {
+            Player player = players.get(playerIndex);
+            GodCard selectedCard = getGodCardByName(selectedCardName);
+            player.setGodCard(selectedCard);
+            System.out.println("God card selected: Player " + (playerIndex + 1) + " - " + selectedCardName);
+    
+            boolean allSelected = true;
+            for (Player p : players) {
+                if (p.getGodCard() == null) {
+                    allSelected = false;
+                    break;
+                }
+            }
+            if (allSelected) {
+                gamePhase = 1;
+                System.out.println("allSelected: " + allSelected);
+                System.out.println("All players have selected their god cards.");
+            } else {
+                System.out.println("Awaiting other players to select god cards.");
+            }
+            nextPlayer();
+        } else {
+            System.out.println("Invalid player index: " + (playerIndex + 1));
+        }
+    }
+    
     /**
      * Sets up the initial placement of a worker on the game board.
      * 
@@ -50,6 +89,11 @@ public class Game {
     public void setupInitialWorker(Cell initialCell, int playerId, int workerIndex) {
         players.get(playerId).placeWorkerOnBoard(workerIndex, initialCell);
         System.out.println("Initial worker " + workerIndex + " placement has been set up for Player " + playerId + ".");
+        initialSetupCount++;
+        System.out.println("Setup count: " + initialSetupCount);
+        if (initialSetupCount == 4) {
+            gamePhase = 2;
+        }
     }
 
     /**
@@ -68,6 +112,8 @@ public class Game {
         currentPlayer.getGodCard().onAfterMove(currentPlayer, workerId, x, y);
         winCondition();
         loseCondition();
+        gamePhase = 3;
+        workerPhase = 1;
     }
 
     public void executeBuildTurn(int workerId, int x, int y) {
@@ -80,6 +126,8 @@ public class Game {
         winCondition();
         loseCondition();
         nextPlayer();
+        gamePhase = 2;
+        workerPhase = 0;
     }
 
     /**
@@ -196,6 +244,24 @@ public class Game {
      * Getter Methods
      * --------------
      */
+
+    /**
+     * Get game phase
+     * 
+     * @return the game phase
+     */
+    public int getGamePhase() {
+        return gamePhase;
+    }
+
+    /**
+     * Get worker phase
+     * 
+     * @return the worker phase
+     */
+    public int getWorkerPhase() {
+        return workerPhase;
+    }
 
     /**
      * Sets the current player in the game.
