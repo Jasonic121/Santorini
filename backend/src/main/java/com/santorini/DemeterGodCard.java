@@ -5,7 +5,7 @@ public class DemeterGodCard extends GodCard {
     private Cell previousBuildCell;
 
     @Override
-    public void onBeforeMove(Player player, int workerId, int x, int y) {
+    public void onBeforeMove(Player player, int workerId, int x, int y, Game game) {
         // No action required
     }
 

@@ -84,17 +84,32 @@ public class App extends NanoHTTPD {
         } else if (uri.equals("/selectedTargetCell")) {
             int x = Integer.parseInt(params.getOrDefault("x", "0"));
             int y = Integer.parseInt(params.getOrDefault("y", "0"));
-
+        
             // Find the target cell at the specified position
             Cell targetCell = game.getBoard().getCell(x, y);
-
+        
             // Perform the worker action
-            if (selectedWorker != null && targetCell != null && !targetCell.isOccupied()) {
-
+            if (selectedWorker != null && targetCell != null) {
                 if (game.getWorkerPhase() == 0) {
                     // Move phase
                     System.out.println("\nExecuting move turn...");
-                    game.executeMoveTurn(selectedWorker.getWorkerId(), targetCell.getX(), targetCell.getY());
+        
+                    // Check if the target cell is occupied by an opponent's worker
+                    if (targetCell.isOccupied() && targetCell.getWorker().getOwner() != game.getCurrentPlayer()) {
+                        // Check if the current player has the Minotaur god card
+                        GodCard godCard = game.getCurrentPlayer().getGodCard();
+                        if (godCard instanceof MinotaurGodCard) {
+                            // Call the onMove method of the Minotaur god card to handle the forced move
+                            godCard.onMove(game.getCurrentPlayer(), selectedWorker.getWorkerId(), targetCell.getX(), targetCell.getY(), game);
+                        } else {
+                            // If the player doesn't have the Minotaur god card, perform a regular move
+                            game.executeMoveTurn(selectedWorker.getWorkerId(), targetCell.getX(), targetCell.getY());
+                        }
+                    } else {
+                        // If the target cell is not occupied by an opponent's worker, perform a regular move
+                        game.executeMoveTurn(selectedWorker.getWorkerId(), targetCell.getX(), targetCell.getY());
+                    }
+        
                     System.out.println("Completed Move!");
                     System.out.println("gamePhase: " + game.getGamePhase());
                     System.out.println("workerPhase: " + game.getWorkerPhase());
@@ -104,11 +119,10 @@ public class App extends NanoHTTPD {
                     game.executeBuildTurn(selectedWorker.getWorkerId(), targetCell.getX(), targetCell.getY());
                     System.out.println("Completed Build!");
                 }
-
+        
                 // Reset the selected worker and target cell
                 targetCell = null;
             }
-
         } else if (uri.equals("/testLayout")) {
             String layout = params.get("layout");
             if (layout != null) {
@@ -222,6 +236,13 @@ public class App extends NanoHTTPD {
         // Update the valid cells based on the selected worker
         if (game.getCurrentPlayer().getMovePoints() > 0) {
             game.setValidCells(game.getBoard().validateCellsForMoving(worker.getCurrentCell()));
+    
+            // Check if the current player has the Minotaur god card
+            GodCard godCard = game.getCurrentPlayer().getGodCard();
+            if (godCard instanceof MinotaurGodCard) {
+                // Call the onBeforeMove method of the Minotaur god card
+                godCard.onBeforeMove(game.getCurrentPlayer(), worker.getWorkerId(), -1, -1, game);
+            }
         } else if (game.getCurrentPlayer().getBuildPoints() > 0) {
             game.setValidCells(game.getBoard().validateCellsForBuilding(worker.getCurrentCell()));
         }

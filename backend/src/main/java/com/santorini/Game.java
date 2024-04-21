@@ -111,7 +111,7 @@ public class Game {
         System.out.println("Valid cells for moving: " + validCells.length);
         if (currentPlayer.getGodCard() != null) {
             System.out.println("Moving god card: " + currentPlayer.getGodCard().getGodCardName());
-            currentPlayer.getGodCard().onBeforeMove(currentPlayer, workerId, x, y);
+            currentPlayer.getGodCard().onBeforeMove(currentPlayer, workerId, x, y, this);
             currentPlayer.getGodCard().onMove(currentPlayer, workerId, x, y, this);
             currentPlayer.getGodCard().onAfterMove(currentPlayer, workerId, x, y);
             System.out.println("Completed moving god card");
@@ -414,6 +414,23 @@ public class Game {
                 tempCells.add(cell);
             }
         }
+    
+        // Replace validCells with the new smaller array
+        validCells = tempCells.toArray(new Cell[tempCells.size()]);
+    }
+
+    /** Add one cell to the valid cells
+     * @param cell the cell to add to the list of valid cells
+     */
+    public void addValidCells(Cell cell) {
+        // Temporary collection to hold cells to be kept
+        List<Cell> tempCells = new ArrayList<>();
+        
+        // Collect cells to keep
+        for (Cell c : validCells) {
+            tempCells.add(c);
+        }
+        tempCells.add(cell);
     
         // Replace validCells with the new smaller array
         validCells = tempCells.toArray(new Cell[tempCells.size()]);

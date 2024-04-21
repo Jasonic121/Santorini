@@ -2,7 +2,7 @@ package com.santorini;
 
 public class PanGodCard extends GodCard {
     @Override
-    public void onBeforeMove(Player player, int workerId, int x, int y) {
+    public void onBeforeMove(Player player, int workerId, int x, int y, Game game) {
         // No action required
     }
 
