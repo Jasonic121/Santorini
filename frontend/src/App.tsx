@@ -301,7 +301,7 @@ class App extends React.Component<Props, State> {
     }
   }
 
-  testLayout =
+  testLayout = // (height, hasDome, occupiedBy)
     `1,0,-1;0,0,-1;2,0,1;0,0,-1;0,0,1;` + // row 1
     `1,0,-1;0,0,-1;0,0,-1;2,0,0;3,0,-1;` + // row 2
     `1,0,-1;0,0,-1;0,0,-1;2,0,0;3,0,-1;` + // row 3

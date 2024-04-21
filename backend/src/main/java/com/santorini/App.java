@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.Map;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
-import java.nio.file.Paths;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javafx.util.Duration;
@@ -44,159 +43,176 @@ public class App extends NanoHTTPD {
         String uri = session.getUri();
         Map<String, String> params = session.getParms();
 
-        // Check what type of action is being requested
-        if (uri.equals("/newgame")) {
-            System.out.println("Game has been reset");
-            // Create a new game
-            this.game = new Game();
-            System.out.println("Game has started.");
+        switch (uri) {
+            case "/newgame":
+                return handleNewGame();
+            case "/godCardSelection":
+                return handleGodCardSelection(params);
+            case "/setup":
+                return handleSetup(params);
+            case "/selectedWorker":
+                return handleSelectedWorker(params);
+            case "/selectedTargetCell":
+                return handleSelectedTargetCell(params);
+            case "/testLayout":
+                return handleTestLayout(params);
+            case "/pass":
+                return handlePass();
+            case "/toggleMusic":
+                return handleToggleMusic();
+            default:
+                return handleDefaultResponse();
+        }
+    }
 
-            totalWorkersPlaced = 0;
-            selectedWorker = null;
+    private Response handleNewGame() {
+        System.out.println("Game has been reset");
+        this.game = new Game();
+        System.out.println("Game has started.");
+        totalWorkersPlaced = 0;
+        selectedWorker = null;
+        return handleDefaultResponse();
+    }
 
-        } else if (uri.equals("/godCardSelection")) {
-            int playerIndex = Integer.parseInt(params.get("player"));
-            String selectedCardName = params.get("card");
-            game.selectGodCard(playerIndex, selectedCardName);
-            System.out.println("gamePhase: " + game.getGamePhase());
-            System.out.println("workerPhase: " + game.getWorkerPhase());
-        } else if (uri.equals("/setup")) {
-            String cellCoords = params.get("cell1");
-            if (cellCoords == null) {
-                cellCoords = params.get("cell2");
-            }
-            if (cellCoords == null) {
-                cellCoords = params.get("cell3");
-            }
-            if (cellCoords == null) {
-                cellCoords = params.get("cell4");
-            }
-        
-            String[] cellArray = cellCoords.split(",");
-            int cellX = Integer.parseInt(cellArray[0]);
-            int cellY = Integer.parseInt(cellArray[1]);
-        
-            int playerId = totalWorkersPlaced % 2;
-            int workerIndex = totalWorkersPlaced / 2;
-        
-            game.setupInitialWorker(game.getBoard().getCell(cellX, cellY), playerId, workerIndex);
-        
-            totalWorkersPlaced++;
-            game.nextPlayer();
+    private Response handleGodCardSelection(Map<String, String> params) {
+        int playerIndex = Integer.parseInt(params.get("player"));
+        String selectedCardName = params.get("card");
+        game.selectGodCard(playerIndex, selectedCardName);
+        System.out.println("gamePhase: " + game.getGamePhase());
+        System.out.println("workerPhase: " + game.getWorkerPhase());
+        return handleDefaultResponse();
+    }
 
-        } else if (uri.equals("/selectedWorker")) {
-            int x = Integer.parseInt(params.getOrDefault("x", "0"));
-            int y = Integer.parseInt(params.getOrDefault("y", "0"));
-        
-            Worker worker = selectWorker(x, y);
-            if (worker != null) {
-                selectedWorker = worker;
-            }
-
-        } else if (uri.equals("/selectedTargetCell")) {
-            int x = Integer.parseInt(params.getOrDefault("x", "0"));
-            int y = Integer.parseInt(params.getOrDefault("y", "0"));
-        
-            // Find the target cell at the specified position
-            Cell targetCell = game.getBoard().getCell(x, y);
-            
-            // Play the select cell sound effect
-            selectCellSound.seek(Duration.ZERO);
-            selectCellSound.play();
-
-            // Perform the worker action
-            if (selectedWorker != null && targetCell != null) {
-                if (game.getWorkerPhase() == 0) {
-                    // Move phase
-                    System.out.println("\nExecuting move turn...");
-        
-                    // Check if the target cell is occupied by an opponent's worker
-                    if (targetCell.isOccupied() && targetCell.getWorker().getOwner() != game.getCurrentPlayer()) {
-                        // Check if the current player has the Minotaur god card
-                        GodCard godCard = game.getCurrentPlayer().getGodCard();
-                        if (godCard instanceof MinotaurGodCard) {
-                            // Call the onMove method of the Minotaur god card to handle the forced move
-                            godCard.onMove(game.getCurrentPlayer(), selectedWorker.getWorkerId(), targetCell.getX(), targetCell.getY(), game);
-                        } else {
-                            // If the player doesn't have the Minotaur god card, perform a regular move
-                            game.executeMoveTurn(selectedWorker.getWorkerId(), targetCell.getX(), targetCell.getY());
-                        }
-                    } else {
-                        // If the target cell is not occupied by an opponent's worker, perform a regular move
-                        game.executeMoveTurn(selectedWorker.getWorkerId(), targetCell.getX(), targetCell.getY());
-                    }
-        
-                    System.out.println("Completed Move!");
-                    System.out.println("gamePhase: " + game.getGamePhase());
-                    System.out.println("workerPhase: " + game.getWorkerPhase());
-                } else {
-                    // Build phase          
-                    System.out.println("\nExecuting build turn...");
-                    game.executeBuildTurn(selectedWorker.getWorkerId(), targetCell.getX(), targetCell.getY());
-                    System.out.println("Completed Build!");
-                }
-        
-                // Reset the selected worker and target cell
-                targetCell = null;
-            }
-        } else if (uri.equals("/testLayout")) {
-            String layout = params.get("layout");
-            if (layout != null) {
-                String[] testCells = layout.split(";");
-                for (int i = 0; i < testCells.length; i += ROW_CELL) {
-                    for (int j = i; j < i + ROW_CELL && j < testCells.length; j++) {
-                        System.out.print(testCells[j] + ";");
-                    }
-                    System.out.println();
-                }
-                setupTestLayout(layout);
-                System.out.println("Test layout dimensions: cell=" + testCells.length);
-            }
-
-        } else if (uri.equals("/pass")) {
-            game.getCurrentPlayer().setBuildPoints(0);
-            game.nextPlayer();
-            game.setGamePhase(2);
-            game.setWorkerPhase(0);
-            game.setValidCells(new Cell[0]);
-            System.out.println("Player passed the additional build");
-        } else if (uri.equals("/toggleMusic")) {
-            isMusicPlaying = !isMusicPlaying;
-            if (isMusicPlaying) {
-                mediaPlayer.play();
-            } else {
-                mediaPlayer.pause();
-            }
-            
-            // Create a JSON object with the updated music status
-            String json = "{\"isMusicPlaying\":" + isMusicPlaying + "}";
-            
-            // Create a response with the JSON object
-            Response response = newFixedLengthResponse(Response.Status.OK, "application/json", json);
-            
-            // Set CORS headers
-            response.addHeader("Access-Control-Allow-Origin", "*");
-            response.addHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-            response.addHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
-            
-            return response;
+    private Response handleSetup(Map<String, String> params) {
+        String cellCoords = params.get("cell1");
+        if (cellCoords == null) {
+            cellCoords = params.get("cell2");
+        }
+        if (cellCoords == null) {
+            cellCoords = params.get("cell3");
+        }
+        if (cellCoords == null) {
+            cellCoords = params.get("cell4");
         }
 
-        // Generate the current game state
-        GameState gameState = GameState.getGameState(this.game);
-        String json = gameState.toString();
+        String[] cellArray = cellCoords.split(",");
+        int cellX = Integer.parseInt(cellArray[0]);
+        int cellY = Integer.parseInt(cellArray[1]);
 
+        int playerId = totalWorkersPlaced % 2;
+        int workerIndex = totalWorkersPlaced / 2;
+
+        game.setupInitialWorker(game.getBoard().getCell(cellX, cellY), playerId, workerIndex);
+
+        totalWorkersPlaced++;
+        game.nextPlayer();
+        return handleDefaultResponse();
+    }
+
+    private Response handleSelectedWorker(Map<String, String> params) {
+        int x = Integer.parseInt(params.getOrDefault("x", "0"));
+        int y = Integer.parseInt(params.getOrDefault("y", "0"));
+
+        Worker worker = selectWorker(x, y);
+        if (worker != null) {
+            selectedWorker = worker;
+        }
+        return handleDefaultResponse();
+    }
+
+    private Response handleSelectedTargetCell(Map<String, String> params) {
+        int x = Integer.parseInt(params.getOrDefault("x", "0"));
+        int y = Integer.parseInt(params.getOrDefault("y", "0"));
+
+        Cell targetCell = game.getBoard().getCell(x, y);
+
+        selectCellSound.seek(Duration.ZERO);
+        selectCellSound.play();
+
+        if (selectedWorker != null && targetCell != null) {
+            if (game.getWorkerPhase() == 0) {
+                System.out.println("\nExecuting move turn...");
+                handleMoveTurn(targetCell);
+                System.out.println("Completed Move!");
+                System.out.println("gamePhase: " + game.getGamePhase());
+                System.out.println("workerPhase: " + game.getWorkerPhase());
+            } else {
+                System.out.println("\nExecuting build turn...");
+                game.executeBuildTurn(selectedWorker.getWorkerId(), targetCell.getX(), targetCell.getY());
+                System.out.println("Completed Build!");
+            }
+            targetCell = null;
+        }
+        return handleDefaultResponse();
+    }
+
+    private void handleMoveTurn(Cell targetCell) {
+        if (targetCell.isOccupied() && targetCell.getWorker().getOwner() != game.getCurrentPlayer()) {
+            GodCard godCard = game.getCurrentPlayer().getGodCard();
+            if (godCard instanceof MinotaurGodCard) {
+                godCard.onMove(game.getCurrentPlayer(), selectedWorker.getWorkerId(), targetCell.getX(), targetCell.getY(), game);
+            } else {
+                game.executeMoveTurn(selectedWorker.getWorkerId(), targetCell.getX(), targetCell.getY());
+            }
+        } else {
+            game.executeMoveTurn(selectedWorker.getWorkerId(), targetCell.getX(), targetCell.getY());
+        }
+    }
+
+    private Response handleTestLayout(Map<String, String> params) {
+        String layout = params.get("layout");
+        if (layout != null) {
+            String[] testCells = layout.split(";");
+            for (int i = 0; i < testCells.length; i += ROW_CELL) {
+                for (int j = i; j < i + ROW_CELL && j < testCells.length; j++) {
+                    System.out.print(testCells[j] + ";");
+                }
+                System.out.println();
+            }
+            setupTestLayout(layout);
+            System.out.println("Test layout dimensions: cell=" + testCells.length);
+        }
+        return handleDefaultResponse();
+    }
+
+    private Response handlePass() {
+        game.getCurrentPlayer().setBuildPoints(0);
+        game.nextPlayer();
+        game.setGamePhase(2);
+        game.setWorkerPhase(0);
+        game.setValidCells(new Cell[0]);
+        System.out.println("Player passed the additional build");
+        return handleDefaultResponse();
+    }
+
+    private Response handleToggleMusic() {
+        isMusicPlaying = !isMusicPlaying;
+        if (isMusicPlaying) {
+            mediaPlayer.play();
+        } else {
+            mediaPlayer.pause();
+        }
+
+        String json = "{\"isMusicPlaying\":" + isMusicPlaying + "}";
         Response response = newFixedLengthResponse(Response.Status.OK, "application/json", json);
-
-        // Set CORS headers
-        response.addHeader("Access-Control-Allow-Origin", "*");
-        response.addHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-        response.addHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
-    
+        addCORSHeaders(response);
         return response;
     }
 
-    // Helper Classes
+    private Response handleDefaultResponse() {
+        GameState gameState = GameState.getGameState(this.game);
+        String json = gameState.toString();
+        Response response = newFixedLengthResponse(Response.Status.OK, "application/json", json);
+        addCORSHeaders(response);
+        return response;
+    }
+
+    private void addCORSHeaders(Response response) {
+        response.addHeader("Access-Control-Allow-Origin", "*");
+        response.addHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+        response.addHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
+    }
+
     private void setupTestLayout(String layout) {
         // Reset the game
         this.game = new Game();

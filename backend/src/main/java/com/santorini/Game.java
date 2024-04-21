@@ -108,7 +108,6 @@ public class Game {
         System.out.println("Player " + currentPlayerIndex + "'s Move turn.");
         currentPlayer.resetActionPoints();
         validCells = this.board.validateCellsForMoving(currentPlayer.getWorker(workerId).getCurrentCell());
-        System.out.println("Valid cells for moving: " + validCells.length);
         if (currentPlayer.getGodCard() != null) {
             System.out.println("Moving god card: " + currentPlayer.getGodCard().getGodCardName());
             currentPlayer.getGodCard().onBeforeMove(currentPlayer, workerId, x, y, this);
@@ -121,7 +120,6 @@ public class Game {
         }
         
         this.setValidCells(this.board.validateCellsForBuilding(currentPlayer.getWorker(workerId).getCurrentCell()));
-        System.out.println("Valid cells for building: " + validCells.length);
         winCondition();
         loseCondition();
         gamePhase = 3;
@@ -132,10 +130,6 @@ public class Game {
         System.out.println("Player " + currentPlayerIndex + "'s Build turn.");
         currentPlayer.resetActionPoints();
         validCells = this.board.validateCellsForBuilding(currentPlayer.getWorker(workerId).getCurrentCell());
-        System.out.println("Valid cells for building: " + validCells.length);
-        for (Cell cell : validCells) {
-            System.out.println("Valid cell for building: (" + cell.getX() + ", " + cell.getY() + ")");
-        }
         if (currentPlayer.getGodCard() != null) {
             System.out.println("Building god card: " + currentPlayer.getGodCard().getGodCardName());
             currentPlayer.getGodCard().onBeforeBuild(currentPlayer, workerId, x, y);
@@ -143,11 +137,6 @@ public class Game {
             currentPlayer.getGodCard().onAfterBuild(currentPlayer, workerId, x, y);
 
             if (currentPlayer.checkBuildPointsAvailable()) {
-                // Update the valid cells for the next build action
-                // validCells = this.board.validateCellsForBuilding(currentPlayer.getWorker(workerId).getCurrentCell());
-                for (Cell cell : validCells) {
-                    System.out.println("Valid cell for building: (" + cell.getX() + ", " + cell.getY() + ")");
-                }
                 return;
             }
             System.out.println("Completed building god card");
