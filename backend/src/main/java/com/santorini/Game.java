@@ -22,6 +22,7 @@ public class Game {
     private int workerPhase;
     private int initialSetupCount = 0;
     private boolean isSecondBuild = false;
+    private int cardCount = 0;
 
     // Constructor (initializes the board and players array list, and sets the first player to start the game)
     public Game() {
@@ -58,20 +59,18 @@ public class Game {
     public void selectGodCard(int playerIndex, String selectedCardName) {
         if (playerIndex >= 0 && playerIndex < players.size()) {
             Player player = players.get(playerIndex);
-            GodCard selectedCard = GodCardFactory.createGodCard(selectedCardName);
-            player.setGodCard(selectedCard);
-            System.out.println("God card selected: Player " + (playerIndex + 1) + " - " + selectedCardName);
-    
-            boolean allSelected = true;
-            for (Player p : players) {
-                if (p.getGodCard() == null) {
-                    allSelected = false;
-                    break;
-                }
+            if (selectedCardName.equals("Normal")) {
+                System.out.println("Normal card selected: Player " + (playerIndex + 1));
+            } else {
+                GodCard selectedCard = GodCardFactory.createGodCard(selectedCardName);
+                player.setGodCard(selectedCard);
+                System.out.println("God card selected: Player " + (playerIndex + 1) + " - " + selectedCardName);
             }
-            if (allSelected) {
+            cardCount++;
+
+            if (cardCount == 2) {
                 gamePhase = 1;
-                System.out.println("allSelected: " + allSelected);
+                System.out.println("card count: " + cardCount);
                 System.out.println("All players have selected their god cards.");
             } else {
                 System.out.println("Awaiting other players to select god cards.");
@@ -230,6 +229,14 @@ public class Game {
      * If the current player has won, it prints a message and ends the game.
      */
     private void winCondition() {
+        if (currentPlayer.getGodCard() == null) {
+            if (currentPlayer.checkWin()) {
+                System.out.println("Player " + currentPlayer.getPlayerId() + " has won!");
+                setWinner(currentPlayerIndex);
+                endGame();
+            }
+            return;
+        }
         if (currentPlayer.getGodCard().checkWinCondition(currentPlayer) || currentPlayer.checkWin()) {
             System.out.println("Player " + currentPlayer.getPlayerId() + " has won!");
             setWinner(currentPlayerIndex);

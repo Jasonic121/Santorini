@@ -4,10 +4,6 @@ import { GameState, Cell } from './Game.tsx';
 import BoardCell from './Cell.tsx';
 import './App.css';
 import GodCardDisplay from './GodCardDisplay.tsx';
-import demeterCard from './resources/img/cards/demeter/card.png';
-import hephaestusCard from './resources/img/cards/hephaestus/card.png';
-import minotaurCard from './resources/img/cards/minotaur/card.png';
-import panCard from './resources/img/cards/pan/card.png';
 
 interface Props {}
 
@@ -338,10 +334,11 @@ class App extends React.Component<Props, State> {
   };
   render(): React.ReactNode {
     const { selectedGodCards, gamePhase, currentPlayer, player1GodCard, player2GodCard } = this.state;
-    const displayClass = currentPlayer === 0 ? 'player1-gods-display' : 'player2-gods-display';
-    const currentPlayerGodCard = currentPlayer === 0 ? player1GodCard : player2GodCard;
     console.log('Game phase:', gamePhase, 'workerPhase:', this.state.workerPhase);
     const isSecondBuild = this.state.secondBuild;
+    const player1Class = `player1-gods-display ${currentPlayer === 0 ? 'current-player' : 'not-current-player'}`;
+    const player2Class = `player2-gods-display ${currentPlayer === 1 ? 'current-player' : 'not-current-player'}`;
+
     return (
       <div className="app">
         {this.state.showGodCardSelection ? (
@@ -358,26 +355,34 @@ class App extends React.Component<Props, State> {
             <div id="board">
               {this.state.cells.map((cell, i) => this.createCell(cell, i))}
             </div>
-            <div className={displayClass}>
-              <GodCardDisplay
-                selectedGodCards={[player1GodCard, player2GodCard].filter(Boolean)}
-                displayOnlySelected={true}
-                currentPlayer={currentPlayer}
-              />
+            <div>
+              <div className={player1Class}>
+                <GodCardDisplay
+                  selectedGodCards={[player1GodCard].filter(Boolean)}
+                  displayOnlySelected={true}
+                  currentPlayer={currentPlayer}
+                />
+              </div>
+              <div className={player2Class}>
+                <GodCardDisplay
+                  selectedGodCards={[player2GodCard].filter(Boolean)}
+                  displayOnlySelected={true}
+                  currentPlayer={currentPlayer}
+                />
+              </div>
             </div>
             <div id="bottombar" className='bottom-bar'>
               <button onClick={this.newGame} className='new-game'>New Game</button>
               <button onClick={() => this.sendTestLayout(this.testLayout)} className='test-layout'>Test Layout</button>
-              {isSecondBuild && (
+              {this.state.secondBuild && (
               <button onClick={this.pass} className='pass'>Pass Additional Build</button>
-              )}            
+              )}
             </div>
           </>
         )}
       </div>
     );
   }
-  
 }
 
 export default App;

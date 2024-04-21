@@ -11,6 +11,8 @@ public class GodCardFactory {
                 return new MinotaurGodCard();
             case "Pan":
                 return new PanGodCard();
+            case "Normal":
+                return null;
             default:
                 throw new IllegalArgumentException("Unknown god card: " + godCardName);
         }

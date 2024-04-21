@@ -41,17 +41,13 @@ public class App extends NanoHTTPD {
 
             totalWorkersPlaced = 0;
             selectedWorker = null;
-            System.out.println("gamePhase: " + game.getGamePhase());
-            System.out.println("workerPhase: " + game.getWorkerPhase());
+
         } else if (uri.equals("/godCardSelection")) {
             int playerIndex = Integer.parseInt(params.get("player"));
             String selectedCardName = params.get("card");
-        
             game.selectGodCard(playerIndex, selectedCardName);
-        
             System.out.println("gamePhase: " + game.getGamePhase());
             System.out.println("workerPhase: " + game.getWorkerPhase());
-            
         } else if (uri.equals("/setup")) {
             String cellCoords = params.get("cell1");
             if (cellCoords == null) {
@@ -75,8 +71,7 @@ public class App extends NanoHTTPD {
         
             totalWorkersPlaced++;
             game.nextPlayer();
-            // System.out.println("gamePhase: " + game.getGamePhase());
-            // System.out.println("workerPhase: " + game.getWorkerPhase());
+
         } else if (uri.equals("/selectedWorker")) {
             int x = Integer.parseInt(params.getOrDefault("x", "0"));
             int y = Integer.parseInt(params.getOrDefault("y", "0"));
@@ -85,8 +80,7 @@ public class App extends NanoHTTPD {
             if (worker != null) {
                 selectedWorker = worker;
             }
-            // System.out.println("gamePhase: " + game.getGamePhase());
-            // System.out.println("workerPhase: " + game.getWorkerPhase());
+
         } else if (uri.equals("/selectedTargetCell")) {
             int x = Integer.parseInt(params.getOrDefault("x", "0"));
             int y = Integer.parseInt(params.getOrDefault("y", "0"));
@@ -114,8 +108,7 @@ public class App extends NanoHTTPD {
                 // Reset the selected worker and target cell
                 targetCell = null;
             }
-            System.out.println("gamePhase: " + game.getGamePhase());
-            System.out.println("workerPhase: " + game.getWorkerPhase());
+
         } else if (uri.equals("/testLayout")) {
             String layout = params.get("layout");
             if (layout != null) {
@@ -129,8 +122,7 @@ public class App extends NanoHTTPD {
                 setupTestLayout(layout);
                 System.out.println("Test layout dimensions: cell=" + testCells.length);
             }
-            System.out.println("gamePhase: " + game.getGamePhase());
-            System.out.println("workerPhase: " + game.getWorkerPhase());
+
         } else if (uri.equals("/pass")) {
             game.getCurrentPlayer().setBuildPoints(0);
             game.nextPlayer();
