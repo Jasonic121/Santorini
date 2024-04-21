@@ -22,6 +22,7 @@ interface State extends GameState {
   player1GodCard: GodCardInterface | null;
   player2GodCard: GodCardInterface | null;
   secondBuild: boolean;
+  isMusicPlaying: boolean;
 }
 
 class App extends React.Component<Props, State> {
@@ -44,6 +45,7 @@ class App extends React.Component<Props, State> {
       selectedGodCards: [],
       player1GodCard: null,
       player2GodCard: null,
+      isMusicPlaying: true,
     };
   }
 
@@ -219,10 +221,16 @@ class App extends React.Component<Props, State> {
     // Determine the game phase for message display
     let instructionText;
     if (winner !== -1) {
+      const gamePhaseString = this.getGamePhaseString();
       instructionText = (
-        <div className='end-game'>
-          PLAYER {winner + 1} WINS! Press New Game to Start.
-        </div>
+        <a>
+          <div className='instruction-text'>
+            Game Over
+          </div>
+          <div className='end-game'>
+            PLAYER {winner + 1} WINS!
+          </div>
+        </a>
       );
     } else if (showGodCardSelection) {
       instructionText = (
@@ -332,6 +340,15 @@ class App extends React.Component<Props, State> {
       validCells: json['validCells'],
     });
   };
+
+  toggleMusic = async () => {
+    const response = await fetch(`http://localhost:8080/toggleMusic`);
+    const json = await response.json();
+    this.setState({
+      isMusicPlaying: json['isMusicPlaying'],
+    });
+  };
+
   render(): React.ReactNode {
     const { selectedGodCards, gamePhase, currentPlayer, player1GodCard, player2GodCard } = this.state;
     console.log('Game phase:', gamePhase, 'workerPhase:', this.state.workerPhase);
@@ -372,11 +389,15 @@ class App extends React.Component<Props, State> {
               </div>
             </div>
             <div id="bottombar" className='bottom-bar'>
+              <button onClick={this.toggleMusic} className='music-toggle'>
+                {this.state.isMusicPlaying ? 'Music Off' : 'Music On'}
+              </button>              
               <button onClick={this.newGame} className='new-game'>New Game</button>
               <button onClick={() => this.sendTestLayout(this.testLayout)} className='test-layout'>Test Layout</button>
               {this.state.secondBuild && (
               <button onClick={this.pass} className='pass'>Pass Additional Build</button>
               )}
+
             </div>
           </>
         )}

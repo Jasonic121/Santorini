@@ -7,6 +7,8 @@ import javafx.scene.media.MediaPlayer;
 import java.nio.file.Paths;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
+import javafx.util.Duration;
+
 public class App extends NanoHTTPD {
     private static final int PORT_NUM = 8080;
     private static final int ROW_CELL = 5;
@@ -15,6 +17,9 @@ public class App extends NanoHTTPD {
     private Game game;
     private Worker selectedWorker;
     private MediaPlayer mediaPlayer;
+    private MediaPlayer selectWorkerSound;
+    private MediaPlayer selectCellSound;
+    private boolean isMusicPlaying = true;
 
     public App() throws IOException {
         super(PORT_NUM); 
@@ -22,6 +27,7 @@ public class App extends NanoHTTPD {
         start(NanoHTTPD.SOCKET_READ_TIMEOUT, false);
         System.out.println("Server is running! Access it at http://localhost:8080/");
         playBackgroundMusic();
+        initializeSoundEffects();
     }
 
     public static void main(String[] args) {
@@ -93,7 +99,11 @@ public class App extends NanoHTTPD {
         
             // Find the target cell at the specified position
             Cell targetCell = game.getBoard().getCell(x, y);
-        
+            
+            // Play the select cell sound effect
+            selectCellSound.seek(Duration.ZERO);
+            selectCellSound.play();
+
             // Perform the worker action
             if (selectedWorker != null && targetCell != null) {
                 if (game.getWorkerPhase() == 0) {
@@ -150,6 +160,26 @@ public class App extends NanoHTTPD {
             game.setWorkerPhase(0);
             game.setValidCells(new Cell[0]);
             System.out.println("Player passed the additional build");
+        } else if (uri.equals("/toggleMusic")) {
+            isMusicPlaying = !isMusicPlaying;
+            if (isMusicPlaying) {
+                mediaPlayer.play();
+            } else {
+                mediaPlayer.pause();
+            }
+            
+            // Create a JSON object with the updated music status
+            String json = "{\"isMusicPlaying\":" + isMusicPlaying + "}";
+            
+            // Create a response with the JSON object
+            Response response = newFixedLengthResponse(Response.Status.OK, "application/json", json);
+            
+            // Set CORS headers
+            response.addHeader("Access-Control-Allow-Origin", "*");
+            response.addHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+            response.addHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
+            
+            return response;
         }
 
         // Generate the current game state
@@ -231,6 +261,9 @@ public class App extends NanoHTTPD {
         if (worker == null) {
             System.out.println("No worker found at the selected position.");
             return null;
+        } else {
+            selectWorkerSound.seek(Duration.ZERO);
+            selectWorkerSound.play();
         }
     
         // Check if the worker belongs to the current player
@@ -255,6 +288,7 @@ public class App extends NanoHTTPD {
     
         game.setGamePhase(3);
         System.out.println("Valid worker selected!");
+
         return worker;
     }
     
@@ -271,7 +305,20 @@ public class App extends NanoHTTPD {
             mediaPlayer = new MediaPlayer(sound);
             mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
             mediaPlayer.setVolume(0.5);
-            mediaPlayer.play();
+            if (isMusicPlaying) {
+                mediaPlayer.play();
+            }
         });
+    }
+
+    private void initializeSoundEffects() {
+        String selectWorkerSoundFile = "/sound/select_worker.wav";
+        String selectCellSoundFile = "/sound/select_cell.wav";
+    
+        Media selectWorkerMedia = new Media(getClass().getResource(selectWorkerSoundFile).toExternalForm());
+        Media selectCellMedia = new Media(getClass().getResource(selectCellSoundFile).toExternalForm());
+    
+        selectWorkerSound = new MediaPlayer(selectWorkerMedia);
+        selectCellSound = new MediaPlayer(selectCellMedia);
     }
 }

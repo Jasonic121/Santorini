@@ -46,7 +46,7 @@
   font-size: 5vh;
   font-family: 'LillyBelle';
   font-weight: bolder;
-  background-color: bisque;
+  background-color: rgba(255, 228, 196, 0.4); /* Set the background color with opacity */
   color: #ee0606;
   padding: 2.5vh;
   border-radius: 5px;
@@ -74,7 +74,7 @@
   z-index: 4;
 }
 
-.new-game, .test-layout, .pass {
+.new-game, .test-layout, .pass, .music-toggle {
   font-size: 3vh;
   font-family: 'LillyBelle';
   color: #000000;
