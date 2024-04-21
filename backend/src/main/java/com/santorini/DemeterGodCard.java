@@ -46,6 +46,7 @@ public class DemeterGodCard extends GodCard {
             System.out.println("First build completed");
             previousBuildCell = targetCell;
             game.setIsSecondBuild(true);
+            game.removeValidCells(targetCell);
             System.out.println("isSecondBuild: " + game.getIsSecondBuild());
         }
     }
@@ -58,7 +59,6 @@ public class DemeterGodCard extends GodCard {
             if (!isSameCell(targetCell, previousBuildCell)) {
                 player.build(workerId, targetCell);
                 System.out.println("Second build completed");
-                game.removeValidCells(targetCell);
                 game.setIsSecondBuild(false);
 
                 for (Cell cell : game.getValidCells()) {
