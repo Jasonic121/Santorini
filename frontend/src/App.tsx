@@ -338,6 +338,7 @@ class App extends React.Component<Props, State> {
       gamePhase: json['gamePhase'],
       workerPhase: json['workerPhase'],
       validCells: json['validCells'],
+      secondBuild: json['secondBuild'],
     });
   };
 

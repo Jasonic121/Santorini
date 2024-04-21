@@ -109,4 +109,9 @@ public class HephaestusGodCard extends GodCard {
             game.removeValidCells(cell);
         }
     }
+
+    @Override
+    public void resetState() {
+        hasUsedExtraBuild = false; // Reset the flag
+    }
 }

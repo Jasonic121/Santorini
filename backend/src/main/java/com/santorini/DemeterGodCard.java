@@ -100,4 +100,9 @@ public class DemeterGodCard extends GodCard {
     private boolean isSameCell(Cell cell1, Cell cell2) {
         return cell1.getX() == cell2.getX() && cell1.getY() == cell2.getY();
     }
+
+    @Override
+    public void resetState() {
+        hasUsedExtraBuild = false; // Reset the flag
+    }
 }

@@ -19,6 +19,7 @@ public class App extends NanoHTTPD {
     private MediaPlayer selectWorkerSound;
     private MediaPlayer selectCellSound;
     private MediaPlayer selectCardSound;
+    private MediaPlayer buildSound;
 
     private boolean isMusicPlaying = true;
 
@@ -128,8 +129,6 @@ public class App extends NanoHTTPD {
 
         Cell targetCell = game.getBoard().getCell(x, y);
 
-        selectCellSound.seek(Duration.ZERO);
-        selectCellSound.play();
 
         if (selectedWorker != null && targetCell != null) {
             if (game.getWorkerPhase() == 0) {
@@ -138,10 +137,14 @@ public class App extends NanoHTTPD {
                 System.out.println("Completed Move!");
                 System.out.println("gamePhase: " + game.getGamePhase());
                 System.out.println("workerPhase: " + game.getWorkerPhase());
+                selectCellSound.seek(Duration.ZERO);
+                selectCellSound.play();
             } else {
                 System.out.println("\nExecuting build turn...");
                 game.executeBuildTurn(selectedWorker.getWorkerId(), targetCell.getX(), targetCell.getY());
                 System.out.println("Completed Build!");
+                buildSound.seek(Duration.ZERO);
+                buildSound.play();
             }
             targetCell = null;
         }
@@ -178,11 +181,15 @@ public class App extends NanoHTTPD {
     }
 
     private Response handlePass() {
-        game.getCurrentPlayer().setBuildPoints(0);
+        GodCard currentGodCard = game.getCurrentPlayer().getGodCard();
+        if (currentGodCard != null) {
+            currentGodCard.resetState();
+        }
         game.nextPlayer();
         game.setGamePhase(2);
         game.setWorkerPhase(0);
         game.setValidCells(new Cell[0]);
+        game.setIsSecondBuild(false);
         System.out.println("Player passed the additional build");
         return handleDefaultResponse();
     }
@@ -330,15 +337,19 @@ public class App extends NanoHTTPD {
     }
 
     private void initializeSoundEffects() {
-        String selectWorkerSoundFile = "/sound/select_worker.wav";
-        String selectCellSoundFile = "/sound/select_cell.wav";
-        String selectCardSoundFile = "/sound/select_card.wav";
-
+        String selectWorkerSoundFile = "/sound/select_worker.mp3";
+        String selectCellSoundFile = "/sound/select_cell.mp3";
+        String selectCardSoundFile = "/sound/select_card.mp3";
+        String buildSoundFile = "/sound/build.mp3";
+        
         Media selectWorkerMedia = new Media(getClass().getResource(selectWorkerSoundFile).toExternalForm());
         Media selectCellMedia = new Media(getClass().getResource(selectCellSoundFile).toExternalForm());
         Media selectCardMedia = new Media(getClass().getResource(selectCardSoundFile).toExternalForm());
+        Media buildMedia = new Media(getClass().getResource(buildSoundFile).toExternalForm());
+        
         selectWorkerSound = new MediaPlayer(selectWorkerMedia);
         selectCellSound = new MediaPlayer(selectCellMedia);
         selectCardSound = new MediaPlayer(selectCardMedia);
+        buildSound = new MediaPlayer(buildMedia);
     }
 }
