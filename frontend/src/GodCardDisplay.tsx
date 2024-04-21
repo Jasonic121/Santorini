@@ -5,7 +5,7 @@ import demeterCard from './resources/img/cards/demeter/card.png';
 import hephaestusCard from './resources/img/cards/hephaestus/card.png';
 import minotaurCard from './resources/img/cards/minotaur/card.png';
 import panCard from './resources/img/cards/pan/card.png';
-import normal from './resources/img/cards/retro.png';
+import normal from './resources/img/cards/retro.jpg';
 
 interface GodCardInterface {
   name: string;
