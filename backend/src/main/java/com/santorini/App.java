@@ -18,6 +18,8 @@ public class App extends NanoHTTPD {
     private MediaPlayer mediaPlayer;
     private MediaPlayer selectWorkerSound;
     private MediaPlayer selectCellSound;
+    private MediaPlayer selectCardSound;
+
     private boolean isMusicPlaying = true;
 
     public App() throws IOException {
@@ -66,9 +68,8 @@ public class App extends NanoHTTPD {
     }
 
     private Response handleNewGame() {
-        System.out.println("Game has been reset");
+        System.out.println("Starting a new game...");
         this.game = new Game();
-        System.out.println("Game has started.");
         totalWorkersPlaced = 0;
         selectedWorker = null;
         return handleDefaultResponse();
@@ -78,8 +79,8 @@ public class App extends NanoHTTPD {
         int playerIndex = Integer.parseInt(params.get("player"));
         String selectedCardName = params.get("card");
         game.selectGodCard(playerIndex, selectedCardName);
-        System.out.println("gamePhase: " + game.getGamePhase());
-        System.out.println("workerPhase: " + game.getWorkerPhase());
+        selectCardSound.seek(Duration.ZERO);
+        selectCardSound.play();
         return handleDefaultResponse();
     }
 
@@ -103,7 +104,8 @@ public class App extends NanoHTTPD {
         int workerIndex = totalWorkersPlaced / 2;
 
         game.setupInitialWorker(game.getBoard().getCell(cellX, cellY), playerId, workerIndex);
-
+        selectCellSound.seek(Duration.ZERO);
+        selectCellSound.play();
         totalWorkersPlaced++;
         game.nextPlayer();
         return handleDefaultResponse();
@@ -330,11 +332,13 @@ public class App extends NanoHTTPD {
     private void initializeSoundEffects() {
         String selectWorkerSoundFile = "/sound/select_worker.wav";
         String selectCellSoundFile = "/sound/select_cell.wav";
-    
+        String selectCardSoundFile = "/sound/select_card.wav";
+
         Media selectWorkerMedia = new Media(getClass().getResource(selectWorkerSoundFile).toExternalForm());
         Media selectCellMedia = new Media(getClass().getResource(selectCellSoundFile).toExternalForm());
-    
+        Media selectCardMedia = new Media(getClass().getResource(selectCardSoundFile).toExternalForm());
         selectWorkerSound = new MediaPlayer(selectWorkerMedia);
         selectCellSound = new MediaPlayer(selectCellMedia);
+        selectCardSound = new MediaPlayer(selectCardMedia);
     }
 }
