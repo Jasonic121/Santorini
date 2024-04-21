@@ -52,21 +52,51 @@
           <version>5.8.2</version>
           <scope>test</scope>
       </dependency>
+      <!-- JavaFX dependencies -->
+      <dependency>
+          <groupId>org.openjfx</groupId>
+          <artifactId>javafx-controls</artifactId>
+          <version>17.0.1</version>
+      </dependency>
+      <dependency>
+          <groupId>org.openjfx</groupId>
+          <artifactId>javafx-media</artifactId>
+          <version>17.0.1</version>
+      </dependency>
+      <dependency>
+          <groupId>org.openjfx</groupId>
+          <artifactId>javafx-swing</artifactId>
+          <version>17.0.1</version>
+      </dependency>
   </dependencies>
   
   <build>
     <sourceDirectory>src/main/java</sourceDirectory> <!-- Custom source directory -->
+    <resources>
+        <resource>
+            <directory>src/main/resources</directory>
+        </resource>
+    </resources>
     <testSourceDirectory>src/test/java</testSourceDirectory> <!-- Custom test directory -->
     <plugins>
-          <plugin>
-              <groupId>org.codehaus.mojo</groupId>
-              <artifactId>exec-maven-plugin</artifactId>
-              <version>3.1.1</version> <!-- Ensure you have the correct version -->
-              <configuration>
-                  <executable>java</executable>
-                  <mainClass>com.santorini.App</mainClass>
-              </configuration>
-          </plugin>
+      <!-- JavaFX plugin configuration -->
+      <plugin>
+          <groupId>org.openjfx</groupId>
+          <artifactId>javafx-maven-plugin</artifactId>
+          <version>0.0.6</version>
+          <configuration>
+              <mainClass>com.santorini.App</mainClass>
+          </configuration>
+      </plugin>
+      <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>exec-maven-plugin</artifactId>
+          <version>3.1.1</version> <!-- Ensure you have the correct version -->
+          <configuration>
+              <executable>java</executable>
+              <mainClass>com.santorini.App</mainClass>
+          </configuration>
+      </plugin>
       <!-- adding and configuring a plugin to collect coverage information during test execution -->
       <plugin>
           <groupId>org.jacoco</groupId>

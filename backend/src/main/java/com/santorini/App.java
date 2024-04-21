@@ -2,7 +2,11 @@ package com.santorini;
 import fi.iki.elonen.NanoHTTPD;
 import java.io.IOException;
 import java.util.Map;
-
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import java.nio.file.Paths;
+import javafx.application.Platform;
+import javafx.embed.swing.JFXPanel;
 public class App extends NanoHTTPD {
     private static final int PORT_NUM = 8080;
     private static final int ROW_CELL = 5;
@@ -10,12 +14,14 @@ public class App extends NanoHTTPD {
     private int totalWorkersPlaced;
     private Game game;
     private Worker selectedWorker;
-    
+    private MediaPlayer mediaPlayer;
+
     public App() throws IOException {
-        super(PORT_NUM); // Set the port number you want to use
+        super(PORT_NUM); 
         game = new Game();
         start(NanoHTTPD.SOCKET_READ_TIMEOUT, false);
         System.out.println("Server is running! Access it at http://localhost:8080/");
+        playBackgroundMusic();
     }
 
     public static void main(String[] args) {
@@ -254,5 +260,18 @@ public class App extends NanoHTTPD {
     
     private boolean isCurrentPlayerWorker(Worker worker) {
         return worker.getOwner().getPlayerId() == game.getCurrentPlayer().getPlayerId();
+    }
+
+    private void playBackgroundMusic() {
+        // Initialize the JavaFX toolkit
+        new JFXPanel();
+        Platform.runLater(() -> {
+            String musicFile = "/sound/background.mp3";
+            Media sound = new Media(getClass().getResource(musicFile).toExternalForm());
+            mediaPlayer = new MediaPlayer(sound);
+            mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
+            mediaPlayer.setVolume(0.5);
+            mediaPlayer.play();
+        });
     }
 }
