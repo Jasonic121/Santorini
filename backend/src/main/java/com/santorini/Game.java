@@ -3,6 +3,7 @@ package com.santorini;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.List;
 
 /**
  * The Game class represents a game of Santorini.
@@ -20,6 +21,7 @@ public class Game {
     private int gamePhase;
     private int workerPhase;
     private int initialSetupCount = 0;
+    private boolean isSecondBuild = false;
 
     // Constructor (initializes the board and players array list, and sets the first player to start the game)
     public Game() {
@@ -44,6 +46,7 @@ public class Game {
 
         gamePhase = 0;
         workerPhase = 0;
+        isSecondBuild = false;
     }
 
     /**
@@ -90,7 +93,6 @@ public class Game {
         players.get(playerId).placeWorkerOnBoard(workerIndex, initialCell);
         System.out.println("Initial worker " + workerIndex + " placement has been set up for Player " + playerId + ".");
         initialSetupCount++;
-        System.out.println("Setup count: " + initialSetupCount);
         if (initialSetupCount == 4) {
             gamePhase = 2;
         }
@@ -117,9 +119,7 @@ public class Game {
         } else {
             moveWorkerUntilPointsExhausted(workerId, x, y);
             System.out.println("Completed moving non-god card");
-
         }
-        
         
         this.setValidCells(this.board.validateCellsForBuilding(currentPlayer.getWorker(workerId).getCurrentCell()));
         System.out.println("Valid cells for building: " + validCells.length);
@@ -134,10 +134,11 @@ public class Game {
         currentPlayer.resetActionPoints();
         validCells = this.board.validateCellsForBuilding(currentPlayer.getWorker(workerId).getCurrentCell());
         System.out.println("Valid cells for building: " + validCells.length);
-    
+        for (Cell cell : validCells) {
+            System.out.println("Valid cell for building: (" + cell.getX() + ", " + cell.getY() + ")");
+        }
         if (currentPlayer.getGodCard() != null) {
             System.out.println("Building god card: " + currentPlayer.getGodCard().getGodCardName());
-    
             currentPlayer.getGodCard().onBeforeBuild(currentPlayer, workerId, x, y);
             currentPlayer.getGodCard().onBuild(currentPlayer, workerId, x, y, this);
             currentPlayer.getGodCard().onAfterBuild(currentPlayer, workerId, x, y);
@@ -269,7 +270,6 @@ public class Game {
             for (Worker worker : player.getWorkers()) {
                 Cell workerCell = worker.getCurrentCell();
                 if (workerCell != null && workerCell.getX() == x && workerCell.getY() == y) {
-                    System.out.println("Worker found at position (" + x + ", " + y + ")");
                     return worker;
                 }
             }
@@ -281,6 +281,25 @@ public class Game {
      * Getter Methods
      * --------------
      */
+    /**
+     * Get isSecondBuild
+     * 
+     * @return the isSecondBuild
+     */
+    public boolean getIsSecondBuild() {
+        return isSecondBuild;
+    }
+
+    /** 
+     * Set isSecondBuild
+     * 
+     * @param isSecondBuild the isSecondBuild to set
+     */
+    public void setIsSecondBuild(boolean isSecondBuild) {
+        this.isSecondBuild = isSecondBuild;
+    }
+
+
     /**
      * Set game phase
      */
@@ -378,14 +397,19 @@ public class Game {
     /** Remove one of the valid cells from the list of valid cells 
      * @param cell the cell to remove from the list of valid cells
     */
-    public void removeValidCell(Cell cell) {
-        ArrayList<Cell> validCellsList = new ArrayList<Cell>();
-        for (Cell c : validCells) {
-            if (c.getX() != cell.getX() || c.getY() != cell.getY()) {
-                validCellsList.add(c);
+    public void removeValidCells(Cell targetCell) {
+        // Temporary collection to hold cells to be kept
+        List<Cell> tempCells = new ArrayList<>();
+        
+        // Collect cells to keep
+        for (Cell cell : validCells) {
+            if (!cell.equals(targetCell)) {
+                tempCells.add(cell);
             }
         }
-        validCells = validCellsList.toArray(new Cell[0]);
+    
+        // Replace validCells with the new smaller array
+        validCells = tempCells.toArray(new Cell[tempCells.size()]);
     }
 
     /**

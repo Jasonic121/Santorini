@@ -126,6 +126,13 @@ public class Board {
         return grid.get(x).get(y);
     }
 
+    /**
+     * Returns the length of the grid.
+     */
+    public int getGridLength() {
+        return gridLength;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

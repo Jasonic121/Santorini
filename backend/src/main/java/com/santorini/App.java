@@ -131,6 +131,13 @@ public class App extends NanoHTTPD {
             }
             System.out.println("gamePhase: " + game.getGamePhase());
             System.out.println("workerPhase: " + game.getWorkerPhase());
+        } else if (uri.equals("/pass")) {
+            game.getCurrentPlayer().setBuildPoints(0);
+            game.nextPlayer();
+            game.setGamePhase(2);
+            game.setWorkerPhase(0);
+            game.setValidCells(new Cell[0]);
+            System.out.println("Player passed the additional build");
         }
 
         // Generate the current game state

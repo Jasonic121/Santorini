@@ -25,6 +25,7 @@ interface State extends GameState {
   selectedGodCards: GodCardInterface[];
   player1GodCard: GodCardInterface | null;
   player2GodCard: GodCardInterface | null;
+  secondBuild: boolean;
 }
 
 class App extends React.Component<Props, State> {
@@ -33,6 +34,7 @@ class App extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
+      secondBuild: false,
       cells: [],
       winner: -1,
       currentPlayer: 0,
@@ -150,6 +152,7 @@ class App extends React.Component<Props, State> {
           workerPhase: 1,
           validCells: json['validCells'],
           isGameOver: json['winner'] !== -1,
+          secondBuild: json['secondBuild'],
         }));
         console.log("Valid cells: ", this.state.validCells);
       } else {
@@ -163,6 +166,7 @@ class App extends React.Component<Props, State> {
           workerPhase: json['workerPhase'],
           validCells: json['validCells'],
           isGameOver: json['winner'] !== -1,
+          secondBuild: json['secondBuild'],
         }));
       }
     } else {
@@ -327,8 +331,8 @@ class App extends React.Component<Props, State> {
       cells: json['cells'],
       winner: json['winner'],
       currentPlayer: json['currentPlayer'],
-      gamePhase: 2,
-      workerPhase: 0,
+      gamePhase: json['gamePhase'],
+      workerPhase: json['workerPhase'],
       validCells: json['validCells'],
     });
   };
@@ -337,7 +341,7 @@ class App extends React.Component<Props, State> {
     const displayClass = currentPlayer === 0 ? 'player1-gods-display' : 'player2-gods-display';
     const currentPlayerGodCard = currentPlayer === 0 ? player1GodCard : player2GodCard;
     console.log('Game phase:', gamePhase, 'workerPhase:', this.state.workerPhase);
-
+    const isSecondBuild = this.state.secondBuild;
     return (
       <div className="app">
         {this.state.showGodCardSelection ? (
@@ -364,7 +368,9 @@ class App extends React.Component<Props, State> {
             <div id="bottombar" className='bottom-bar'>
               <button onClick={this.newGame} className='new-game'>New Game</button>
               <button onClick={() => this.sendTestLayout(this.testLayout)} className='test-layout'>Test Layout</button>
-              <button onClick={this.pass} className='pass'>Pass</button>
+              {isSecondBuild && (
+              <button onClick={this.pass} className='pass'>Pass Additional Build</button>
+              )}            
             </div>
           </>
         )}

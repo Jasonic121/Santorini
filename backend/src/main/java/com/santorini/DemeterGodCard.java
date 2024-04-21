@@ -30,20 +30,40 @@ public class DemeterGodCard extends GodCard {
 
     @Override
     public void onBuild(Player player, int workerId, int buildX, int buildY, Game game) {
+        if (!hasUsedExtraBuild) {
+            onFirstBuild(player, workerId, buildX, buildY, game);
+        } else {
+            onSecondBuild(player, workerId, buildX, buildY, game);
+        }
+    }
+
+    private void onFirstBuild(Player player, int workerId, int buildX, int buildY, Game game) {
         Board board = game.getBoard();
         Cell targetCell = board.getCell(buildX, buildY);
 
         if (player.checkBuildPointsAvailable() && isValidCell(targetCell, game.getValidCells())) {
-            if (previousBuildCell == null || !isSameCell(targetCell, previousBuildCell)) {
+            player.build(workerId, targetCell);
+            System.out.println("First build completed");
+            previousBuildCell = targetCell;
+            game.setIsSecondBuild(true);
+            System.out.println("isSecondBuild: " + game.getIsSecondBuild());
+        }
+    }
+
+    private void onSecondBuild(Player player, int workerId, int buildX, int buildY, Game game) {
+        Board board = game.getBoard();
+        Cell targetCell = board.getCell(buildX, buildY);
+
+        if (player.checkBuildPointsAvailable() && isValidCell(targetCell, game.getValidCells())) {
+            if (!isSameCell(targetCell, previousBuildCell)) {
                 player.build(workerId, targetCell);
-                System.out.println("Build points left: " + player.getBuildPoints());
-                previousBuildCell = targetCell;
-                game.removeValidCell(targetCell);
-                
+                System.out.println("Second build completed");
+                game.removeValidCells(targetCell);
+                game.setIsSecondBuild(false);
+
                 for (Cell cell : game.getValidCells()) {
                     System.out.println("Valid cell: " + cell.getX() + ", " + cell.getY());
                 }
-
             } else {
                 System.out.println("Demeter: Cannot build on the same cell twice");
             }

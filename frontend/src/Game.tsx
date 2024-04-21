@@ -5,6 +5,7 @@ interface GameState {
   validCells: Cell[];
   gamePhase: number;
   workerPhase: number;
+  secondBuild: boolean;
 }
 
 interface Cell {

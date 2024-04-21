@@ -10,8 +10,9 @@ public class GameState {
     private Cell[] validCells;
     private int gamePhase;
     private int workerPhase;
+    private boolean secondBuild; // Added secondBuild variable
 
-    public GameState(Cell[] cells, Game game, Cell[] validCells, int gamePhase, int workerPhase) {
+    public GameState(Cell[] cells, Game game, Cell[] validCells, int gamePhase, int workerPhase, boolean secondBuild) {
         this.cells = cells;
         this.game = game;
         this.winner = null;
@@ -19,6 +20,7 @@ public class GameState {
         this.validCells = validCells;
         this.gamePhase = gamePhase;
         this.workerPhase = workerPhase;
+        this.secondBuild = secondBuild; 
     }
 
     public static GameState getGameState(Game game) {
@@ -26,7 +28,8 @@ public class GameState {
         Cell[] validCells = game.getValidCells();
         int gamePhase = game.getGamePhase();
         int workerPhase = game.getWorkerPhase();
-        return new GameState(cells, game, validCells, gamePhase, workerPhase);
+        boolean secondBuild = game.getIsSecondBuild();
+        return new GameState(cells, game, validCells, gamePhase, workerPhase, secondBuild);
     }
 
     public int getGamePhase() {
@@ -52,11 +55,15 @@ public class GameState {
         return this.validCells.toString();
     }
 
+    public boolean isSecondBuild() {
+        return this.secondBuild;
+    }
+
     @Override
     public String toString() {
         return String.format(
-            "{\"cells\":%s,\"winner\":%d,\"currentPlayer\":%d,\"gamePhase\":%d,\"workerPhase\":%d,\"validCells\":%s}",
-            Arrays.toString(this.cells), this.getWinner(), this.getCurrentPlayer(), this.getGamePhase(), this.getWorkerPhase(), Arrays.toString(this.validCells)
+            "{\"cells\":%s,\"winner\":%d,\"currentPlayer\":%d,\"gamePhase\":%d,\"workerPhase\":%d,\"validCells\":%s,\"secondBuild\":%b}",
+            Arrays.toString(this.cells), this.getWinner(), this.getCurrentPlayer(), this.getGamePhase(), this.getWorkerPhase(), Arrays.toString(this.validCells), this.isSecondBuild()
         );
     }
 }

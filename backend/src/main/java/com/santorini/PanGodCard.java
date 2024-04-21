@@ -8,7 +8,11 @@ public class PanGodCard extends GodCard {
 
     @Override
     public void onAfterMove(Player player, int workerId, int x, int y) {
-        // No action required
+        // Check if the worker moved down two or more levels
+        int heightDifference = player.getWorker(workerId).getPreviousCell().getHeight() - player.getWorker(workerId).getCurrentCell().getHeight();
+        if (heightDifference >= 2) {
+            player.setWinCondition(true);
+        }
     }
 
     @Override
@@ -23,7 +27,7 @@ public class PanGodCard extends GodCard {
 
     @Override
     public boolean checkWinCondition(Player player) {
-        // Implement Pan's win condition logic
-        return false;
+        // Check if the player has won by moving down two or more levels
+        return player.hasWinCondition();
     }
 }
