@@ -1,5 +1,8 @@
 package com.santorini;
+
 public class PanGodCard extends GodCard {
+    private static final int END_GAME_PHASE = 4;
+
     @Override
     public void onBeforeMove(Player player, int workerId, int x, int y, Game game) {
         // No action required
@@ -20,7 +23,7 @@ public class PanGodCard extends GodCard {
         // Check if the worker moved down two or more levels
         if (currentCell.getHeight() <= previousCell.getHeight() - 2) {
             game.setWinner(player.getPlayerId());
-            game.setGamePhase(4); // Set the game phase to end game
+            game.setGamePhase(END_GAME_PHASE); // Set the game phase to end game
             System.out.println("Player " + player.getPlayerId() + " wins by moving down two or more levels!");
         }
     }

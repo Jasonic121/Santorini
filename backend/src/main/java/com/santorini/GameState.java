@@ -62,8 +62,11 @@ public class GameState {
     @Override
     public String toString() {
         return String.format(
-            "{\"cells\":%s,\"winner\":%d,\"currentPlayer\":%d,\"gamePhase\":%d,\"workerPhase\":%d,\"validCells\":%s,\"secondBuild\":%b}",
-            Arrays.toString(this.cells), this.getWinner(), this.getCurrentPlayer(), this.getGamePhase(), this.getWorkerPhase(), Arrays.toString(this.validCells), this.isSecondBuild()
+            "{\"cells\":%s,\"winner\":%d,\"currentPlayer\":%d,\"gamePhase\":%d,"
+            + "\"workerPhase\":%d,\"validCells\":%s,\"secondBuild\":%b}",
+            Arrays.toString(this.cells), this.getWinner(), this.getCurrentPlayer(),
+            this.getGamePhase(), this.getWorkerPhase(), Arrays.toString(this.validCells),
+            this.isSecondBuild()
         );
     }
 }

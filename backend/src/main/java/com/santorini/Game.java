@@ -10,6 +10,9 @@ import java.util.List;
  * It manages the board, players, and game flow.
  */
 public class Game {
+    private static final int INITIAL_WORKER_COUNT = 4;
+    private static final int TURN_PHASE = 3;
+
     private Board board;
     private ArrayList<Player> players;
     private int currentPlayerIndex;
@@ -92,7 +95,7 @@ public class Game {
         players.get(playerId).placeWorkerOnBoard(workerIndex, initialCell);
         System.out.println("Initial worker " + workerIndex + " placement has been set up for Player " + playerId + ".");
         initialSetupCount++;
-        if (initialSetupCount == 4) {
+        if (initialSetupCount == INITIAL_WORKER_COUNT) {
             gamePhase = 2;
         }
     }
@@ -122,7 +125,7 @@ public class Game {
         this.setValidCells(this.board.validateCellsForBuilding(currentPlayer.getWorker(workerId).getCurrentCell()));
         winCondition();
         loseCondition();
-        gamePhase = 3;
+        gamePhase = TURN_PHASE;
         workerPhase = 1;
     }
     
@@ -298,12 +301,16 @@ public class Game {
 
     /**
      * Set game phase
+     * 
+     * @param gamePhase the game phase to set
      */
     public void setGamePhase(int gamePhase) {
         this.gamePhase = gamePhase;
     }
     /**
      * Set worker phase
+     * 
+     * @param workerPhase the worker phase to set
      */
     public void setWorkerPhase(int workerPhase) {
         this.workerPhase = workerPhase;
@@ -390,9 +397,11 @@ public class Game {
         return validCells;
     }
 
-    /** Remove one of the valid cells from the list of valid cells 
-     * @param cell the cell to remove from the list of valid cells
-    */
+    /**
+     * Remove one of the valid cells from the list of valid cells 
+     * 
+     * @param targetCell the cell to remove from the list of valid cells
+     */
     public void removeValidCells(Cell targetCell) {
         // Temporary collection to hold cells to be kept
         List<Cell> tempCells = new ArrayList<>();
@@ -408,7 +417,9 @@ public class Game {
         validCells = tempCells.toArray(new Cell[tempCells.size()]);
     }
 
-    /** Add one cell to the valid cells
+    /**
+     * Add one cell to the valid cells
+     * 
      * @param cell the cell to add to the list of valid cells
      */
     public void addValidCells(Cell cell) {
@@ -428,11 +439,11 @@ public class Game {
     /**
      * Returns the winner of the game.
      * @return the winner of the game
-     */
+    */
     public Player getWinner() {
         return winner;
     }
-
+    
     /**
      * Returns the ID of the winner of the game.
      * @return the ID of the winner of the game
@@ -441,6 +452,11 @@ public class Game {
         return winner != null ? winner.getPlayerId() : -1;
     }
 
+    /**
+     * Sets the valid cells for the current player.
+     * 
+     * @param validCells the valid cells to set
+     */
     public void setValidCells(Cell[] validCells) {
         this.validCells = validCells;
     }

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HephaestusGodCard extends GodCard {
+    private static final int MAX_BUILD_HEIGHT = 3;
     private boolean hasUsedExtraBuild = false;
     private Cell previousBuildCell;
 
@@ -40,9 +41,9 @@ public class HephaestusGodCard extends GodCard {
                 keepOnlyValidCell(game, targetCell);
 
                 System.out.println("isSecondBuild: " + game.getIsSecondBuild());
-                if (targetCell.getHeight() >= 3) {
+                if (targetCell.getHeight() >= MAX_BUILD_HEIGHT) {
                     game.setIsSecondBuild(false);
-                    System.out.println("higher than 3, isSecondBuild: " + game.getIsSecondBuild());
+                    System.out.println("higher than " + MAX_BUILD_HEIGHT + ", isSecondBuild: " + game.getIsSecondBuild());
                     player.setBuildPoints(0);
                     hasUsedExtraBuild = true;
                     return;
@@ -55,7 +56,7 @@ public class HephaestusGodCard extends GodCard {
                 if (previousBuildCell != null) { // Check if previousBuildCell is not null
                     System.out.println("previousBuildCell: " + previousBuildCell.getX() + ", " + previousBuildCell.getY());
 
-                    if (targetCell.getHeight() < 3 && !isNotSameCell(targetCell, previousBuildCell)) {
+                    if (targetCell.getHeight() < MAX_BUILD_HEIGHT && !isNotSameCell(targetCell, previousBuildCell)) {
                         player.build(workerId, targetCell);
 
                         System.out.println("Length of valid cells: " + game.getValidCells().length);

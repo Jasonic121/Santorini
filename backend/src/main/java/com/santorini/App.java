@@ -12,6 +12,9 @@ public class App extends NanoHTTPD {
     private static final int PORT_NUM = 8080;
     private static final int ROW_CELL = 5;
     private static final int BOARD_SIZE = 25;
+    private static final int TURN_PHASE = 3;
+    private static final double VOLUME = 0.5;
+
     private int totalWorkersPlaced;
     private Game game;
     private Worker selectedWorker;
@@ -311,7 +314,7 @@ public class App extends NanoHTTPD {
             game.setValidCells(game.getBoard().validateCellsForBuilding(worker.getCurrentCell()));
         }
     
-        game.setGamePhase(3);
+        game.setGamePhase(TURN_PHASE);
         System.out.println("Valid worker selected!");
 
         return worker;
@@ -329,7 +332,7 @@ public class App extends NanoHTTPD {
             Media sound = new Media(getClass().getResource(musicFile).toExternalForm());
             mediaPlayer = new MediaPlayer(sound);
             mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
-            mediaPlayer.setVolume(0.5);
+            mediaPlayer.setVolume(VOLUME);
             if (isMusicPlaying) {
                 mediaPlayer.play();
             }

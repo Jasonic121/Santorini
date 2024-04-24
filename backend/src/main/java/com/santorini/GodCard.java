@@ -32,10 +32,12 @@ public abstract class GodCard {
                 description = "Your Worker may build one additional time, but not on the same space.";
                 break;
             case "HephaestusGodCard":
-                description = "Your Worker may build one additional block (not dome) on top of your first block.";
+                        description = "Your Worker may move into an opponent Worker's space, if their Worker can be forced one space "
+                        + "straight backwards to an unoccupied space at any level.";
                 break;
             case "MinotaurGodCard":
-                description = "Your Worker may move into an opponent Worker’s space, if their Worker can be forced one space straight backwards to an unoccupied space at any level.";
+                        description = "Your Worker may move into an opponent Worker's space, if their Worker can be forced one space "
+                        + "straight backwards to an unoccupied space at any level.";
                 break;
             case "PanGodCard":
                 description = "You also win if your Worker moves down two or more levels.";

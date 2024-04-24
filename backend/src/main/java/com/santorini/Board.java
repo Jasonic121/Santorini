@@ -128,6 +128,8 @@ public class Board {
 
     /**
      * Returns the length of the grid.
+     *
+     * @return the length of the grid
      */
     public int getGridLength() {
         return gridLength;
