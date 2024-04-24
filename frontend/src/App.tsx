@@ -216,21 +216,20 @@ class App extends React.Component<Props, State> {
   };
 
   instructions = (): React.ReactNode => {
-    const { winner, currentPlayer, gamePhase, showGodCardSelection, player1GodCard, player2GodCard } = this.state;
+    const { winner, currentPlayer, showGodCardSelection } = this.state;
   
     // Determine the game phase for message display
     let instructionText;
     if (winner !== -1) {
-      const gamePhaseString = this.getGamePhaseString();
       instructionText = (
-        <a>
+        <div>
           <div className='instruction-text'>
             Game Over
           </div>
           <div className='end-game'>
             PLAYER {winner + 1} WINS!
           </div>
-        </a>
+        </div>
       );
     } else if (showGodCardSelection) {
       instructionText = (
@@ -353,7 +352,6 @@ class App extends React.Component<Props, State> {
   render(): React.ReactNode {
     const { selectedGodCards, gamePhase, currentPlayer, player1GodCard, player2GodCard } = this.state;
     console.log('Game phase:', gamePhase, 'workerPhase:', this.state.workerPhase);
-    const isSecondBuild = this.state.secondBuild;
     const player1Class = `player1-gods-display ${currentPlayer === 0 ? 'current-player' : 'not-current-player'}`;
     const player2Class = `player2-gods-display ${currentPlayer === 1 ? 'current-player' : 'not-current-player'}`;
 
