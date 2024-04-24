@@ -29,35 +29,46 @@ public class HephaestusGodCard extends GodCard {
     public void onBuild(Player player, int workerId, int buildX, int buildY, Game game) {
         Board board = game.getBoard();
         Cell targetCell = board.getCell(buildX, buildY);
-    
+
         if (player.checkBuildPointsAvailable() && isValidCell(targetCell, game.getValidCells())) {
             if (!hasUsedExtraBuild) {
                 // First build - normal build (can build domes)
                 player.build(workerId, targetCell);
                 previousBuildCell = targetCell;
+                System.out.println("Previous build cell: " + previousBuildCell.getX() + ", " + previousBuildCell.getY());
                 game.setIsSecondBuild(true);
-                removeValidCellsExcept(game, targetCell);
-
+                keepOnlyValidCell(game, targetCell);
 
                 System.out.println("isSecondBuild: " + game.getIsSecondBuild());
                 if (targetCell.getHeight() >= 3) {
-                    game.setValidCells(null);
+                    game.setIsSecondBuild(false);
+                    System.out.println("higher than 3, isSecondBuild: " + game.getIsSecondBuild());
+                    player.setBuildPoints(0);
+                    hasUsedExtraBuild = true;
                     return;
                 }
             } else {
                 // Second build - cannot build domes
                 game.setIsSecondBuild(false);
+                System.out.println("targetCell: " + targetCell.getX() + ", " + targetCell.getY());
 
-                if (targetCell.getHeight() < 3 && isSameCell(targetCell, previousBuildCell)) {
-                    player.build(workerId, targetCell);
-    
-                    System.out.println("Length of valid cells: " + game.getValidCells().length);
-                    System.out.println("Target cell: " + targetCell.getX() + ", " + targetCell.getY());
-                    removeValidCellsExcept(game, targetCell);
-    
-                    System.out.println("Length of valid cells after removal: " + game.getValidCells().length);
+                if (previousBuildCell != null) { // Check if previousBuildCell is not null
+                    System.out.println("previousBuildCell: " + previousBuildCell.getX() + ", " + previousBuildCell.getY());
+
+                    if (targetCell.getHeight() < 3 && !isNotSameCell(targetCell, previousBuildCell)) {
+                        player.build(workerId, targetCell);
+
+                        System.out.println("Length of valid cells: " + game.getValidCells().length);
+                        System.out.println("Target cell: " + targetCell.getX() + ", " + targetCell.getY());
+                        keepOnlyValidCell(game, targetCell);
+
+                        System.out.println("Length of valid cells after removal: " + game.getValidCells().length);
+                    } else {
+                        System.out.println("Hephaestus: Cannot build on a different cell or a dome on the additional build");
+                        return;
+                    }
                 } else {
-                    System.out.println("Hephaestus: Cannot build a dome on the additional build");
+                    System.out.println("Hephaestus: Cannot perform the second build without a previous build");
                     return;
                 }
             }
@@ -66,6 +77,7 @@ public class HephaestusGodCard extends GodCard {
 
     @Override
     public void onAfterBuild(Player player, int workerId, int x, int y) {
+        System.out.println("Hephaestus: After build, hasUsedExtraBuild: " + hasUsedExtraBuild);
         if (!hasUsedExtraBuild) {
             hasUsedExtraBuild = true;
         } else {
@@ -91,19 +103,19 @@ public class HephaestusGodCard extends GodCard {
         return false;
     }
 
-    private boolean isSameCell(Cell cell1, Cell cell2) {
-        return cell1.getX() == cell2.getX() && cell1.getY() == cell2.getY();
+    private boolean isNotSameCell(Cell cell1, Cell cell2) {
+        return cell1.getX() != cell2.getX() || cell1.getY() != cell2.getY();
     }
 
-    private void removeValidCellsExcept(Game game, Cell exceptCell) {
+    private void keepOnlyValidCell(Game game, Cell validCell) {
         List<Cell> cellsToRemove = new ArrayList<>();
         for (Cell cell : game.getValidCells()) {
             System.out.println("Now comparing with cell: " + cell.getX() + ", " + cell.getY());
-            if (cell.getX() != exceptCell.getX() || cell.getY() != exceptCell.getY()) {
+            if (isNotSameCell(cell, validCell)) {
                 cellsToRemove.add(cell);
             }
         }
-    
+
         for (Cell cell : cellsToRemove) {
             System.out.println("Removing valid cell: " + cell.getX() + ", " + cell.getY());
             game.removeValidCells(cell);
