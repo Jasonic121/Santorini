@@ -41,4 +41,5 @@ jobs:
       - name: Run Maven command in 'frontend' directory
         run: |
           cd frontend
+          npm install
           npm run build
