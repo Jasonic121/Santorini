@@ -20,7 +20,7 @@ public class MinotaurGodCard extends GodCard {
             int forcedY = opponentY + (opponentY - player.getWorker(workerId).getCurrentCell().getY());    
             if (forcedX >= 0 && forcedX < board.getGridLength() && forcedY >= 0 && forcedY < board.getGridLength()) {
                 Cell forcedCell = board.getCell(forcedX, forcedY);
-                if (!forcedCell.isOccupied() && !forcedCell.hasDome()) {
+                if (!forcedCell.isOccupied() && !forcedCell.hasDome()  && Math.abs(forcedCell.getHeight() - targetCell.getHeight()) <= 1) {
                     // Move the opponent worker to the forced cell
                     Worker opponentWorker = targetCell.getWorker();
                     opponentWorker.setCurrentCell(forcedCell);
