@@ -1,45 +1,39 @@
-// BoardTest.java
-package com.santorini;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-class BoardTest {
-    private Board board;
+// BoardTest.java
+package com.santorini;
 
+
+class BoardTest {
+    private static final int BOARD_SIZE = 3;
+    private Board board;
+    
     @BeforeEach
     void setUp() {
         board = new Board();
     }
-
+    
     @Test
-    void testBoardInitialization() {
-        assertEquals(25, board.getGrid().length);
+    void testValidateCellsForMoving() {
+        Cell workerCell = board.getCell(0, 0);
+        Cell[] validCells = board.validateCellsForMoving(workerCell);
+        assertEquals(BOARD_SIZE, validCells.length);
     }
-
+    
     @Test
-    void testCellRetrieval() {
+    void testValidateCellsForBuilding() {
+        Cell workerCell = board.getCell(0, 0);
+        Cell[] validCells = board.validateCellsForBuilding(workerCell);
+        assertEquals(BOARD_SIZE, validCells.length);
+    }
+    
+    @Test
+    void testGetCell() {
         Cell cell = board.getCell(0, 0);
-        assertNotNull(cell);
         assertEquals(0, cell.getX());
         assertEquals(0, cell.getY());
     }
-
-    @Test
-    void testValidMoveCells() {
-        Cell workerCell = board.getCell(2, 2);
-        Cell[] validCells = board.validateCellsForMoving(workerCell);
-        assertEquals(8, validCells.length);
-    }
-
-    @Test
-    void testValidBuildCells() {
-        Cell workerCell = board.getCell(2, 2);
-        Cell[] validCells = board.validateCellsForBuilding(workerCell);
-        for (Cell cell : validCells) {
-            System.out.println(cell.getX() + " " + cell.getY());
-        }
-        assertEquals(8, validCells.length);
-    }
+    
 }

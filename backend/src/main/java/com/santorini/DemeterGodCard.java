@@ -105,4 +105,8 @@ public class DemeterGodCard extends GodCard {
     public void resetState() {
         hasUsedExtraBuild = false; // Reset the flag
     }
+
+    public boolean hasUsedExtraBuild() {
+        return hasUsedExtraBuild;
+    }
 }

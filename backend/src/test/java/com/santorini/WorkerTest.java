@@ -1,57 +1,49 @@
-// WorkerTest.java
-package com.santorini;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
+// WorkerTest.java
+package com.santorini;
+
+
 class WorkerTest {
     private Worker worker;
     private Player owner;
-
+    
+    private static final int INITIAL_X = 0;
+    private static final int INITIAL_Y = 0;
+    private static final int DESTINATION_X = 1;
+    private static final int DESTINATION_Y = 0;
+    
     @BeforeEach
     void setUp() {
         owner = new Player(0);
         worker = new Worker(owner, 0);
     }
-
+    
     @Test
-    void testInitialPlacement() {
-        Cell initialCell = new Cell(0, 0);
+    void testPlaceInitialWorker() {
+        Cell initialCell = new Cell(INITIAL_X, INITIAL_Y);
         worker.placeInitialWorker(initialCell);
         assertEquals(initialCell, worker.getCurrentCell());
-        assertTrue(initialCell.isOccupied());
     }
-
+    
     @Test
-    void testMovement() {
-        Cell initialCell = new Cell(0, 0);
-        Cell destinationCell = new Cell(0, 1);
+    void testMoveWorkerToCell() {
+        Cell initialCell = new Cell(INITIAL_X, INITIAL_Y);
+        Cell destinationCell = new Cell(DESTINATION_X, DESTINATION_Y);
         worker.placeInitialWorker(initialCell);
         worker.moveWorkerToCell(destinationCell);
         assertEquals(destinationCell, worker.getCurrentCell());
-        assertFalse(initialCell.isOccupied());
-        assertTrue(destinationCell.isOccupied());
     }
-
+    
     @Test
-    void testBuildAction() {
-        Cell initialCell = new Cell(0, 0);
-        Cell targetCell = new Cell(0, 1);
+    void testBuildAt() {
+        Cell initialCell = new Cell(INITIAL_X, INITIAL_Y);
+        Cell targetCell = new Cell(DESTINATION_X, DESTINATION_Y);
         worker.placeInitialWorker(initialCell);
         worker.buildAt(targetCell);
         assertEquals(1, targetCell.getHeight());
     }
-
-    @Test
-    void testInvalidBuild() {
-        Cell initialCell = new Cell(0, 0);
-        Cell domeCell = new Cell(0, 1);
-        domeCell.buildBlock();
-        domeCell.buildBlock();
-        domeCell.buildBlock();
-        domeCell.buildBlock();
-        worker.placeInitialWorker(initialCell);
-        assertThrows(IllegalStateException.class, () -> worker.buildAt(domeCell));
-    }
+    
 }

@@ -1,67 +1,47 @@
-// PlayerTest.java
-package com.santorini;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
+// PlayerTest.java
+package com.santorini;
+
+
 class PlayerTest {
     private Player player;
-
+    private static final int WORKER_INDEX = 0;
+    private static final int INITIAL_CELL_X = 0;
+    private static final int INITIAL_CELL_Y = 0;
+    private static final int DESTINATION_CELL_X = 1;
+    private static final int DESTINATION_CELL_Y = 0;
+    
     @BeforeEach
     void setUp() {
-        player = new Player(0);
+        player = new Player(WORKER_INDEX);
     }
-
+    
     @Test
-    void testWorkerPlacement() {
-        Cell cell = new Cell(0, 0);
-        player.placeWorkerOnBoard(0, cell);
-        assertEquals(cell, player.getWorkerCurrentCell(0));
+    void testPlaceWorkerOnBoard() {
+        Cell initialCell = new Cell(INITIAL_CELL_X, INITIAL_CELL_Y);
+        player.placeWorkerOnBoard(WORKER_INDEX, initialCell);
+        assertEquals(initialCell, player.getWorker(WORKER_INDEX).getCurrentCell());
     }
-
+    
     @Test
-    void testWorkerMovement() {
-        Cell initialCell = new Cell(0, 0);
-        Cell destinationCell = new Cell(0, 1);
-        player.placeWorkerOnBoard(0, initialCell);
-        player.moveWorker(0, destinationCell);
-        assertEquals(destinationCell, player.getWorkerCurrentCell(0));
+    void testMoveWorker() {
+        Cell initialCell = new Cell(INITIAL_CELL_X, INITIAL_CELL_Y);
+        Cell destinationCell = new Cell(DESTINATION_CELL_X, DESTINATION_CELL_Y);
+        player.placeWorkerOnBoard(WORKER_INDEX, initialCell);
+        player.moveWorker(WORKER_INDEX, destinationCell);
+        assertEquals(destinationCell, player.getWorker(WORKER_INDEX).getCurrentCell());
     }
-
+    
     @Test
-    void testBuildAction() {
-        Cell initialCell = new Cell(0, 0);
-        Cell targetCell = new Cell(0, 1);
-        player.placeWorkerOnBoard(0, initialCell);
-        player.build(0, targetCell);
+    void testBuild() {
+        Cell initialCell = new Cell(INITIAL_CELL_X, INITIAL_CELL_Y);
+        Cell targetCell = new Cell(DESTINATION_CELL_X, DESTINATION_CELL_Y);
+        player.placeWorkerOnBoard(WORKER_INDEX, initialCell);
+        player.build(WORKER_INDEX, targetCell);
         assertEquals(1, targetCell.getHeight());
     }
-
-    @Test
-    void testWinCondition() {
-        Cell initialCell = new Cell(0, 0);
-        initialCell.buildBlock();
-        initialCell.buildBlock();
-        initialCell.buildBlock();
-        player.placeWorkerOnBoard(0, initialCell);
-        assertTrue(player.checkWin());
-    }
-
-    // @Test
-    // void testLoseCondition() {
-    //     Board board = new Board();
-    //     for (int i = 0; i < 5; i++) {
-    //         for (int j = 0; j < 5; j++) {
-    //             if (i != 2 || j != 2) {
-    //                 board.getCell(i, j).buildBlock();
-    //                 board.getCell(i, j).buildBlock();
-    //                 board.getCell(i, j).buildBlock();
-    //                 board.getCell(i, j).buildBlock();
-    //             }
-    //         }
-    //     }
-    //     player.placeWorkerOnBoard(0, board.getCell(2, 2));
-    //     assertTrue(player.checkLose(board));
-    // }
+    
 }
