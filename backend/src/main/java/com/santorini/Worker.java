@@ -82,7 +82,7 @@ public class Worker {
      * @param targetCell The target cell to build at.
      * @return true if the build is valid, false otherwise.
      */
-    private boolean validateBuild(Cell targetCell) {
+    public boolean validateBuild(Cell targetCell) {
         if (targetCell.isOccupied()) {
             throw new IllegalStateException("Cannot build on an occupied cell");
         }
