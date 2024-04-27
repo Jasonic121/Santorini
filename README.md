@@ -30,8 +30,7 @@ This is an implementation of the Santorini board game using Java for the backend
 
 3. Start the Java backend server:
 `cd backend`
-`javac com/santorini/*.java`
-`java com.santorini.App`
+`mvn exec:java`
 
 4. In a separate terminal, navigate to the frontend directory:
 `cd frontend`
