@@ -1,12 +1,13 @@
+// GameIntegrationTest.java
+package com.santorini;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-// GameIntegrationTest.java
-package com.santorini;
 
 
-class GameIntegrationTest {
+
+public class GameIntegrationTest {
     private Game game;
     private static final int PLAYER_1 = 0;
     private static final int PLAYER_2 = 1;

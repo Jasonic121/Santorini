@@ -1,11 +1,12 @@
+// GodCardFactoryTest.java
+package com.santorini;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-// GodCardFactoryTest.java
-package com.santorini;
 
 
-class GodCardFactoryTest {
+
+public class GodCardFactoryTest {
     private static final String DEMETER_CARD_NAME = "Demeter";
     private static final String HEPHAESTUS_CARD_NAME = "Hephaestus";
     private static final String MINOTAUR_CARD_NAME = "Minotaur";

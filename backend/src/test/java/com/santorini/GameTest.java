@@ -1,12 +1,14 @@
+// GameTest.java
+package com.santorini;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-// GameTest.java
-package com.santorini;
 
 
-class GameTest {
+
+
+public class GameTest {
     private static final int PLAYER_INDEX = 0;
     private static final int WORKER_INDEX = 0;
     private Game game;

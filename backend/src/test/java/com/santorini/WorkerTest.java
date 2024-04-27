@@ -1,12 +1,13 @@
+// WorkerTest.java
+package com.santorini;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-// WorkerTest.java
-package com.santorini;
 
 
-class WorkerTest {
+
+public class WorkerTest {
     private Worker worker;
     private Player owner;
     

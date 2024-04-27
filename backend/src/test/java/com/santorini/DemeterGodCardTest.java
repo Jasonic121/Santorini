@@ -1,12 +1,13 @@
+// DemeterGodCardTest.java
+package com.santorini;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-// DemeterGodCardTest.java
-package com.santorini;
 
 
-class DemeterGodCardTest {
+
+public class DemeterGodCardTest {
     private static final int INITIAL_BUILD_POINTS = 0;
     private static final int X_COORDINATE = 0;
     private static final int Y_COORDINATE = 0;

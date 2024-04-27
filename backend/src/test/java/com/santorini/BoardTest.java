@@ -1,12 +1,12 @@
+// BoardTest.java
+package com.santorini;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-// BoardTest.java
-package com.santorini;
 
-
-class BoardTest {
+public class BoardTest {
     private static final int BOARD_SIZE = 3;
     private Board board;
     

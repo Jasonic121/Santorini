@@ -1,12 +1,13 @@
+// PlayerTest.java
+package com.santorini;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-// PlayerTest.java
-package com.santorini;
 
 
-class PlayerTest {
+
+public class PlayerTest {
     private Player player;
     private static final int WORKER_INDEX = 0;
     private static final int INITIAL_CELL_X = 0;

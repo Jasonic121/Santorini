@@ -1,11 +1,12 @@
-import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
 
 // GodCardTest.java
 package com.santorini;
 
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
-class GodCardTest {
+
+public class GodCardTest {
     @Test
     void testGetGodCardName() {
         String demeterExpected = "DemeterGodCard: Your Worker may build one additional time, but not on the same space.";

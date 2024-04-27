@@ -1,12 +1,13 @@
+// CellTest.java
+package com.santorini;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-// CellTest.java
-package com.santorini;
 
 
-class CellTest {
+
+public class CellTest {
     private Cell cell;
     private static final int INITIAL_HEIGHT = 0;
     private static final int INITIAL_WORKER_ID = 0;
