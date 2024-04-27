@@ -26,31 +26,33 @@ This is an implementation of the Santorini board game using Java for the backend
 `git clone https://github.com/CMU-17-214/s24-hw3-santorini-Jasonic121.git`
 
 2. Navigate to the project directory:
-`cd santorini-game`
+`cd s24-hw3-santorini-Jasonic121`
 
 3. Start the Java backend server:
 `cd backend`
+`mvn compile`
 `mvn exec:java`
 
-4. In a separate terminal, navigate to the frontend directory:
+5. In a separate terminal, navigate to the frontend directory:
 `cd frontend`
 
-5. Install the frontend dependencies:
+6. Install the frontend dependencies:
 `npm install`
 
-6. Start the React development server:
+7. Start the React development server:
 `npm start`
 
-7. Open your web browser and visit `http://localhost:3000` to play the game.
+8. Open your web browser and visit `http://localhost:3000` to play the game.
 
 ## How to Play
+~~To load a test layout, click the "Test Layout" button.~~ **The test layout function is under construction, DO NOT USE THIS TO TEST**
 1. The game starts with the setup phase, where each player takes turns placing their workers on the game board by clicking on the desired cells.
 2. After the setup phase, the game proceeds to the move phase. The current player selects one of their workers by clicking on it.
 3. The valid cells for movement are highlighted. Click on a valid cell to move the selected worker.
 4. After moving, the game enters the build phase. The valid cells for building are highlighted. Click on a valid cell to construct a tower level.
 5. The game alternates between players until a win or lose condition is met.
 6. To start a new game, click the "New Game" button.
-7. To load a test layout, click the "Test Layout" button.
+
 ## Project Structure
 The project consists of two main directories:
 - `backend`: Contains the Java source code for the game logic and server.
