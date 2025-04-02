@@ -48,7 +48,10 @@
       resultElement.textContent = 'Testing connection...';
       try {
         const response = await fetch(backendUrl, {
-          method: 'GET'
+          method: 'GET',
+          headers: {
+            'Origin': 'https://jasonli-hub.com'
+          }
         });
         const data = await response.text();
         resultElement.textContent = `Connection successful!\n\nResponse: ${data}`;
@@ -62,7 +65,10 @@
       resultElement.textContent = 'Creating new game...';
       try {
         const response = await fetch(`${backendUrl}/newgame`, {
-          method: 'GET'
+          method: 'GET',
+          headers: {
+            'Origin': 'https://jasonli-hub.com'
+          }
         });
         const data = await response.json();
         resultElement.textContent = `New game created!\n\nResponse: ${JSON.stringify(data, null, 2)}`;
