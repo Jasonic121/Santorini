@@ -1,5 +1,5 @@
 # Use a base image with Java and Maven installed
-FROM maven:3.8.4-openjdk-17-slim AS build
+FROM maven:3.8.4-openjdk-21-slim AS build
 
 # Set the working directory in the container
 WORKDIR /app
@@ -17,7 +17,7 @@ COPY src ./src
 RUN mvn package
 
 # Use a lightweight base image for the runtime
-FROM openjdk:17-jdk-slim
+FROM openjdk:21-jdk-slim
 
 # Set the working directory in the container
 WORKDIR /app

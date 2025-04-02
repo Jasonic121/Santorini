@@ -7,6 +7,7 @@ This is an implementation of the Santorini board game using Java for the backend
 - Prerequisites
 - Getting Started
 - How to Play
+- Deployment
 - Project Structure
 - Contributing
 - License
@@ -52,6 +53,14 @@ This is an implementation of the Santorini board game using Java for the backend
 4. After moving, the game enters the build phase. The valid cells for building are highlighted. Click on a valid cell to construct a tower level.
 5. The game alternates between players until a win or lose condition is met.
 6. To start a new game, click the "New Game" button.
+
+## Deployment
+
+The Santorini game can be deployed with:
+- Frontend: GitHub Pages
+- Backend: Render (or other hosting service)
+
+For detailed deployment instructions, please refer to the [DEPLOYMENT.md](DEPLOYMENT.md) file.
 
 ## Project Structure
 The project consists of two main directories:

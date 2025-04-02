@@ -198,31 +198,30 @@ public class App extends NanoHTTPD {
     }
 
     private Response handleToggleMusic() {
-        isMusicPlaying = !isMusicPlaying;
-        if (isMusicPlaying) {
-            mediaPlayer.play();
-        } else {
-            mediaPlayer.pause();
+        if (mediaPlayer != null) {
+            isMusicPlaying = !isMusicPlaying;
+            if (isMusicPlaying) {
+                mediaPlayer.play();
+            } else {
+                mediaPlayer.pause();
+            }
         }
-
-        String json = "{\"isMusicPlaying\":" + isMusicPlaying + "}";
-        Response response = newFixedLengthResponse(Response.Status.OK, "application/json", json);
-        addCORSHeaders(response);
-        return response;
+        return handleDefaultResponse();
     }
 
     private Response handleDefaultResponse() {
-        GameState gameState = GameState.getGameState(this.game);
-        String json = gameState.toString();
-        Response response = newFixedLengthResponse(Response.Status.OK, "application/json", json);
+        String jsonResponse = game.toJson();
+        Response response = newFixedLengthResponse(Response.Status.OK, "application/json", jsonResponse);
         addCORSHeaders(response);
         return response;
     }
 
     private void addCORSHeaders(Response response) {
-        response.addHeader("Access-Control-Allow-Origin", "*");
-        response.addHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+        // Allow requests from GitHub Pages and localhost for development
+        response.addHeader("Access-Control-Allow-Origin", "https://[YOUR_GITHUB_USERNAME].github.io, http://localhost:3000");
+        response.addHeader("Access-Control-Allow-Methods", "GET, POST, PUT, OPTIONS");
         response.addHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
+        response.addHeader("Access-Control-Allow-Credentials", "true");
     }
 
     private void setupTestLayout(String layout) {

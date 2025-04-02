@@ -4,6 +4,7 @@ import { GameState, Cell } from './Game.tsx';
 import BoardCell from './Cell.tsx';
 import './App.css';
 import GodCardDisplay from './GodCardDisplay.tsx';
+import config from './config.js';
 
 interface Props {}
 
@@ -51,7 +52,7 @@ class App extends React.Component<Props, State> {
 
   newGame = async () => {
     try {
-      const response = await fetch('http://localhost:8080/newgame');
+      const response = await fetch(`${config.backendUrl}/newgame`);
       const json = await response.json();
       this.setState({
         gamePhase: json['gamePhase'],
@@ -85,7 +86,7 @@ class App extends React.Component<Props, State> {
     console.log('Player', currentPlayer + 1, 'selected', selectedCard.name);
   
     this.setState({ selectedGodCards: newSelection });
-    const response = await fetch(`http://localhost:8080/godCardSelection?player=${currentPlayer}&card=${selectedCard.name}`);
+    const response = await fetch(`${config.backendUrl}/godCardSelection?player=${currentPlayer}&card=${selectedCard.name}`);
     const json = await response.json();
 
     this.setState({
@@ -110,7 +111,7 @@ class App extends React.Component<Props, State> {
   
 
   handleWorkerSelection = async (clickedCell: Cell | undefined, x: number, y: number) => {
-    const response = await fetch(`http://localhost:8080/selectedWorker?workerphase=${this.state.workerPhase}&x=${x}&y=${y}`);
+    const response = await fetch(`${config.backendUrl}/selectedWorker?workerphase=${this.state.workerPhase}&x=${x}&y=${y}`);
     const json = await response.json();
     this.setState({
       cells: json['cells'],
@@ -135,7 +136,7 @@ class App extends React.Component<Props, State> {
     const isValidCell = this.state.validCells.find(cell => cell.x === x && cell.y === y);
 
     if (isValidCell) {
-      const response = await fetch(`http://localhost:8080/selectedTargetCell?workerphase=${this.state.workerPhase}&x=${x}&y=${y}`);
+      const response = await fetch(`${config.backendUrl}/selectedTargetCell?workerphase=${this.state.workerPhase}&x=${x}&y=${y}`);
       console.log('Selected target cell:', clickedCell);
       const json = await response.json();
 
@@ -186,7 +187,7 @@ class App extends React.Component<Props, State> {
   setupInitialWorker = async (cell: Cell) => {
     const { selectedCells } = this.state;
     const cellIndex = selectedCells.length;
-    const response = await fetch(`http://localhost:8080/setup?cell${cellIndex}=${cell.x},${cell.y}`);
+    const response = await fetch(`${config.backendUrl}/setup?cell${cellIndex}=${cell.x},${cell.y}`);
     const json = await response.json();
     this.setState({
       cells: json['cells'],
@@ -310,7 +311,7 @@ class App extends React.Component<Props, State> {
 
   sendTestLayout = async (layout: string) => {
     try {
-      const response = await fetch(`http://localhost:8080/testLayout?layout=${layout}`);
+      const response = await fetch(`${config.backendUrl}/testlayout?layout=${layout}`);
       const json = await response.json();
       this.setState({
         cells: json['cells'],
@@ -328,7 +329,7 @@ class App extends React.Component<Props, State> {
   };
 
   pass = async () => {
-    const response = await fetch('http://localhost:8080/pass');
+    const response = await fetch(`${config.backendUrl}/pass`);
     const json = await response.json();
     this.setState({
       cells: json['cells'],
@@ -342,7 +343,7 @@ class App extends React.Component<Props, State> {
   };
 
   toggleMusic = async () => {
-    const response = await fetch(`http://localhost:8080/toggleMusic`);
+    const response = await fetch(`${config.backendUrl}/toggleMusic`);
     const json = await response.json();
     this.setState({
       isMusicPlaying: json['isMusicPlaying'],
