@@ -3,7 +3,8 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches:
-      - main # or master, depending on your default branch name
+      - disabled-main # Disabled by changing the branch name
+  workflow_dispatch: # Keep manual trigger option
 
 jobs:
   build-and-deploy:
