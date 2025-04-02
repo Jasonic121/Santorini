@@ -1,27 +1,27 @@
 {
   "files": {
-    "main.css": "/santorini-game/static/css/main.494add67.css",
-    "main.js": "/santorini-game/static/js/main.1603d738.js",
-    "static/media/map.png": "/santorini-game/static/media/map.5b94569aaca63b0f7f94.png",
-    "static/media/card.png": "/santorini-game/static/media/card.13dc83639884d7c5ef44.png",
-    "static/media/gods_menu.png": "/santorini-game/static/media/gods_menu.c1add01ee0ade9dadbd8.png",
-    "static/media/top.png": "/santorini-game/static/media/top.0731ec944002978e27c1.png",
-    "static/media/dome.png": "/santorini-game/static/media/dome.8a8411f0aff053f806ec.png",
-    "static/media/build.png": "/santorini-game/static/media/build.2b7ee31c988b29d89375.png",
-    "static/media/move.png": "/santorini-game/static/media/move.d24499bcf0dbd4424d63.png",
-    "static/media/LillyBelle.ttf": "/santorini-game/static/media/LillyBelle.bc2080d68997eaed20c7.ttf",
-    "static/media/middle.png": "/santorini-game/static/media/middle.e6a5507129421176f7dd.png",
-    "static/media/bottom.png": "/santorini-game/static/media/bottom.852f6dabdcbc9cee45ba.png",
-    "static/media/worker1.png": "/santorini-game/static/media/worker1.fd02062a7ade77c3559e.png",
-    "static/media/choose_worker.png": "/santorini-game/static/media/choose_worker.4007d2485e2a199192be.png",
-    "static/media/chosen_player.png": "/santorini-game/static/media/chosen_player.cc0a22f3e8e4a8ecaf48.png",
-    "static/media/retro.png": "/santorini-game/static/media/retro.8061dbb38135436c4c5b.png",
-    "index.html": "/santorini-game/index.html",
-    "main.494add67.css.map": "/santorini-game/static/css/main.494add67.css.map",
-    "main.1603d738.js.map": "/santorini-game/static/js/main.1603d738.js.map"
+    "main.css": "/Santorini/static/css/main.4af42b43.css",
+    "main.js": "/Santorini/static/js/main.617c2681.js",
+    "static/media/map.png": "/Santorini/static/media/map.5b94569aaca63b0f7f94.png",
+    "static/media/card.png": "/Santorini/static/media/card.13dc83639884d7c5ef44.png",
+    "static/media/gods_menu.png": "/Santorini/static/media/gods_menu.c1add01ee0ade9dadbd8.png",
+    "static/media/top.png": "/Santorini/static/media/top.0731ec944002978e27c1.png",
+    "static/media/dome.png": "/Santorini/static/media/dome.8a8411f0aff053f806ec.png",
+    "static/media/build.png": "/Santorini/static/media/build.2b7ee31c988b29d89375.png",
+    "static/media/move.png": "/Santorini/static/media/move.d24499bcf0dbd4424d63.png",
+    "static/media/LillyBelle.ttf": "/Santorini/static/media/LillyBelle.bc2080d68997eaed20c7.ttf",
+    "static/media/middle.png": "/Santorini/static/media/middle.e6a5507129421176f7dd.png",
+    "static/media/bottom.png": "/Santorini/static/media/bottom.852f6dabdcbc9cee45ba.png",
+    "static/media/worker1.png": "/Santorini/static/media/worker1.fd02062a7ade77c3559e.png",
+    "static/media/choose_worker.png": "/Santorini/static/media/choose_worker.4007d2485e2a199192be.png",
+    "static/media/chosen_player.png": "/Santorini/static/media/chosen_player.cc0a22f3e8e4a8ecaf48.png",
+    "static/media/retro.png": "/Santorini/static/media/retro.8061dbb38135436c4c5b.png",
+    "index.html": "/Santorini/index.html",
+    "main.4af42b43.css.map": "/Santorini/static/css/main.4af42b43.css.map",
+    "main.617c2681.js.map": "/Santorini/static/js/main.617c2681.js.map"
   },
   "entrypoints": [
-    "static/css/main.494add67.css",
-    "static/js/main.1603d738.js"
+    "static/css/main.4af42b43.css",
+    "static/js/main.617c2681.js"
   ]
 }
