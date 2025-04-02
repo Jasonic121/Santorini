@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/Santorini/static/css/main.4af42b43.css",
-    "main.js": "/Santorini/static/js/main.4ae4f83e.js",
+    "main.js": "/Santorini/static/js/main.9cd85af5.js",
     "static/media/map.png": "/Santorini/static/media/map.5b94569aaca63b0f7f94.png",
     "static/media/card.png": "/Santorini/static/media/card.13dc83639884d7c5ef44.png",
     "static/media/gods_menu.png": "/Santorini/static/media/gods_menu.c1add01ee0ade9dadbd8.png",
@@ -18,10 +18,10 @@
     "static/media/retro.png": "/Santorini/static/media/retro.8061dbb38135436c4c5b.png",
     "index.html": "/Santorini/index.html",
     "main.4af42b43.css.map": "/Santorini/static/css/main.4af42b43.css.map",
-    "main.4ae4f83e.js.map": "/Santorini/static/js/main.4ae4f83e.js.map"
+    "main.9cd85af5.js.map": "/Santorini/static/js/main.9cd85af5.js.map"
   },
   "entrypoints": [
     "static/css/main.4af42b43.css",
-    "static/js/main.4ae4f83e.js"
+    "static/js/main.9cd85af5.js"
   ]
 }
